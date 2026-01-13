@@ -18,17 +18,17 @@ const Rooms = () => {
   const [editingRoom, setEditingRoom] = useState(null);
   const [formData, setFormData] = useState({
     roomNumber: '',
-    type: 'Single',
+    roomType: 'Single',
     category: 'AC',
     floor: 1,
-    capacity: 1,
-    price: 500,
+    maxOccupancy: 1,
+    pricePerNight: 500,
     amenities: [],
     description: '',
     images: []
   });
 
-  const roomTypes = ['Single', 'Double', 'Suite', 'Dormitory'];
+  const roomTypes = ['Single', 'Double', 'Suite', 'Deluxe'];
   const categories = ['AC', 'Non-AC'];
   const availableAmenities = ['WiFi', 'TV', 'AC', 'Refrigerator', 'Geyser', 'Attached Bathroom', 'Balcony', 'Room Service'];
 
@@ -98,11 +98,11 @@ const Rooms = () => {
     setEditingRoom(room);
     setFormData({
       roomNumber: room.roomNumber,
-      type: room.type,
+      roomType: room.roomType,
       category: room.category,
       floor: room.floor,
-      capacity: room.capacity,
-      price: room.price,
+      maxOccupancy: room.maxOccupancy,
+      pricePerNight: room.pricePerNight,
       amenities: room.amenities || [],
       description: room.description || '',
       images: room.images || []
@@ -114,11 +114,11 @@ const Rooms = () => {
     setEditingRoom(null);
     setFormData({
       roomNumber: '',
-      type: 'Single',
+      roomType: 'Single',
       category: 'AC',
       floor: 1,
-      capacity: 1,
-      price: 500,
+      maxOccupancy: 1,
+      pricePerNight: 500,
       amenities: [],
       description: '',
       images: []
@@ -220,7 +220,7 @@ const Rooms = () => {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Type:</span>
-                  <span className="font-medium">{room.type}</span>
+                  <span className="font-medium">{room.roomType}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Category:</span>
@@ -228,11 +228,11 @@ const Rooms = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Capacity:</span>
-                  <span className="font-medium">{room.capacity} guests</span>
+                  <span className="font-medium">{room.maxOccupancy} guests</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Price:</span>
-                  <span className="font-semibold text-accent">₹{room.price}/night</span>
+                  <span className="font-semibold text-accent">₹{room.pricePerNight}/night</span>
                 </div>
               </div>
 
@@ -353,8 +353,8 @@ const Rooms = () => {
                   <select
                     required
                     className="input-field"
-                    value={formData.type}
-                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    value={formData.roomType}
+                    onChange={(e) => setFormData({ ...formData, roomType: e.target.value })}
                   >
                     {roomTypes.map((type) => (
                       <option key={type} value={type}>{type}</option>
@@ -380,7 +380,7 @@ const Rooms = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Capacity *
+                    Max Occupancy *
                   </label>
                   <input
                     type="number"
@@ -388,8 +388,8 @@ const Rooms = () => {
                     min="1"
                     max="10"
                     className="input-field"
-                    value={formData.capacity}
-                    onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+                    value={formData.maxOccupancy}
+                    onChange={(e) => setFormData({ ...formData, maxOccupancy: parseInt(e.target.value) })}
                   />
                 </div>
 
@@ -402,8 +402,8 @@ const Rooms = () => {
                     required
                     min="0"
                     className="input-field"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) })}
+                    value={formData.pricePerNight}
+                    onChange={(e) => setFormData({ ...formData, pricePerNight: parseInt(e.target.value) })}
                   />
                 </div>
               </div>
