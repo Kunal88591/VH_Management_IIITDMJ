@@ -13,6 +13,9 @@ import Rooms from './pages/Rooms';
 import RoomDetails from './pages/RoomDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import Rules from './pages/Rules';
 import BookingForm from './pages/BookingForm';
 import BookingConfirmation from './pages/BookingConfirmation';
 
@@ -28,6 +31,7 @@ import AdminRooms from './pages/admin/Rooms';
 import AdminBilling from './pages/admin/Billing';
 import AdminStaff from './pages/admin/Staff';
 import AdminAttendance from './pages/admin/Attendance';
+import AdminManagement from './pages/admin/AdminManagement';
 
 // Protected Route Component
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -43,8 +47,11 @@ function App() {
             <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
             <Route path="/rooms" element={<><Navbar /><Rooms /><Footer /></>} />
             <Route path="/rooms/:id" element={<><Navbar /><RoomDetails /><Footer /></>} />
+            <Route path="/rules" element={<><Navbar /><Rules /><Footer /></>} />
             <Route path="/login" element={<><Navbar /><Login /><Footer /></>} />
             <Route path="/register" element={<><Navbar /><Register /><Footer /></>} />
+            <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /><Footer /></>} />
+            <Route path="/reset-password/:token" element={<><Navbar /><ResetPassword /><Footer /></>} />
             
             {/* Protected Guest Routes */}
             <Route path="/book" element={
@@ -66,13 +73,13 @@ function App() {
             {/* Admin Routes */}
             <Route path="/admin" element={
               <ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>
-            }>
-              <Route index element={<AdminDashboard />} />
+            }>              <Route index element={<AdminDashboard />} />
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="rooms" element={<AdminRooms />} />
               <Route path="billing" element={<AdminBilling />} />
               <Route path="staff" element={<AdminStaff />} />
               <Route path="attendance" element={<AdminAttendance />} />
+              <Route path="admins" element={<AdminManagement />} />
             </Route>
           </Routes>
         </div>

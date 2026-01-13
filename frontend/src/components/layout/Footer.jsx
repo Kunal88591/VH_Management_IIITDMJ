@@ -70,8 +70,16 @@ const Footer = () => {
 
         <div className="flex flex-col md:flex-row justify-between items-center text-sm">
           <p>© {new Date().getFullYear()} IIITDMJ Visitors' Hostel. All rights reserved.</p>
-          <p className="mt-2 md:mt-0 text-accent text-xs">
-            Check-out is 24 hours from the check-in time. Charges are applicable beyond 24 hours.
+          <p className="mt-2 md:mt-0 text-white/60 text-xs">
+            Developed with ❤️ by{' '}
+            <a 
+              href="https://www.linkedin.com/in/kunal8859/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-accent hover:text-white font-medium transition-colors"
+            >
+              KUNAL
+            </a>
           </p>
         </div>
       </div>

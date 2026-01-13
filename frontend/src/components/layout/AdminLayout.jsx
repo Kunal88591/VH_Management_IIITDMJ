@@ -11,7 +11,9 @@ import {
   HiMenu,
   HiX,
   HiLogout,
-  HiExternalLink
+  HiExternalLink,
+  HiShieldCheck,
+  HiUser
 } from 'react-icons/hi';
 
 const AdminLayout = () => {
@@ -28,6 +30,7 @@ const AdminLayout = () => {
     { path: '/admin/billing', icon: HiCurrencyRupee, label: 'Billing' },
     { path: '/admin/staff', icon: HiUserGroup, label: 'Staff' },
     { path: '/admin/attendance', icon: HiClock, label: 'Attendance' },
+    { path: '/admin/admins', icon: HiShieldCheck, label: 'Admins' },
   ];
 
   const isActive = (path, exact = false) => {
@@ -68,30 +71,43 @@ const AdminLayout = () => {
 
         {/* Menu Items */}
         <nav className="flex-1 py-4 overflow-y-auto">
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center px-4 py-3 mx-2 rounded-lg transition-all duration-200 ${
-                isActive(item.path, item.exact)
-                  ? 'bg-white/20 text-white'
-                  : 'text-white/70 hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              <item.icon className="w-5 h-5" />
-              {sidebarOpen && <span className="ml-3 font-medium">{item.label}</span>}
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            // Only show Admins menu to primary admin
+            if (item.path === '/admin/admins' && user?.email !== 'vh@iiitdmj.ac.in') {
+              return null;
+            }
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center px-4 py-3 mx-2 rounded-lg transition-all duration-200 ${
+                  isActive(item.path, item.exact)
+                    ? 'bg-white/20 text-white'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <item.icon className="w-5 h-5" />
+                {sidebarOpen && <span className="ml-3 font-medium">{item.label}</span>}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Visit Website Link */}
         <div className="p-4 border-t border-white/10">
           <Link
             to="/"
-            className="flex items-center text-white/70 hover:text-white transition-colors"
+            className="flex items-center text-white/70 hover:text-white transition-colors mb-3"
           >
             <HiExternalLink className="w-5 h-5" />
             {sidebarOpen && <span className="ml-3 text-sm">Visit Website</span>}
+          </Link>
+          <Link
+            to="/profile"
+            className="flex items-center text-white/70 hover:text-white transition-colors"
+          >
+            <HiUser className="w-5 h-5" />
+            {sidebarOpen && <span className="ml-3 text-sm">My Profile</span>}
           </Link>
         </div>
 
@@ -143,24 +159,46 @@ const AdminLayout = () => {
             </div>
 
             <nav className="flex-1 py-4">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center px-4 py-3 mx-2 rounded-lg transition-all duration-200 ${
-                    isActive(item.path, item.exact)
-                      ? 'bg-white/20 text-white'
-                      : 'text-white/70 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <item.icon className="w-5 h-5" />
-                  <span className="ml-3 font-medium">{item.label}</span>
-                </Link>
-              ))}
+              {menuItems.map((item) => {
+                // Only show Admins menu to primary admin
+                if (item.path === '/admin/admins' && user?.email !== 'vh@iiitdmj.ac.in') {
+                  return null;
+                }
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center px-4 py-3 mx-2 rounded-lg transition-all duration-200 ${
+                      isActive(item.path, item.exact)
+                        ? 'bg-white/20 text-white'
+                        : 'text-white/70 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span className="ml-3 font-medium">{item.label}</span>
+                  </Link>
+                );
+              })}
             </nav>
 
             <div className="p-4 border-t border-white/10">
+              <Link
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center text-white/70 hover:text-white transition-colors mb-3"
+              >
+                <HiExternalLink className="w-5 h-5" />
+                <span className="ml-3 text-sm">Visit Website</span>
+              </Link>
+              <Link
+                to="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center text-white/70 hover:text-white transition-colors mb-3"
+              >
+                <HiUser className="w-5 h-5" />
+                <span className="ml-3 text-sm">My Profile</span>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="flex items-center w-full px-3 py-2 text-red-300 hover:text-red-200 rounded-lg transition-colors"

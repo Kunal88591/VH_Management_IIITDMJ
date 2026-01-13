@@ -154,14 +154,11 @@ const Billing = () => {
 
       {/* Filters */}
       <div className="flex flex-wrap gap-4 mb-6">
-        <div className="relative">
-          <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search by Bill ID..."
-            className="input-field pl-10 py-2"
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Search by Bill ID..."
+          className="input-field py-2"
+        />
         
         <select
           className="input-field py-2"

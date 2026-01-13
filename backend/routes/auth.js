@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
+const { sendPasswordResetEmail } = require('../utils/emailService');
 
 const router = express.Router();
 
@@ -224,6 +225,104 @@ router.put('/password', protect, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error changing password',
+      error: error.message
+    });
+  }
+});
+
+// @route   POST /api/auth/forgot-password
+// @desc    Request password reset
+// @access  Public
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No user found with this email'
+      });
+    }
+
+    // Generate reset token (valid for 1 hour)
+    const resetToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    // Send email
+    try {
+      await sendPasswordResetEmail(email, resetToken, req);
+      
+      res.json({
+        success: true,
+        message: 'Password reset link has been sent to your email',
+        data: {
+          email,
+          note: 'Check your email inbox for the reset link'
+        }
+      });
+    } catch (emailError) {
+      console.error('Email error:', emailError);
+      // Still return success but with a note
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.json({
+        success: true,
+        message: 'Password reset link generated (email service unavailable)',
+        data: {
+          resetToken,
+          resetUrl: `${frontendUrl}/reset-password/${resetToken}`,
+          note: 'Email service not configured. Use this link directly.'
+        }
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error processing request',
+      error: error.message
+    });
+  }
+});
+
+// @route   POST /api/auth/reset-password/:token
+// @desc    Reset password with token
+// @access  Public
+router.post('/reset-password/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Invalid or expired token'
+      });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Password reset successful'
+    });
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired reset token'
+      });
+    }
+    res.status(500).json({
+      success: false,
+      message: 'Error resetting password',
       error: error.message
     });
   }

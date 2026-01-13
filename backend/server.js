@@ -61,11 +61,11 @@ const seedDatabase = async () => {
   const Staff = require('./models/Staff');
   
   // Create admin user
-  const adminExists = await User.findOne({ email: 'admin@iiitdmj.ac.in' });
+  const adminExists = await User.findOne({ email: 'vh@iiitdmj.ac.in' });
   if (!adminExists) {
     await User.create({
-      name: 'Admin User',
-      email: 'admin@iiitdmj.ac.in',
+      name: 'VH Admin',
+      email: 'vh@iiitdmj.ac.in',
       password: 'admin123',
       role: 'admin',
       phone: '9876543210'
@@ -129,6 +129,7 @@ const billingRoutes = require('./routes/billing');
 const staffRoutes = require('./routes/staff');
 const attendanceRoutes = require('./routes/attendance');
 const dashboardRoutes = require('./routes/dashboard');
+const adminRoutes = require('./routes/admin');
 
 // Use Routes
 app.use('/api/auth', authRoutes);
@@ -138,6 +139,7 @@ app.use('/api/billing', billingRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -71,6 +71,7 @@ export const billingAPI = {
   generate: (bookingId, data) => api.post(`/billing/generate/${bookingId}`, data),
   updatePayment: (id, data) => api.put(`/billing/${id}/payment`, data),
   getPDF: (id) => api.get(`/billing/${id}/pdf`, { responseType: 'blob' }),
+  downloadInvoice: (id) => api.get(`/billing/${id}/pdf`, { responseType: 'blob' }),
   getByBooking: (bookingId) => api.get(`/billing/booking/${bookingId}`),
 };
 
@@ -91,6 +92,7 @@ export const attendanceAPI = {
   checkIn: (data) => api.post('/attendance/check-in', data),
   checkOut: (data) => api.post('/attendance/check-out', data),
   mark: (data) => api.post('/attendance/mark', data),
+  markManual: (data) => api.post('/attendance/mark', data),
   getReport: (params) => api.get('/attendance/report', { params }),
   getToday: () => api.get('/attendance/today'),
 };

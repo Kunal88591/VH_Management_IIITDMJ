@@ -130,18 +130,10 @@ const RoomDetails = () => {
                 )}
 
                 <p className="text-xs text-gray-500 mt-4 text-center">
-                  Check-out is 24 hours from check-in time
+                  All bookings require approval from competent authority
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Important Notice */}
-          <div className="mt-8 bg-accent/10 border border-accent/20 rounded-lg p-4">
-            <p className="text-slate-primary text-sm">
-              <span className="font-semibold text-accent">📌 Important:</span> Check-out is 24 hours from the check-in time. 
-              Charges are applicable beyond 24 hours. All bookings require approval from the competent authority.
-            </p>
           </div>
         </div>
       </div>

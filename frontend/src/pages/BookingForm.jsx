@@ -508,14 +508,6 @@ const BookingForm = () => {
                   </div>
                 </div>
 
-                {/* Important Notice */}
-                <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-6">
-                  <p className="text-slate-primary text-sm">
-                    <span className="font-semibold text-accent">📌 Important:</span> Check-out is 24 hours from the check-in time. 
-                    Charges are applicable beyond 24 hours.
-                  </p>
-                </div>
-
                 {/* Summary */}
                 <div className="bg-gray-50 rounded-lg p-4 mb-6">
                   <h3 className="font-semibold mb-2">Booking Summary</h3>

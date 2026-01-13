@@ -38,6 +38,9 @@ const Navbar = () => {
             <Link to="/rooms" className="text-white/90 hover:text-white transition-colors font-medium">
               Rooms
             </Link>
+            <Link to="/rules" className="text-white/90 hover:text-white transition-colors font-medium">
+              Rules & Tariff
+            </Link>
             <Link to="/book" className="btn-accent text-sm">
               Book Now
             </Link>
@@ -133,6 +136,13 @@ const Navbar = () => {
               onClick={() => setIsOpen(false)}
             >
               Rooms
+            </Link>
+            <Link
+              to="/rules"
+              className="block text-white/90 hover:text-white py-2"
+              onClick={() => setIsOpen(false)}
+            >
+              Rules & Tariff
             </Link>
             <Link
               to="/book"

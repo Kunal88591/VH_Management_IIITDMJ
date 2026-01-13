@@ -197,16 +197,13 @@ const Bookings = () => {
         
         {/* Filters */}
         <div className="flex flex-wrap gap-4">
-          <div className="relative">
-            <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by ID or name..."
-              className="input-field pl-10 py-2"
-              value={filters.search}
-              onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Search by ID or name..."
+            className="input-field py-2"
+            value={filters.search}
+            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+          />
           
           <select
             className="input-field py-2"
@@ -503,13 +500,13 @@ const Bookings = () => {
                 <div>
                   <h3 className="font-semibold text-slate-primary mb-3">Approval Document</h3>
                   <a
-                    href={`${import.meta.env.VITE_API_URL?.replace('/api', '')}/${selectedBooking.approvalDocument}`}
+                    href={`http://localhost:5000/${selectedBooking.approvalDocument}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-secondary hover:underline"
+                    className="inline-flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-md hover:bg-primary"
                   >
                     <HiDownload className="w-5 h-5" />
-                    Download Document
+                    View/Download Document
                   </a>
                 </div>
               )}

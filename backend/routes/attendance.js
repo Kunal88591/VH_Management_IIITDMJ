@@ -39,7 +39,7 @@ router.get('/', protect, async (req, res) => {
     const total = await Attendance.countDocuments(query);
     
     const attendance = await Attendance.find(query)
-      .populate('staff', 'name employeeId role')
+      .populate('staff', 'name employeeId role shift')
       .populate('markedBy', 'name')
       .sort({ date: -1 })
       .skip((page - 1) * limit)
@@ -114,7 +114,7 @@ router.post('/check-in', protect, async (req, res) => {
     };
 
     await attendance.save();
-    await attendance.populate('staff', 'name employeeId');
+    await attendance.populate('staff', 'name employeeId shift');
 
     res.json({
       success: true,
@@ -179,7 +179,7 @@ router.post('/check-out', protect, async (req, res) => {
     };
 
     await attendance.save();
-    await attendance.populate('staff', 'name employeeId');
+    await attendance.populate('staff', 'name employeeId shift');
 
     res.json({
       success: true,
@@ -249,7 +249,7 @@ router.post('/mark', protect, authorize('admin'), async (req, res) => {
     }
 
     await attendance.save();
-    await attendance.populate('staff', 'name employeeId');
+    await attendance.populate('staff', 'name employeeId shift');
 
     res.json({
       success: true,
@@ -361,7 +361,7 @@ router.get('/today', protect, authorize('admin'), async (req, res) => {
     const totalStaff = await Staff.countDocuments({ isActive: true });
     
     const todayAttendance = await Attendance.find({ date: today })
-      .populate('staff', 'name employeeId role');
+      .populate('staff', 'name employeeId role shift');
 
     const present = todayAttendance.filter(a => a.status === 'Present').length;
     const absent = totalStaff - present;

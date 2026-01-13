@@ -30,19 +30,23 @@ const Attendance = () => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedDate]);
+  }, [selectedDate, selectedStaff]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const [attendanceRes, staffRes, todayRes] = await Promise.all([
-        attendanceAPI.getAll({ date: selectedDate }).catch(() => ({ data: { data: [] } })),
+        attendanceAPI.getAll({ 
+          startDate: selectedDate, 
+          endDate: selectedDate,
+          ...(selectedStaff && { staffId: selectedStaff })
+        }).catch(() => ({ data: { data: [] } })),
         staffAPI.getAll().catch(() => ({ data: { data: [] } })),
-        attendanceAPI.getToday().catch(() => ({ data: { data: [] } }))
+        attendanceAPI.getToday().catch(() => ({ data: { data: { records: [] } } }))
       ]);
       setAttendanceList(attendanceRes.data.data || []);
       setStaffList((staffRes.data.data || []).filter(s => s.isActive !== false));
-      setTodayAttendance(todayRes.data.data || []);
+      setTodayAttendance(todayRes.data.data?.records || []);
     } catch (error) {
       console.error('Fetch attendance error:', error);
       setAttendanceList([]);
@@ -75,7 +79,22 @@ const Attendance = () => {
 
   const handleManualMark = async () => {
     try {
-      await attendanceAPI.markManual(markData);
+      // Transform the data to match backend expectations
+      const payload = {
+        staffId: markData.staffId,
+        date: markData.date,
+        status: markData.status,
+      };
+      
+      // Add check-in/out times if present
+      if (markData.checkIn) {
+        payload.checkInTime = `${markData.date}T${markData.checkIn}:00`;
+      }
+      if (markData.checkOut) {
+        payload.checkOutTime = `${markData.date}T${markData.checkOut}:00`;
+      }
+      
+      await attendanceAPI.markManual(payload);
       toast.success('Attendance marked successfully');
       setShowMarkModal(false);
       setMarkData({

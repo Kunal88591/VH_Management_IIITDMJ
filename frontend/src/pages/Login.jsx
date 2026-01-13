@@ -92,6 +92,19 @@ const Login = () => {
               </div>
             </div>
 
+            <div className="flex items-center justify-between">
+              <label className="flex items-center">
+                <input type="checkbox" className="mr-2" />
+                <span className="text-sm text-gray-600">Remember me</span>
+              </label>
+              <Link 
+                to="/forgot-password" 
+                className="text-sm text-secondary hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -111,15 +124,6 @@ const Login = () => {
               Register
             </Link>
           </p>
-
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-500 text-center mb-2">Demo Credentials</p>
-            <div className="text-xs text-gray-600 space-y-1">
-              <p><strong>Admin:</strong> admin@iiitdmj.ac.in / admin123</p>
-              <p><strong>Guest:</strong> guest@example.com / guest123</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

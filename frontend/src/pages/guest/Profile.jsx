@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { HiUser, HiMail, HiPhone, HiLocationMarker, HiLockClosed } from 'react-icons/hi';
+import { HiLockClosed } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 
@@ -98,63 +98,51 @@ const Profile = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Full Name
               </label>
-              <div className="relative">
-                <HiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="input-field pl-10"
-                />
-              </div>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="input-field"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email (cannot be changed)
               </label>
-              <div className="relative">
-                <HiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="email"
-                  value={user?.email}
-                  disabled
-                  className="input-field pl-10 bg-gray-100 cursor-not-allowed"
-                />
-              </div>
+              <input
+                type="email"
+                value={user?.email}
+                disabled
+                className="input-field bg-gray-100 cursor-not-allowed"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Phone Number
               </label>
-              <div className="relative">
-                <HiPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="input-field pl-10"
-                />
-              </div>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="input-field"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Address
               </label>
-              <div className="relative">
-                <HiLocationMarker className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
-                <textarea
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="input-field pl-10"
-                  rows="2"
-                />
-              </div>
+              <textarea
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                className="input-field"
+                rows="2"
+              />
             </div>
 
             <button
