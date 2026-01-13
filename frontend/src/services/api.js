@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Use environment variable or default to Render backend URL
+const API_URL = import.meta.env.VITE_API_URL || 'https://vh-management-backend.onrender.com/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
