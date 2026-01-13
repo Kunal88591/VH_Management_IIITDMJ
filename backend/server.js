@@ -11,38 +11,45 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// MongoDB Connection with Memory Server fallback
+// MongoDB Connection with fallback to memory server
 const connectDB = async () => {
   try {
-    // First try the configured MongoDB URI
-    if (process.env.MONGODB_URI && !process.env.MONGODB_URI.includes('localhost')) {
-      await mongoose.connect(process.env.MONGODB_URI);
-      console.log('✅ MongoDB Connected Successfully (Remote)');
+    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/vh_management';
+    
+    // If it's a remote URI (Atlas), connect directly
+    if (mongoURI.includes('mongodb+srv') || mongoURI.includes('mongodb.net')) {
+      await mongoose.connect(mongoURI);
+      console.log('✅ MongoDB Atlas Connected Successfully');
     } else {
-      // Try localhost, if fails use memory server
+      // Try local MongoDB first, fallback to in-memory
       try {
-        await mongoose.connect('mongodb://localhost:27017/vh_management', {
-          serverSelectionTimeoutMS: 3000
-        });
-        console.log('✅ MongoDB Connected Successfully (Local)');
+        await mongoose.connect(mongoURI, { serverSelectionTimeoutMS: 3000 });
+        console.log('✅ MongoDB Local Connected Successfully');
       } catch (localErr) {
-        console.log('⚠️ Local MongoDB not available, starting in-memory database...');
+        console.log('⚠️ Local MongoDB not available, using in-memory database...');
         const mongod = await MongoMemoryServer.create();
-        const uri = mongod.getUri();
-        await mongoose.connect(uri);
-        console.log('✅ MongoDB Memory Server Connected Successfully');
-        
-        // Seed initial data for in-memory database
-        await seedDatabase();
+        await mongoose.connect(mongod.getUri());
+        console.log('✅ MongoDB In-Memory Connected Successfully');
       }
     }
+    
+    // Seed database if empty
+    const User = require('./models/User');
+    const userCount = await User.countDocuments();
+    if (userCount === 0) {
+      console.log('📦 Seeding initial data...');
+      await seedDatabase();
+    }
   } catch (err) {
-    console.error('❌ MongoDB Connection Error:', err);
+    console.error('❌ MongoDB Connection Error:', err.message);
     process.exit(1);
   }
 };

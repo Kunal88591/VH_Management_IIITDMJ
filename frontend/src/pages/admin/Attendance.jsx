@@ -36,15 +36,18 @@ const Attendance = () => {
     try {
       setLoading(true);
       const [attendanceRes, staffRes, todayRes] = await Promise.all([
-        attendanceAPI.getAll({ date: selectedDate }),
-        staffAPI.getAll(),
-        attendanceAPI.getToday()
+        attendanceAPI.getAll({ date: selectedDate }).catch(() => ({ data: { data: [] } })),
+        staffAPI.getAll().catch(() => ({ data: { data: [] } })),
+        attendanceAPI.getToday().catch(() => ({ data: { data: [] } }))
       ]);
-      setAttendanceList(attendanceRes.data.data);
-      setStaffList(staffRes.data.data.filter(s => s.isActive));
-      setTodayAttendance(todayRes.data.data);
+      setAttendanceList(attendanceRes.data.data || []);
+      setStaffList((staffRes.data.data || []).filter(s => s.isActive !== false));
+      setTodayAttendance(todayRes.data.data || []);
     } catch (error) {
-      toast.error('Failed to fetch attendance data');
+      console.error('Fetch attendance error:', error);
+      setAttendanceList([]);
+      setStaffList([]);
+      setTodayAttendance([]);
     } finally {
       setLoading(false);
     }

@@ -52,14 +52,17 @@ const Bookings = () => {
         ...(filters.endDate && { endDate: filters.endDate }),
       };
       const res = await bookingAPI.getAll(params);
-      setBookings(res.data.data);
-      setPagination(prev => ({
-        ...prev,
-        total: res.data.pagination.total,
-        pages: res.data.pagination.pages
-      }));
+      setBookings(res.data.data || []);
+      if (res.data.pagination) {
+        setPagination(prev => ({
+          ...prev,
+          total: res.data.pagination.total || 0,
+          pages: res.data.pagination.pages || 1
+        }));
+      }
     } catch (error) {
-      toast.error('Failed to fetch bookings');
+      console.error('Fetch bookings error:', error);
+      setBookings([]);
     } finally {
       setLoading(false);
     }
