@@ -98,6 +98,7 @@ const Home = () => {
                 <img 
                   src="/images/room.jpg" 
                   alt="Visitors Hostel Room"
+                  loading="lazy"
                   className="w-full h-80 object-cover"
                 />
               </div>
@@ -170,6 +171,45 @@ const Home = () => {
           <div className="text-center mt-8">
             <Link to="/rooms" className="btn-primary">
               View All Rooms
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Preview Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="font-poppins text-3xl md:text-4xl font-bold text-slate-primary mb-4">
+              Photo Gallery
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Take a visual tour of our facilities and rooms
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { src: '/images/gallery/photo-1.jpg', alt: 'Photo 1', fallback: '/images/room.jpg' },
+              { src: '/images/gallery/photo-2.jpg', alt: 'Photo 2', fallback: '/images/hero.jpg' },
+              { src: '/images/gallery/photo-3.jpg', alt: 'Photo 3', fallback: '/images/room.jpg' },
+              { src: '/images/gallery/photo-4.jpg', alt: 'Photo 4', fallback: '/images/hero.jpg' },
+            ].map((image, index) => (
+              <div key={index} className="relative aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow group">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  onError={(e) => e.target.src = image.fallback}
+                />
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-8">
+            <Link to="/gallery" className="btn-primary">
+              View Full Gallery
             </Link>
           </div>
         </div>

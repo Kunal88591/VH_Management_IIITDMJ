@@ -20,8 +20,17 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-primary font-bold text-lg">VH</span>
+            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden">
+              <img 
+                src="/images/iiitdmj-logo.png" 
+                alt="IIITDMJ Logo" 
+                className="w-full h-full object-contain p-1"
+                onError={(e) => {
+                  // Fallback to VH text if logo not found
+                  e.target.style.display = 'none';
+                  e.target.parentElement.innerHTML = '<span class="text-primary font-bold text-lg">VH</span>';
+                }}
+              />
             </div>
             <div className="hidden sm:block">
               <h1 className="text-white font-poppins font-semibold text-lg">
@@ -37,6 +46,9 @@ const Navbar = () => {
             </Link>
             <Link to="/rooms" className="text-white/90 hover:text-white transition-colors font-medium">
               Rooms
+            </Link>
+            <Link to="/gallery" className="text-white/90 hover:text-white transition-colors font-medium">
+              Gallery
             </Link>
             <Link to="/rules" className="text-white/90 hover:text-white transition-colors font-medium">
               Rules & Tariff
@@ -136,6 +148,13 @@ const Navbar = () => {
               onClick={() => setIsOpen(false)}
             >
               Rooms
+            </Link>
+            <Link
+              to="/gallery"
+              className="block text-white/90 hover:text-white py-2"
+              onClick={() => setIsOpen(false)}
+            >
+              Gallery
             </Link>
             <Link
               to="/rules"

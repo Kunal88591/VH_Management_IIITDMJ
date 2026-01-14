@@ -11,6 +11,7 @@ import AdminLayout from './components/layout/AdminLayout';
 import Home from './pages/Home';
 import Rooms from './pages/Rooms';
 import RoomDetails from './pages/RoomDetails';
+import Gallery from './pages/Gallery';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -47,6 +48,7 @@ function App() {
             <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
             <Route path="/rooms" element={<><Navbar /><Rooms /><Footer /></>} />
             <Route path="/rooms/:id" element={<><Navbar /><RoomDetails /><Footer /></>} />
+            <Route path="/gallery" element={<><Navbar /><Gallery /><Footer /></>} />
             <Route path="/rules" element={<><Navbar /><Rules /><Footer /></>} />
             <Route path="/login" element={<><Navbar /><Login /><Footer /></>} />
             <Route path="/register" element={<><Navbar /><Register /><Footer /></>} />
