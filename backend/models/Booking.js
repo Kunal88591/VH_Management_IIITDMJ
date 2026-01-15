@@ -85,7 +85,9 @@ const bookingSchema = new mongoose.Schema({
     trim: true
   },
   approvalDocument: {
-    type: String // File path
+    data: Buffer,        // File binary data
+    contentType: String, // MIME type (e.g., 'application/pdf', 'image/jpeg')
+    fileName: String     // Original file name
   },
   status: {
     type: String,
@@ -121,14 +123,23 @@ const bookingSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Generate booking ID before saving
+// Generate booking ID before saving (Format: VH-YYYYMM-XXXX)
 bookingSchema.pre('save', async function(next) {
   if (!this.bookingId) {
     const date = new Date();
-    const year = date.getFullYear().toString().slice(-2);
+    const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const count = await mongoose.model('Booking').countDocuments() + 1;
-    this.bookingId = `VH${year}${month}${count.toString().padStart(4, '0')}`;
+    const yearMonth = `${year}${month}`;
+    
+    // Count bookings in current month
+    const startOfMonth = new Date(year, date.getMonth(), 1);
+    const endOfMonth = new Date(year, date.getMonth() + 1, 0, 23, 59, 59);
+    
+    const count = await mongoose.model('Booking').countDocuments({
+      createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+    }) + 1;
+    
+    this.bookingId = `VH-${yearMonth}-${count.toString().padStart(4, '0')}`;
   }
   next();
 });

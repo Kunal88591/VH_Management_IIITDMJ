@@ -116,14 +116,23 @@ const billSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Generate bill number before saving
+// Generate bill number before saving (Format: INV-YYYYMM-XXXX)
 billSchema.pre('save', async function(next) {
   if (!this.billNumber) {
     const date = new Date();
-    const year = date.getFullYear().toString().slice(-2);
+    const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const count = await mongoose.model('Bill').countDocuments() + 1;
-    this.billNumber = `INV${year}${month}${count.toString().padStart(4, '0')}`;
+    const yearMonth = `${year}${month}`;
+    
+    // Count bills in current month
+    const startOfMonth = new Date(year, date.getMonth(), 1);
+    const endOfMonth = new Date(year, date.getMonth() + 1, 0, 23, 59, 59);
+    
+    const count = await mongoose.model('Bill').countDocuments({
+      createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+    }) + 1;
+    
+    this.billNumber = `INV-${yearMonth}-${count.toString().padStart(4, '0')}`;
   }
   next();
 });

@@ -111,6 +111,35 @@ const Bookings = () => {
     }
   };
 
+  const handleDownloadDocument = async (bookingId) => {
+    try {
+      const response = await bookingAPI.downloadDocument(bookingId);
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `approval-document-${bookingId}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success('Document downloaded successfully');
+    } catch (error) {
+      toast.error('Failed to download document');
+    }
+  };
+
+  const handleViewDocument = async (bookingId) => {
+    try {
+      const response = await bookingAPI.viewDocument(bookingId);
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (error) {
+      toast.error('Failed to view document');
+    }
+  };
+
   const getStatusBadge = (status) => {
     const badges = {
       'Pending': 'badge-pending',
@@ -256,6 +285,7 @@ const Bookings = () => {
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Check-In</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Check-Out</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Status</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Document</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Amount</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Actions</th>
               </tr>
@@ -263,13 +293,13 @@ const Bookings = () => {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan="8" className="text-center py-8">
+                  <td colSpan="9" className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                   </td>
                 </tr>
               ) : bookings.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="text-center py-8 text-gray-500">
+                  <td colSpan="9" className="text-center py-8 text-gray-500">
                     No bookings found
                   </td>
                 </tr>
@@ -294,6 +324,20 @@ const Bookings = () => {
                       <span className={`badge ${getStatusBadge(booking.status)}`}>
                         {booking.status}
                       </span>
+                    </td>
+                    <td className="py-3 px-4">
+                      {booking.approvalDocument?.data ? (
+                        <button
+                          onClick={() => handleViewDocument(booking._id)}
+                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors"
+                          title="View Approval Document"
+                        >
+                          <HiEye className="w-5 h-5" />
+                          <span className="text-xs">View</span>
+                        </button>
+                      ) : (
+                        <span className="text-xs text-gray-400">No document</span>
+                      )}
                     </td>
                     <td className="py-3 px-4 font-semibold">₹{booking.totalAmount}</td>
                     <td className="py-3 px-4">
@@ -496,18 +540,28 @@ const Bookings = () => {
               )}
 
               {/* Approval Document */}
-              {selectedBooking.approvalDocument && (
+              {selectedBooking.approvalDocument?.data && (
                 <div>
                   <h3 className="font-semibold text-slate-primary mb-3">Approval Document</h3>
-                  <a
-                    href={`http://localhost:5000/${selectedBooking.approvalDocument}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-md hover:bg-primary"
-                  >
-                    <HiDownload className="w-5 h-5" />
-                    View/Download Document
-                  </a>
+                  <p className="text-sm text-gray-500 mb-2">
+                    File: {selectedBooking.approvalDocument.fileName || 'Document'}
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => handleViewDocument(selectedBooking._id)}
+                      className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                    >
+                      <HiEye className="w-5 h-5" />
+                      View Document
+                    </button>
+                    <button
+                      onClick={() => handleDownloadDocument(selectedBooking._id)}
+                      className="inline-flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-md hover:bg-primary transition-colors"
+                    >
+                      <HiDownload className="w-5 h-5" />
+                      Download
+                    </button>
+                  </div>
                 </div>
               )}
 

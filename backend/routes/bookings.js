@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const Booking = require('../models/Booking');
 const Room = require('../models/Room');
 const { protect, authorize } = require('../middleware/auth');
@@ -156,7 +157,17 @@ router.post('/', protect, upload.single('approvalDocument'), async (req, res) =>
     const nights = Math.ceil((checkOutDateObj - checkInDateObj) / (1000 * 60 * 60 * 24)) || 1;
     const roomTotal = roomsData.reduce((sum, room) => sum + (room.pricePerNight * nights), 0);
 
-    // Create booking
+    // Prepare approval document for MongoDB storage
+    let approvalDocumentData = null;
+    if (req.file) {
+      approvalDocumentData = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+        fileName: req.file.originalname
+      };
+    }
+
+    // Create booking with document stored in MongoDB
     const booking = await Booking.create({
       guest: req.user.id,
       guestDetails: parsedGuestDetails,
@@ -169,7 +180,7 @@ router.post('/', protect, upload.single('approvalDocument'), async (req, res) =>
       numberOfRooms: roomsData.length,
       foodRequirement: parsedFoodRequirement,
       additionalRequirements,
-      approvalDocument: req.file ? req.file.path : null,
+      approvalDocument: approvalDocumentData,
       totalAmount: roomTotal,
       status: 'Pending'
     });
@@ -517,6 +528,78 @@ router.get('/pending/count', protect, authorize('admin'), async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error getting pending count',
+      error: error.message
+    });
+  }
+});
+
+// @route   GET /api/bookings/:id/download-document
+// @desc    Download approval document for a booking
+// @access  Private/Admin
+router.get('/:id/download-document', protect, authorize('admin'), async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: 'Booking not found'
+      });
+    }
+
+    if (!booking.approvalDocument || !booking.approvalDocument.data) {
+      return res.status(404).json({
+        success: false,
+        message: 'No approval document found for this booking'
+      });
+    }
+
+    // Set headers for file download
+    res.setHeader('Content-Type', booking.approvalDocument.contentType);
+    res.setHeader('Content-Disposition', `attachment; filename="${booking.approvalDocument.fileName || 'approval-document'}"`);
+    
+    // Send the file data
+    res.send(booking.approvalDocument.data);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error downloading document',
+      error: error.message
+    });
+  }
+});
+
+// @route   GET /api/bookings/:id/view-document
+// @desc    View approval document for a booking (inline)
+// @access  Private/Admin
+router.get('/:id/view-document', protect, authorize('admin'), async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: 'Booking not found'
+      });
+    }
+
+    if (!booking.approvalDocument || !booking.approvalDocument.data) {
+      return res.status(404).json({
+        success: false,
+        message: 'No approval document found for this booking'
+      });
+    }
+
+    // Set headers for inline viewing
+    res.setHeader('Content-Type', booking.approvalDocument.contentType);
+    res.setHeader('Content-Disposition', `inline; filename="${booking.approvalDocument.fileName || 'approval-document'}"`);
+    
+    // Send the file data
+    res.send(booking.approvalDocument.data);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error viewing document',
       error: error.message
     });
   }

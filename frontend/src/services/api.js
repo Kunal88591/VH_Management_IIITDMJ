@@ -1,7 +1,12 @@
 import axios from 'axios';
 
-// Use environment variable or default to Render backend URL
-const API_URL = import.meta.env.VITE_API_URL || 'https://vh-management-backend.onrender.com/api';
+// Use relative URL to leverage Vite proxy in development
+// In production, use the environment variable
+const API_URL = import.meta.env.PROD 
+  ? (import.meta.env.VITE_API_URL || 'https://vh-management-backend.onrender.com/api')
+  : '/api';
+
+console.log('API URL:', API_URL);
 
 const api = axios.create({
   baseURL: API_URL,
@@ -65,6 +70,8 @@ export const bookingAPI = {
   cancel: (id) => api.put(`/bookings/${id}/cancel`),
   modifyRooms: (id, roomIds) => api.put(`/bookings/${id}/modify-rooms`, { roomIds }),
   getPendingCount: () => api.get('/bookings/pending/count'),
+  downloadDocument: (id) => api.get(`/bookings/${id}/download-document`, { responseType: 'blob' }),
+  viewDocument: (id) => api.get(`/bookings/${id}/view-document`, { responseType: 'blob' }),
 };
 
 // Billing APIs

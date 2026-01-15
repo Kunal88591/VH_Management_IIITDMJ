@@ -20,23 +20,21 @@ const seedData = async () => {
     console.log('Cleared existing data');
 
     // Create Admin User
-    const adminPassword = await bcrypt.hash('admin123', 12);
     const admin = await User.create({
-      name: 'Admin User',
-      email: 'admin@iiitdmj.ac.in',
-      password: adminPassword,
+      name: 'VH Admin',
+      email: 'vh@iiitdmj.ac.in',
+      password: 'admin123',
       phone: '9876543210',
       role: 'admin',
       isActive: true
     });
-    console.log('Created admin user: admin@iiitdmj.ac.in / admin123');
+    console.log('Created admin user: vh@iiitdmj.ac.in / admin123');
 
     // Create Sample Guest User
-    const guestPassword = await bcrypt.hash('guest123', 12);
     await User.create({
       name: 'Sample Guest',
       email: 'guest@example.com',
-      password: guestPassword,
+      password: 'guest123',
       phone: '9876543211',
       address: '123 Main Street, City',
       role: 'guest',
