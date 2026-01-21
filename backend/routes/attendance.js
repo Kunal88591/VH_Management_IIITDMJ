@@ -10,8 +10,8 @@ const router = express.Router();
 // @access  Private/Admin or Staff (own records)
 router.get('/', protect, async (req, res) => {
   try {
-    const { staffId, startDate, endDate, status, page = 1, limit = 10 } = req.query;
-    
+    const { staffId, startDate, endDate, status, page = 1, limit = 50 } = req.query;
+
     let query = {};
 
     // Staff can only see their own attendance
@@ -29,15 +29,23 @@ router.get('/', protect, async (req, res) => {
     }
 
     if (status) query.status = status;
-    
+
     if (startDate || endDate) {
       query.date = {};
-      if (startDate) query.date.$gte = new Date(startDate);
-      if (endDate) query.date.$lte = new Date(endDate);
+      if (startDate) {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        query.date.$gte = start;
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        query.date.$lte = end;
+      }
     }
 
     const total = await Attendance.countDocuments(query);
-    
+
     const attendance = await Attendance.find(query)
       .populate('staff', 'name employeeId role shift')
       .populate('markedBy', 'name')
@@ -68,7 +76,7 @@ router.get('/', protect, async (req, res) => {
 router.post('/check-in', protect, async (req, res) => {
   try {
     const { staffId, method = 'Manual' } = req.body;
-    
+
     let staff;
     if (req.user.role === 'staff') {
       staff = await Staff.findOne({ user: req.user.id });
@@ -103,9 +111,12 @@ router.post('/check-in', protect, async (req, res) => {
       attendance = new Attendance({
         staff: staff._id,
         date: today,
-        status: 'Present',
+        status: 'Present', // Set to Present on check-in
         markedBy: req.user.id
       });
+    } else {
+      // Update status to Present on check-in if it was Absent
+      attendance.status = 'Present';
     }
 
     attendance.checkIn = {
@@ -136,7 +147,7 @@ router.post('/check-in', protect, async (req, res) => {
 router.post('/check-out', protect, async (req, res) => {
   try {
     const { staffId, method = 'Manual' } = req.body;
-    
+
     let staff;
     if (req.user.role === 'staff') {
       staff = await Staff.findOne({ user: req.user.id });
@@ -239,7 +250,7 @@ router.post('/mark', protect, authorize('admin'), async (req, res) => {
         notes,
         markedBy: req.user.id
       });
-      
+
       if (checkInTime) {
         attendance.checkIn = { time: new Date(checkInTime), method: 'Manual' };
       }
@@ -359,7 +370,7 @@ router.get('/today', protect, authorize('admin'), async (req, res) => {
     today.setHours(0, 0, 0, 0);
 
     const totalStaff = await Staff.countDocuments({ isActive: true });
-    
+
     const todayAttendance = await Attendance.find({ date: today })
       .populate('staff', 'name employeeId role shift');
 

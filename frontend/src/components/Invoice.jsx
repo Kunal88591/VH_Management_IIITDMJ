@@ -242,15 +242,52 @@ const Invoice = ({ booking, onClose }) => {
                         </div>
                     </div>
 
-                    {/* Payment Status */}
-                    {booking.paymentStatus && (
-                        <div className={`payment-status ${booking.paymentStatus === 'Paid' ? 'paid' : 'unpaid'}`}>
-                            <p><strong>Payment Status: {booking.paymentStatus}</strong></p>
+                    {/* Payment Summary Section */}
+                    <div className="invoice-section" style={{ borderTop: '2px solid #ddd', marginTop: '20px', paddingTop: '20px' }}>
+                        <h4 className="section-title">Payment Summary</h4>
+                        <div className="total-container" style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px' }}>
+                            <div className="total-row-item" style={{ padding: '8px 0', borderBottom: '1px solid #dee2e6' }}>
+                                <span><strong>Grand Total:</strong></span>
+                                <span><strong>₹{(booking.totalAmount || 0).toLocaleString()}</strong></span>
+                            </div>
+                            <div className="total-row-item" style={{ padding: '8px 0', color: booking.amountPaid > 0 ? '#28a745' : '#6c757d' }}>
+                                <span>Amount Paid:</span>
+                                <span>₹{(booking.amountPaid || 0).toLocaleString()}</span>
+                            </div>
+                            {booking.paymentStatus === 'Partially Paid' && (
+                                <div className="total-row-item" style={{ padding: '8px 0', borderTop: '2px solid #ffc107', color: '#dc3545', fontSize: '18px', fontWeight: 'bold' }}>
+                                    <span><strong>Amount Remaining:</strong></span>
+                                    <span><strong>₹{((booking.totalAmount || 0) - (booking.amountPaid || 0)).toLocaleString()}</strong></span>
+                                </div>
+                            )}
+                            <div className="total-row-item" style={{ padding: '8px 0', borderTop: '1px solid #dee2e6', marginTop: '8px' }}>
+                                <span>Payment Status:</span>
+                                <span style={{
+                                    padding: '4px 12px',
+                                    borderRadius: '4px',
+                                    backgroundColor: booking.paymentStatus === 'Paid' ? '#d4edda' :
+                                        booking.paymentStatus === 'Partially Paid' ? '#fff3cd' : '#f8d7da',
+                                    color: booking.paymentStatus === 'Paid' ? '#155724' :
+                                        booking.paymentStatus === 'Partially Paid' ? '#856404' : '#721c24',
+                                    fontWeight: 'bold'
+                                }}>
+                                    {booking.paymentStatus || 'Unpaid'}
+                                </span>
+                            </div>
                             {booking.paymentDate && (
-                                <p>Payment Date: {formatDate(booking.paymentDate)}</p>
+                                <div className="total-row-item" style={{ padding: '8px 0' }}>
+                                    <span>Payment Date:</span>
+                                    <span>{formatDate(booking.paymentDate)}</span>
+                                </div>
+                            )}
+                            {booking.paymentMethod && (
+                                <div className="total-row-item" style={{ padding: '8px 0' }}>
+                                    <span>Payment Method:</span>
+                                    <span>{booking.paymentMethod}</span>
+                                </div>
                             )}
                         </div>
-                    )}
+                    </div>
 
                     {/* Footer */}
                     <div className="invoice-footer">

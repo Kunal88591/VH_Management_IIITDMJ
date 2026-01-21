@@ -24,10 +24,8 @@ const AdminLayout = () => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { path: '/admin', icon: HiHome, label: 'Dashboard', exact: true },
     { path: '/admin/bookings', icon: HiCalendar, label: 'Bookings' },
     { path: '/admin/rooms', icon: HiOfficeBuilding, label: 'Rooms' },
-    { path: '/admin/billing', icon: HiCurrencyRupee, label: 'Billing' },
     { path: '/admin/staff', icon: HiUserGroup, label: 'Staff' },
     { path: '/admin/attendance', icon: HiClock, label: 'Attendance' },
     { path: '/admin/admins', icon: HiShieldCheck, label: 'Admins' },
@@ -47,17 +45,18 @@ const AdminLayout = () => {
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar - Desktop */}
       <aside
-        className={`hidden md:flex flex-col bg-gradient-primary transition-all duration-300 ${
-          sidebarOpen ? 'w-64' : 'w-20'
-        }`}
+        className={`hidden md:flex flex-col bg-gradient-primary transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'
+          }`}
       >
         {/* Logo */}
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           {sidebarOpen && (
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-primary font-bold text-sm">VH</span>
-              </div>
+              <img
+                src="/images/iiitdmj-logo.png"
+                alt="IIITDMJ"
+                className="w-8 h-8 object-contain"
+              />
               <span className="text-white font-poppins font-semibold text-sm">Admin Panel</span>
             </div>
           )}
@@ -80,11 +79,10 @@ const AdminLayout = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center px-4 py-3 mx-2 rounded-lg transition-all duration-200 ${
-                  isActive(item.path, item.exact)
-                    ? 'bg-white/20 text-white'
-                    : 'text-white/70 hover:bg-white/10 hover:text-white'
-                }`}
+                className={`flex items-center px-4 py-3 mx-2 rounded-lg transition-all duration-200 ${isActive(item.path, item.exact)
+                  ? 'bg-white/20 text-white'
+                  : 'text-white/70 hover:bg-white/10 hover:text-white'
+                  }`}
               >
                 <item.icon className="w-5 h-5" />
                 {sidebarOpen && <span className="ml-3 font-medium">{item.label}</span>}
@@ -169,11 +167,10 @@ const AdminLayout = () => {
                     key={item.path}
                     to={item.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center px-4 py-3 mx-2 rounded-lg transition-all duration-200 ${
-                      isActive(item.path, item.exact)
-                        ? 'bg-white/20 text-white'
-                        : 'text-white/70 hover:bg-white/10 hover:text-white'
-                    }`}
+                    className={`flex items-center px-4 py-3 mx-2 rounded-lg transition-all duration-200 ${isActive(item.path, item.exact)
+                      ? 'bg-white/20 text-white'
+                      : 'text-white/70 hover:bg-white/10 hover:text-white'
+                      }`}
                   >
                     <item.icon className="w-5 h-5" />
                     <span className="ml-3 font-medium">{item.label}</span>
@@ -223,7 +220,7 @@ const AdminLayout = () => {
               <HiMenu className="w-6 h-6" />
             </button>
             <h1 className="font-poppins font-semibold text-lg text-slate-primary">
-              {menuItems.find((item) => isActive(item.path, item.exact))?.label || 'Dashboard'}
+              {menuItems.find((item) => isActive(item.path, item.exact))?.label || 'Bookings'}
             </h1>
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-600">Welcome, {user?.name?.split(' ')[0]}</span>

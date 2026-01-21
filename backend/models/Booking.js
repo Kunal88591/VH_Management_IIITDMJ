@@ -210,7 +210,7 @@ const bookingSchema = new mongoose.Schema({
   // Payment tracking
   paymentStatus: {
     type: String,
-    enum: ['Unpaid', 'Paid', 'Refunded'],
+    enum: ['Unpaid', 'Partially Paid', 'Paid', 'Refunded'],
     default: 'Unpaid'
   },
   amountPaid: {
@@ -230,7 +230,7 @@ const bookingSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Generate booking ID before saving (Format: VH-YYYYMM-XXXX)
+// Generate booking ID before saving (Format: VH-202601-0008)
 bookingSchema.pre('save', async function (next) {
   if (!this.bookingId) {
     const date = new Date();
@@ -260,8 +260,11 @@ bookingSchema.methods.calculateNights = function () {
   return diffDays || 1;
 };
 
-// Index for queries
-bookingSchema.index({ status: 1, checkInDate: 1, checkOutDate: 1 });
-bookingSchema.index({ guest: 1, status: 1 });
+// Indexes for common queries and performance
+bookingSchema.index({ createdAt: -1 }); // For sorting by creation date (most common)
+bookingSchema.index({ status: 1, createdAt: -1 }); // For filtering by status with sort
+bookingSchema.index({ bookedBy: 1, createdAt: -1 }); // For guest's own bookings
+bookingSchema.index({ checkInDate: 1, checkOutDate: 1 }); // For date range queries
+bookingSchema.index({ bookingId: 1 }, { unique: true }); // For fast lookup by booking ID
 
 module.exports = mongoose.model('Booking', bookingSchema);

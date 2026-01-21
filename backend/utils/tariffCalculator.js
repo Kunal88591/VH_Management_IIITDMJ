@@ -75,6 +75,7 @@ function calculateRoomCharges(category, rooms, nights) {
 
 /**
  * Calculate meal charges based on meal selections
+ * Implements bundle logic: 1 Bfast + 1 Lunch + 1 Dinner + 1 Tea = ₹400 (Save ₹15)
  * @param {Array} mealSelections - Array of daily meal objects with quantities
  * @returns {number} Total meal charges
  */
@@ -88,11 +89,23 @@ function calculateMealCharges(mealSelections) {
     mealSelections.forEach(dailyMeal => {
         const { breakfast = 0, lunch = 0, dinner = 0, tea = 0, milk = 0 } = dailyMeal;
 
-        totalMealCharges += breakfast * MEAL_TARIFF.breakfast;
-        totalMealCharges += lunch * MEAL_TARIFF.lunch;
-        totalMealCharges += dinner * MEAL_TARIFF.dinner;
-        totalMealCharges += tea * MEAL_TARIFF.tea;
-        totalMealCharges += milk * MEAL_TARIFF.milk;
+        // Calculate number of full day sets (B + L + D + T)
+        // Bundle: Breakfast, Lunch, Dinner, Tea -> ₹400
+        const fullDaySets = Math.min(breakfast, lunch, dinner, tea);
+
+        // Remaining items after making sets
+        const remBreakfast = breakfast - fullDaySets;
+        const remLunch = lunch - fullDaySets;
+        const remDinner = dinner - fullDaySets;
+        const remTea = tea - fullDaySets;
+
+        // Charges
+        totalMealCharges += fullDaySets * MEAL_TARIFF.fullDay;
+        totalMealCharges += remBreakfast * MEAL_TARIFF.breakfast;
+        totalMealCharges += remLunch * MEAL_TARIFF.lunch;
+        totalMealCharges += remDinner * MEAL_TARIFF.dinner;
+        totalMealCharges += remTea * MEAL_TARIFF.tea;
+        totalMealCharges += milk * MEAL_TARIFF.milk; // Milk is always separate
     });
 
     return totalMealCharges;

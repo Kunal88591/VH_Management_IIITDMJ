@@ -7,8 +7,7 @@ const staffSchema = new mongoose.Schema({
   },
   employeeId: {
     type: String,
-    unique: true,
-    required: true
+    unique: true
   },
   name: {
     type: String,
@@ -80,7 +79,7 @@ const staffSchema = new mongoose.Schema({
 });
 
 // Generate employee ID before saving
-staffSchema.pre('save', async function(next) {
+staffSchema.pre('save', async function (next) {
   if (!this.employeeId) {
     const count = await mongoose.model('Staff').countDocuments() + 1;
     this.employeeId = `EMP${count.toString().padStart(4, '0')}`;

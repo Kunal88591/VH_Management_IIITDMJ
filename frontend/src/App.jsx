@@ -26,10 +26,8 @@ import BookingDetails from './pages/guest/BookingDetails';
 import Profile from './pages/guest/Profile';
 
 // Admin Pages
-import AdminDashboard from './pages/admin/Dashboard';
 import AdminBookings from './pages/admin/Bookings';
 import AdminRooms from './pages/admin/Rooms';
-import AdminBilling from './pages/admin/Billing';
 import AdminStaff from './pages/admin/Staff';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminManagement from './pages/admin/AdminManagement';
@@ -54,7 +52,7 @@ function App() {
             <Route path="/register" element={<><Navbar /><Register /><Footer /></>} />
             <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /><Footer /></>} />
             <Route path="/reset-password/:token" element={<><Navbar /><ResetPassword /><Footer /></>} />
-            
+
             {/* Protected Guest Routes */}
             <Route path="/book" element={
               <ProtectedRoute><Navbar /><BookingForm /><Footer /></ProtectedRoute>
@@ -71,14 +69,14 @@ function App() {
             <Route path="/profile" element={
               <ProtectedRoute><Navbar /><Profile /><Footer /></ProtectedRoute>
             } />
-            
+
             {/* Admin Routes */}
             <Route path="/admin" element={
               <ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>
-            }>              <Route index element={<AdminDashboard />} />
+            }>
+              <Route index element={<AdminBookings />} />
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="rooms" element={<AdminRooms />} />
-              <Route path="billing" element={<AdminBilling />} />
               <Route path="staff" element={<AdminStaff />} />
               <Route path="attendance" element={<AdminAttendance />} />
               <Route path="admins" element={<AdminManagement />} />

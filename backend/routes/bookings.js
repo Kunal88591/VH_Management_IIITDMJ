@@ -15,7 +15,7 @@ const router = express.Router();
 // @access  Private
 router.get('/', protect, async (req, res) => {
   try {
-    const { status, startDate, endDate, page = 1, limit = 10 } = req.query;
+    const { status, startDate, endDate, page = 1, limit = 10 } = req.query; // Reduced to 10 for faster loading
 
     let query = {};
 
@@ -35,12 +35,11 @@ router.get('/', protect, async (req, res) => {
     const total = await Booking.countDocuments(query);
 
     const bookings = await Booking.find(query)
-      .populate('bookedBy', 'name email phone')
-      .populate('rooms.room', 'roomNumber roomType isSuite pricePerNight')
-      .populate('approvedBy', 'name')
+      .select('bookingId visitorCategory status checkInDate checkInTime checkOutDate checkOutTime numberOfGuests numberOfRooms totalAmount paymentStatus guests createdAt')
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
-      .limit(parseInt(limit));
+      .limit(parseInt(limit))
+      .lean();
 
     res.json({
       success: true,
@@ -621,12 +620,56 @@ router.get('/:id/download-document/:docType', protect, authorize('admin'), async
   }
 });
 
+// @route   GET /api/bookings/:id/view-document/:docType
+// @desc    View uploaded documents inline
+// @access  Private/Admin
+router.get('/:id/view-document/:docType', protect, authorize('admin'), async (req, res) => {
+  try {
+    const { docType } = req.params;
+    const booking = await Booking.findById(req.params.id);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: 'Booking not found'
+      });
+    }
+
+    const validDocTypes = ['directorApproval', 'guestIdCard', 'studentIdCard'];
+    if (!validDocTypes.includes(docType)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid document type'
+      });
+    }
+
+    const document = booking[docType];
+
+    if (!document || !document.data) {
+      return res.status(404).json({
+        success: false,
+        message: 'Document not found'
+      });
+    }
+
+    res.setHeader('Content-Type', document.contentType);
+    res.setHeader('Content-Disposition', `inline; filename="${document.fileName}"`);
+    res.send(document.data);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error viewing document',
+      error: error.message
+    });
+  }
+});
+
 // @route   PUT /api/bookings/:id/payment-status
-// @desc    Update payment status (admin only)
+// @desc    Update payment status with partial payment support
 // @access  Private/Admin
 router.put('/:id/payment-status', protect, authorize('admin'), async (req, res) => {
   try {
-    const { paymentStatus, paymentMethod, paymentNotes } = req.body;
+    const { paymentStatus, paymentMethod, paymentNotes, amountPaid } = req.body;
 
     const booking = await Booking.findById(req.params.id);
 
@@ -637,11 +680,31 @@ router.put('/:id/payment-status', protect, authorize('admin'), async (req, res) 
       });
     }
 
-    // Update payment status
-    booking.paymentStatus = paymentStatus;
+    // If amountPaid is provided, add it to existing amount and auto-detect status
+    if (amountPaid && amountPaid > 0) {
+      booking.amountPaid = (booking.amountPaid || 0) + parseFloat(amountPaid);
 
-    if (paymentStatus === 'Paid' && !booking.paymentDate) {
+      const totalAmount = booking.totalAmount || 0;
+
+      if (booking.amountPaid >= totalAmount) {
+        booking.paymentStatus = 'Paid';
+        booking.isPaid = true;
+      } else if (booking.amountPaid > 0 && booking.amountPaid < totalAmount) {
+        booking.paymentStatus = 'Partially Paid';
+        booking.isPaid = false;
+      } else {
+        booking.paymentStatus = 'Unpaid';
+        booking.isPaid = false;
+      }
+
       booking.paymentDate = new Date();
+    } else {
+      // Manual status update
+      booking.paymentStatus = paymentStatus;
+      if (paymentStatus === 'Paid') {
+        booking.isPaid = true;
+        if (!booking.paymentDate) booking.paymentDate = new Date();
+      }
     }
 
     if (paymentMethod) {
@@ -654,10 +717,18 @@ router.put('/:id/payment-status', protect, authorize('admin'), async (req, res) 
 
     await booking.save();
 
+    const remainingAmount = Math.max(0, (booking.totalAmount || 0) - (booking.amountPaid || 0));
+
     res.json({
       success: true,
       message: 'Payment status updated successfully',
-      data: booking
+      data: booking,
+      paymentSummary: {
+        totalAmount: booking.totalAmount,
+        amountPaid: booking.amountPaid || 0,
+        remainingAmount,
+        paymentStatus: booking.paymentStatus
+      }
     });
   } catch (error) {
     res.status(500).json({

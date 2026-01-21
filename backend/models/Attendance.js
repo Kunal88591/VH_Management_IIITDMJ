@@ -29,7 +29,7 @@ const attendanceSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['Present', 'Absent', 'Half-Day', 'Leave', 'Holiday'],
-    default: 'Present'
+    default: 'Absent'
   },
   workingHours: {
     type: Number,
@@ -55,11 +55,11 @@ const attendanceSchema = new mongoose.Schema({
 attendanceSchema.index({ staff: 1, date: 1 }, { unique: true });
 
 // Calculate working hours before saving
-attendanceSchema.pre('save', function(next) {
+attendanceSchema.pre('save', function (next) {
   if (this.checkIn?.time && this.checkOut?.time) {
     const diffMs = this.checkOut.time - this.checkIn.time;
     this.workingHours = Math.round((diffMs / (1000 * 60 * 60)) * 100) / 100;
-    
+
     // Calculate overtime (if more than 8 hours)
     if (this.workingHours > 8) {
       this.overtime = Math.round((this.workingHours - 8) * 100) / 100;

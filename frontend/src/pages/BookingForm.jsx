@@ -141,6 +141,17 @@ const BookingForm = () => {
     });
   };
 
+  const handleCopyFirstDayToAll = () => {
+    if (!formData.meals || formData.meals.length === 0) return;
+
+    const firstDay = formData.meals[0];
+    setFormData(prev => ({
+      ...prev,
+      meals: prev.meals.map(() => ({ ...firstDay }))
+    }));
+    toast.success('Day 1 meal selection copied to all days');
+  };
+
   const handleFileChange = (documentType, file) => {
     if (file && file.size > 5 * 1024 * 1024) {
       toast.error('File size must be less than 5MB');
@@ -356,55 +367,55 @@ const BookingForm = () => {
   const nights = calculateNights();
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 animate-fadeIn">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="font-poppins text-3xl font-bold text-slate-primary mb-2">
-            Book Your Stay - IIITDM Jabalpur Visitor's Hostel
+    <div className="min-h-screen bg-gray-50 py-4 animate-fadeIn">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="mb-4">
+          <h1 className="font-poppins text-2xl font-bold text-slate-primary mb-1">
+            Book Your Stay - IIITDM Jabalpur VH
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm text-gray-600">
             Fill in the details to make a reservation request
           </p>
         </div>
 
         {/* Progress Steps */}
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-center mb-4">
           {[1, 2, 3].map((s) => (
             <div key={s} className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${step >= s ? 'bg-secondary text-white' : 'bg-gray-200 text-gray-500'
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${step >= s ? 'bg-secondary text-white' : 'bg-gray-200 text-gray-500'
                 }`}>
                 {s}
               </div>
               {s < 3 && (
-                <div className={`w-24 h-1 mx-2 ${step > s ? 'bg-secondary' : 'bg-gray-200'
+                <div className={`w-16 h-1 mx-2 ${step > s ? 'bg-secondary' : 'bg-gray-200'
                   }`} />
               )}
             </div>
           ))}
         </div>
 
-        <div className="card">
+        <div className="card p-4">
           <form onSubmit={handleSubmit}>
             {/* Step 1: Category, Guest Details & Documents */}
             {step === 1 && (
-              <div className="animate-fadeIn space-y-8">
+              <div className="animate-fadeIn space-y-4">
                 <div>
-                  <h2 className="font-poppins text-xl font-semibold text-slate-primary mb-6 flex items-center">
-                    <HiInformationCircle className="w-6 h-6 mr-2 text-secondary" />
+                  <h2 className="font-poppins text-lg font-semibold text-slate-primary mb-3 flex items-center">
+                    <HiInformationCircle className="w-5 h-5 mr-2 text-secondary" />
                     Visitor Category & Type
                   </h2>
 
                   {/* Category Selection */}
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-3">Visitor Category *</label>
-                    <div className="grid md:grid-cols-2 gap-3">
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Visitor Category *</label>
+                    <div className="grid md:grid-cols-2 gap-2">
                       {Object.entries(CATEGORIES).map(([key, cat]) => (
                         <div
                           key={key}
                           onClick={() => setFormData(prev => ({ ...prev, visitorCategory: key }))}
                           className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${formData.visitorCategory === key
-                              ? 'border-secondary bg-secondary/5'
-                              : 'border-gray-200 hover:border-secondary/50'
+                            ? 'border-secondary bg-secondary/5'
+                            : 'border-gray-200 hover:border-secondary/50'
                             }`}
                         >
                           <div className="flex items-start justify-between mb-2">
@@ -707,8 +718,8 @@ const BookingForm = () => {
                       key={room._id}
                       onClick={() => handleRoomToggle(room._id)}
                       className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedRooms.includes(room._id)
-                          ? 'border-secondary bg-secondary/5'
-                          : 'border-gray-200 hover:border-secondary/50'
+                        ? 'border-secondary bg-secondary/5'
+                        : 'border-gray-200 hover:border-secondary/50'
                         }`}
                     >
                       <div className="flex justify-between items-start">
@@ -748,31 +759,69 @@ const BookingForm = () => {
 
                   {formData.mealRequired && nights > 0 && (
                     <div className="space-y-3">
-                      <p className="text-sm font-medium text-gray-700">
-                        Meal Pricing: Breakfast ₹100 | Lunch/Dinner ₹150 | Tea ₹15 | Milk ₹30
+                      <p className="text-sm font-medium text-gray-700 bg-blue-50 p-2 rounded border border-blue-100 mb-2">
+                        <strong>💡 Tariff:</strong> Breakfast ₹100 | Lunch/Dinner ₹150 | Tea ₹15 | Milk ₹30 <br />
+                        <span className="text-secondary font-bold">✨ Full Day Meal Deal (B+L+D+T) = ₹400 only (Save ₹15/person)</span>
                       </p>
-                      {formData.meals.map((meal, index) => (
-                        <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                          <p className="font-medium mb-3">Day {index + 1}</p>
-                          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                            {['breakfast', 'lunch', 'dinner', 'tea', 'milk'].map((mealType) => (
-                              <div key={mealType}>
-                                <label className="block text-sm text-gray-700 mb-1 capitalize">
-                                  {mealType}
-                                </label>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  value={meal[mealType] || 0}
-                                  onChange={(e) => handleMealChange(index, mealType, e.target.value)}
-                                  className="input-field text-center"
-                                  placeholder="Qty"
-                                />
-                              </div>
+                      <div className="overflow-x-auto border rounded-lg max-h-72 overflow-y-auto relative">
+                        <table className="w-full text-sm text-left relative">
+                          <thead className="bg-gray-100 text-gray-700 font-medium sticky top-0 z-10 shadow-sm">
+                            <tr>
+                              <th className="p-3 border-b bg-gray-100 min-w-[100px]">
+                                Day &nbsp;
+                                {nights > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={handleCopyFirstDayToAll}
+                                    className="text-xs bg-white border border-gray-300 rounded px-1.5 py-0.5 hover:bg-gray-50 text-secondary whitespace-nowrap"
+                                    title="Copy Day 1 selection to all days"
+                                  >
+                                    Copy Day 1 ↓
+                                  </button>
+                                )}
+                              </th>
+                              <th className="p-3 border-b text-center">B'fast<br /><span className="text-xs text-gray-500">₹100</span></th>
+                              <th className="p-3 border-b text-center">Lunch<br /><span className="text-xs text-gray-500">₹150</span></th>
+                              <th className="p-3 border-b text-center">Dinner<br /><span className="text-xs text-gray-500">₹150</span></th>
+                              <th className="p-3 border-b text-center">Tea<br /><span className="text-xs text-gray-500">₹15</span></th>
+                              <th className="p-3 border-b text-center">Milk<br /><span className="text-xs text-gray-500">₹30</span></th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200">
+                            {formData.meals.map((meal, index) => (
+                              <tr key={index} className="bg-white hover:bg-gray-50">
+                                <td className="p-3 font-medium text-gray-900 border-r bg-gray-50">
+                                  Day {index + 1}
+                                </td>
+                                {['breakfast', 'lunch', 'dinner', 'tea', 'milk'].map((mealType) => (
+                                  <td key={mealType} className="p-2 text-center">
+                                    <div className="flex items-center justify-center gap-1">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleMealChange(index, mealType, Math.max(0, (meal[mealType] || 0) - 1))}
+                                        className="w-6 h-6 flex items-center justify-center rounded bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold disabled:opacity-30 text-xs"
+                                        disabled={!meal[mealType] || meal[mealType] === 0}
+                                      >
+                                        −
+                                      </button>
+                                      <span className="w-6 text-center font-medium">
+                                        {meal[mealType] || 0}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleMealChange(index, mealType, (meal[mealType] || 0) + 1)}
+                                        className="w-6 h-6 flex items-center justify-center rounded bg-secondary hover:bg-secondary/90 text-white font-bold text-xs"
+                                      >
+                                        +
+                                      </button>
+                                    </div>
+                                  </td>
+                                ))}
+                              </tr>
                             ))}
-                          </div>
-                        </div>
-                      ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   )}
                 </div>

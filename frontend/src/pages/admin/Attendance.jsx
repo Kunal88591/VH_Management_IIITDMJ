@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { attendanceAPI, staffAPI } from '../../services/api';
-import { 
-  HiClock, 
-  HiCheckCircle, 
+import {
+  HiClock,
+  HiCheckCircle,
   HiXCircle,
   HiDownload,
   HiCalendar,
@@ -27,6 +27,7 @@ const Attendance = () => {
     checkIn: '',
     checkOut: ''
   });
+  const [selectedMethod, setSelectedMethod] = useState('Manual'); // For quick check-in/out
 
   useEffect(() => {
     fetchData();
@@ -35,15 +36,27 @@ const Attendance = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+
+      // Prepare query params
+      const params = {};
+
+      // Add date filtering
+      if (selectedDate) {
+        params.startDate = selectedDate;
+        params.endDate = selectedDate;
+      }
+
+      // Add staff filter
+      if (selectedStaff) {
+        params.staffId = selectedStaff;
+      }
+
       const [attendanceRes, staffRes, todayRes] = await Promise.all([
-        attendanceAPI.getAll({ 
-          startDate: selectedDate, 
-          endDate: selectedDate,
-          ...(selectedStaff && { staffId: selectedStaff })
-        }).catch(() => ({ data: { data: [] } })),
+        attendanceAPI.getAll(params).catch(() => ({ data: { data: [] } })),
         staffAPI.getAll().catch(() => ({ data: { data: [] } })),
         attendanceAPI.getToday().catch(() => ({ data: { data: { records: [] } } }))
       ]);
+
       setAttendanceList(attendanceRes.data.data || []);
       setStaffList((staffRes.data.data || []).filter(s => s.isActive !== false));
       setTodayAttendance(todayRes.data.data?.records || []);
@@ -59,8 +72,8 @@ const Attendance = () => {
 
   const handleCheckIn = async (staffId) => {
     try {
-      await attendanceAPI.checkIn({ staffId });
-      toast.success('Check-in recorded');
+      await attendanceAPI.checkIn({ staffId, method: selectedMethod });
+      toast.success(`Check-in recorded (${selectedMethod})`);
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Check-in failed');
@@ -69,8 +82,8 @@ const Attendance = () => {
 
   const handleCheckOut = async (staffId) => {
     try {
-      await attendanceAPI.checkOut({ staffId });
-      toast.success('Check-out recorded');
+      await attendanceAPI.checkOut({ staffId, method: selectedMethod });
+      toast.success(`Check-out recorded (${selectedMethod})`);
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Check-out failed');
@@ -85,7 +98,7 @@ const Attendance = () => {
         date: markData.date,
         status: markData.status,
       };
-      
+
       // Add check-in/out times if present
       if (markData.checkIn) {
         payload.checkInTime = `${markData.date}T${markData.checkIn}:00`;
@@ -93,7 +106,7 @@ const Attendance = () => {
       if (markData.checkOut) {
         payload.checkOutTime = `${markData.date}T${markData.checkOut}:00`;
       }
-      
+
       await attendanceAPI.markManual(payload);
       toast.success('Attendance marked successfully');
       setShowMarkModal(false);
@@ -216,29 +229,56 @@ const Attendance = () => {
 
       {/* Quick Check-In/Out */}
       <div className="card mb-6">
-        <h2 className="font-semibold text-slate-primary mb-4 flex items-center gap-2">
-          <HiClock className="w-5 h-5" />
-          Quick Check-In/Out (Today)
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-semibold text-slate-primary flex items-center gap-2">
+            <HiClock className="w-5 h-5" />
+            Quick Check-In/Out (Today)
+          </h2>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Method:</span>
+            <div className="flex border rounded-md overflow-hidden">
+              <button
+                onClick={() => setSelectedMethod('Manual')}
+                className={`px-3 py-1 text-sm ${selectedMethod === 'Manual' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              >
+                Manual
+              </button>
+              <button
+                onClick={() => setSelectedMethod('Biometric')}
+                className={`px-3 py-1 text-sm ${selectedMethod === 'Biometric' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              >
+                🔒 Biometric
+              </button>
+            </div>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {staffList.map((staff) => {
             const attendance = getStaffAttendanceStatus(staff._id);
-            const hasCheckedIn = attendance?.checkIn;
-            const hasCheckedOut = attendance?.checkOut;
+            const hasCheckedIn = !!(attendance?.checkIn?.time || (attendance?.checkIn && typeof attendance.checkIn !== 'object'));
+            const hasCheckedOut = !!(attendance?.checkOut?.time || (attendance?.checkOut && typeof attendance.checkOut !== 'object' && attendance.checkOut));
 
             return (
-              <div 
-                key={staff._id} 
+              <div
+                key={staff._id}
                 className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
               >
                 <div>
                   <p className="font-medium">{staff.name}</p>
                   <p className="text-sm text-gray-500">{staff.role} - {staff.shift}</p>
                   {hasCheckedIn && (
-                    <p className="text-xs text-green-600 mt-1">
-                      In: {new Date(attendance.checkIn).toLocaleTimeString()}
-                      {hasCheckedOut && ` | Out: ${new Date(attendance.checkOut).toLocaleTimeString()}`}
-                    </p>
+                    <div className="text-xs mt-1 space-y-1">
+                      <p className="text-green-600 flex items-center gap-1">
+                        <span className="font-semibold">In:</span> {new Date(attendance.checkIn?.time || attendance.checkIn).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        {attendance.checkIn?.method && <span className="badge bg-green-100 text-green-700 text-xs px-1">{attendance.checkIn.method}</span>}
+                      </p>
+                      {hasCheckedOut && (
+                        <p className="text-blue-600 flex items-center gap-1">
+                          <span className="font-semibold">Out:</span> {new Date(attendance.checkOut?.time || attendance.checkOut).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                          {attendance.checkOut?.method && <span className="badge bg-blue-100 text-blue-700 text-xs px-1">{attendance.checkOut.method}</span>}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -335,10 +375,20 @@ const Attendance = () => {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-sm">
-                      {record.checkIn ? new Date(record.checkIn).toLocaleTimeString() : '-'}
+                      {record.checkIn ? (
+                        <div>
+                          <div>{new Date(record.checkIn?.time || record.checkIn).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
+                          {record.checkIn?.method && <span className="badge bg-gray-100 text-gray-600 text-xs mt-1">{record.checkIn.method}</span>}
+                        </div>
+                      ) : '-'}
                     </td>
                     <td className="py-3 px-4 text-sm">
-                      {record.checkOut ? new Date(record.checkOut).toLocaleTimeString() : '-'}
+                      {record.checkOut ? (
+                        <div>
+                          <div>{new Date(record.checkOut?.time || record.checkOut).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
+                          {record.checkOut?.method && <span className="badge bg-gray-100 text-gray-600 text-xs mt-1">{record.checkOut.method}</span>}
+                        </div>
+                      ) : '-'}
                     </td>
                     <td className="py-3 px-4 text-sm font-medium">
                       {record.workingHours ? `${record.workingHours.toFixed(2)} hrs` : '-'}

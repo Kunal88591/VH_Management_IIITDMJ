@@ -33,7 +33,7 @@ const Bookings = () => {
   });
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 10,
+    limit: 10, // Reduced back to 10
     total: 0,
     pages: 1
   });
@@ -42,9 +42,10 @@ const Bookings = () => {
     const bookingId = searchParams.get('id');
     if (bookingId) {
       fetchBookingDetails(bookingId);
+    } else {
+      fetchBookings();
     }
-    fetchBookings();
-  }, [pagination.page, filters.status, filters.category]);
+  }, [pagination.page, filters.status, filters.startDate, filters.endDate, searchParams]);
 
   const fetchBookings = async () => {
     try {
@@ -149,6 +150,33 @@ const Bookings = () => {
       toast.success('Document downloaded');
     } catch (error) {
       toast.error('Failed to download document');
+    }
+  };
+
+  const handleViewDocument = async (bookingId, docType) => {
+    try {
+      const url = `/api/bookings/${bookingId}/view-document/${docType}`;
+      const token = localStorage.getItem('token');
+
+      // Open in new tab with auth header
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('View failed');
+
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      window.open(blobUrl, '_blank');
+
+      // Clean up after a delay
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100);
+
+      toast.success('Document opened in new tab');
+    } catch (error) {
+      toast.error('Failed to view document');
     }
   };
 
@@ -318,9 +346,9 @@ const Bookings = () => {
               <tr>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Booking ID</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Category</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Guests</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Rooms</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Guest Name</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Check-In</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Check-Out</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Status</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Amount</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Actions</th>
@@ -348,19 +376,19 @@ const Bookings = () => {
                         <span className={`badge ${getCategoryBadge(booking.visitorCategory)}`}>
                           Cat {booking.visitorCategory}
                         </span>
-                      ) : (
-                        <span className="text-xs text-gray-400">-</span>
-                      )}
+                      ) : '-'}
                     </td>
                     <td className="py-3 px-4">
-                      <p className="font-medium text-sm">{getGuestNames(booking)}</p>
-                      <p className="text-xs text-gray-500">{booking.numberOfGuests || booking.guests?.length || 1} guest(s)</p>
+                      <p className="font-medium text-sm">{booking.guests?.[0]?.fullName || 'Guest'}</p>
+                      <p className="text-xs text-gray-500">{booking.numberOfGuests} guest(s)</p>
                     </td>
                     <td className="py-3 px-4 text-sm">
-                      {booking.numberOfRooms || booking.rooms?.length || 0}
+                      <p>{new Date(booking.checkInDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</p>
+                      <p className="text-xs text-gray-500">{booking.checkInTime || '12:00 PM'}</p>
                     </td>
                     <td className="py-3 px-4 text-sm">
-                      {new Date(booking.checkInDate).toLocaleDateString()}
+                      <p>{new Date(booking.checkOutDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</p>
+                      <p className="text-xs text-gray-500">{booking.checkOutTime || '12:00 PM'}</p>
                     </td>
                     <td className="py-3 px-4">
                       <span className={`badge ${getStatusBadge(booking.status)}`}>
@@ -644,34 +672,58 @@ const Bookings = () => {
                   {selectedBooking.directorApproval?.data && (
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-sm font-medium mb-2">Director Approval</p>
-                      <button
-                        onClick={() => handleDownloadDocument(selectedBooking._id, 'directorApproval')}
-                        className="btn-outline text-sm py-1 px-3 w-full"
-                      >
-                        <HiDownload className="w-4 h-4 inline mr-1" /> Download
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleViewDocument(selectedBooking._id, 'directorApproval')}
+                          className="btn-primary text-sm py-1 px-3 flex-1"
+                        >
+                          <HiEye className="w-4 h-4 inline mr-1" /> View
+                        </button>
+                        <button
+                          onClick={() => handleDownloadDocument(selectedBooking._id, 'directorApproval')}
+                          className="btn-outline text-sm py-1 px-3 flex-1"
+                        >
+                          <HiDownload className="w-4 h-4 inline mr-1" /> Download
+                        </button>
+                      </div>
                     </div>
                   )}
                   {selectedBooking.guestIdCard?.data && (
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-sm font-medium mb-2">Guest ID Card</p>
-                      <button
-                        onClick={() => handleDownloadDocument(selectedBooking._id, 'guestIdCard')}
-                        className="btn-outline text-sm py-1 px-3 w-full"
-                      >
-                        <HiDownload className="w-4 h-4 inline mr-1" /> Download
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleViewDocument(selectedBooking._id, 'guestIdCard')}
+                          className="btn-primary text-sm py-1 px-3 flex-1"
+                        >
+                          <HiEye className="w-4 h-4 inline mr-1" /> View
+                        </button>
+                        <button
+                          onClick={() => handleDownloadDocument(selectedBooking._id, 'guestIdCard')}
+                          className="btn-outline text-sm py-1 px-3 flex-1"
+                        >
+                          <HiDownload className="w-4 h-4 inline mr-1" /> Download
+                        </button>
+                      </div>
                     </div>
                   )}
                   {selectedBooking.studentIdCard?.data && (
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-sm font-medium mb-2">Student ID Card</p>
-                      <button
-                        onClick={() => handleDownloadDocument(selectedBooking._id, 'studentIdCard')}
-                        className="btn-outline text-sm py-1 px-3 w-full"
-                      >
-                        <HiDownload className="w-4 h-4 inline mr-1" /> Download
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleViewDocument(selectedBooking._id, 'studentIdCard')}
+                          className="btn-primary text-sm py-1 px-3 flex-1"
+                        >
+                          <HiEye className="w-4 h-4 inline mr-1" /> View
+                        </button>
+                        <button
+                          onClick={() => handleDownloadDocument(selectedBooking._id, 'studentIdCard')}
+                          className="btn-outline text-sm py-1 px-3 flex-1"
+                        >
+                          <HiDownload className="w-4 h-4 inline mr-1" /> Download
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
