@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F8FAFC;
+  color: #1F2933;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2C5364;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #203A43;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white rounded-[14px] shadow-card p-5 transition-all duration-300;
+}
+
+.card:hover {
+  @apply shadow-card-hover;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply bg-gradient-to-r from-primary via-primary-light to-secondary text-white px-5 py-2.5 rounded-[10px] font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+}
+
+.btn-secondary {
+  @apply bg-white border border-secondary text-secondary px-5 py-2.5 rounded-[10px] font-semibold transition-all duration-300 hover:bg-secondary hover:text-white;
+}
+
+.btn-accent {
+  @apply bg-accent text-primary px-5 py-2.5 rounded-[10px] font-semibold transition-all duration-300 hover:bg-accent-dark;
+}
+
+/* Input styles */
+.input-field {
+  @apply w-full border border-gray-200 rounded-[10px] px-4 py-2.5 focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all duration-200;
+}
+
+/* Badge styles */
+.badge {
+  @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-700;
+}
+
+.badge-warning {
+  @apply bg-amber-100 text-amber-700;
+}
+
+.badge-danger {
+  @apply bg-red-100 text-red-700;
+}
+
+.badge-info {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.badge-pending {
+  @apply bg-yellow-100 text-yellow-700;
+}

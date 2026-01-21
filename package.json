@@ -1,0 +1,9 @@
+{
+  "name": "vh-management-iiitdmj",
+  "version": "1.0.0",
+  "description": "VH Management System - Full Stack MERN Application",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "node backend/server.js"
+  }
+}
