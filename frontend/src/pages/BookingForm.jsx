@@ -5,31 +5,35 @@ import { roomAPI, bookingAPI } from '../services/api';
 import { HiCalendar, HiUsers, HiDocumentText, HiPlus, HiX, HiInformationCircle } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 
-// Category descriptions
+// Category descriptions as per IIITDM Jabalpur Visitor Hostel Policy
 const CATEGORIES = {
   A: {
     name: 'Category A',
     title: 'Director / Institute Guests',
-    description: 'Institute Guests, Director, Examiners, External Committee Members, Invited Speakers, CAG Audit Team, MoE Officials',
-    tariffNote: 'Room charges: Free | Meal charges: Applicable if opted'
+    description: 'Institute Guests, Director, Examiners, External Committee Members, Invited Speakers, CAG Audit Team, MoE Officials, Important guests of Chairman (BOG), Director, Senate, BWC, or Statutory Bodies',
+    tariffNote: 'Room charges: Free | Meal charges: Applicable (if opted)',
+    requirements: 'Director\'s approval document required'
   },
   B: {
     name: 'Category B',
     title: 'Institute Employees & Related Guests',
-    description: 'Institute employees, project employees, retired faculty/staff/alumni, relatives/guests of IIITDMJ faculty and staff',
-    tariffNote: 'Room charges: As per tariff | Meal charges: Applicable if opted'
+    description: 'Institute employees and dependents, Project employees and dependents, Retired IIITDMJ faculty/staff/alumni, Relatives/guests of IIITDMJ faculty and staff, Other guests approved by Director',
+    tariffNote: 'Single: ₹800/night | Double: Free (Normal) | Suite: ₹2500',
+    requirements: 'Employee ID OR (Approval + Guest ID Card) required'
   },
   C: {
     name: 'Category C',
     title: 'Academic / Government / Student Visitors',
-    description: 'Employees of IITs/IIITs/CFTIs/Universities/PSUs, Parents/Guardians/Spouse of students, Government visitors, Trainees',
-    tariffNote: 'Room charges: As per tariff | Meal charges: Applicable if opted'
+    description: 'Employees of IITs/IIITs/CFTIs/Universities/PSUs, Parents/Guardians/Spouse of IIITDMJ students, Government/public-sector visitors, Trainees attending institute programs, Other guests approved by Director',
+    tariffNote: 'Single: ₹1000 | Double: ₹1500 (Normal) | Suite: ₹2500',
+    requirements: 'Student Roll+ID OR (Approval + Visitor ID) required'
   },
   D: {
     name: 'Category D',
     title: 'Contractors & Vendors',
-    description: 'Contractors, vendors, and firm representatives visiting for official work',
-    tariffNote: 'Room charges: As per tariff | Meal charges: Applicable if opted'
+    description: 'Contractors, vendors, and firm representatives visiting for official work such as meetings or presentations',
+    tariffNote: 'Single: ₹1800 | Double: ₹1800 (Normal) | Suite: ₹2500',
+    requirements: 'Approval + Visitor ID Card both required'
   }
 };
 
@@ -413,8 +417,8 @@ const BookingForm = () => {
                         <div
                           key={key}
                           onClick={() => setFormData(prev => ({ ...prev, visitorCategory: key }))}
-                          className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${formData.visitorCategory === key
-                            ? 'border-secondary bg-secondary/5'
+                          className={`p-4 border-2 rounded-lg cursor-pointer transition-all hover:shadow-md ${formData.visitorCategory === key
+                            ? 'border-secondary bg-secondary/5 shadow-lg'
                             : 'border-gray-200 hover:border-secondary/50'
                             }`}
                         >
@@ -424,12 +428,15 @@ const BookingForm = () => {
                               type="radio"
                               checked={formData.visitorCategory === key}
                               onChange={() => { }}
-                              className="mt-1"
+                              className="mt-1 w-5 h-5 text-secondary"
                             />
                           </div>
                           <p className="text-sm font-medium text-gray-700 mb-1">{cat.title}</p>
-                          <p className="text-xs text-gray-600 mb-2">{cat.description}</p>
-                          <p className="text-xs text-secondary font-medium">{cat.tariffNote}</p>
+                          <p className="text-xs text-gray-600 mb-2 leading-relaxed">{cat.description}</p>
+                          <div className="mt-2 pt-2 border-t border-gray-200">
+                            <p className="text-xs text-secondary font-bold mb-1">{cat.tariffNote}</p>
+                            <p className="text-xs text-gray-500 italic">📋 {cat.requirements}</p>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -853,9 +860,20 @@ const BookingForm = () => {
                       required
                     />
                     <span className="text-sm">
-                      <strong>Indenter Responsibility: *</strong> I take responsibility for the genuineness of the visitor, their behavior, and any damages during the stay, as per Visitor Hostel rules.
+                      <strong className="text-red-600">⚠️ Indenter Responsibility: *</strong><br />
+                      I take responsibility for the genuineness of the visitor, their behavior, and any damages during the stay, as per Visitor Hostel rules.
                     </span>
                   </label>
+                </div>
+
+                {/* Cancellation Policy Info */}
+                <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-sm mb-2 text-blue-800">📋 Cancellation Policy:</h4>
+                  <ul className="text-xs text-gray-700 space-y-1 ml-4">
+                    <li>• Cancellation &gt;7 days before arrival: <strong className="text-green-600">Nil charges</strong></li>
+                    <li>• Cancellation within 7 days: <strong className="text-orange-600">25% of one-day room rent</strong></li>
+                    <li>• Same-day cancellation / No-show: <strong className="text-red-600">50% of one-day room rent</strong></li>
+                  </ul>
                 </div>
 
                 {/* Summary */}

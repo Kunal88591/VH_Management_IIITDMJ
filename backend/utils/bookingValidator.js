@@ -1,6 +1,11 @@
 /**
  * Validation utilities for IIITDMJ VH Booking System
- * Implements category-specific validation rules
+ * Implements category-specific validation rules as per institute policy
+ * 
+ * Category A - Director/Institute Guests: Director approval mandatory
+ * Category B - Employees: Employee ID OR (Director approval + Guest ID)
+ * Category C - Academic/Students: Student Roll & ID OR (Approval + Visitor ID)
+ * Category D - Contractors: Approval + Visitor ID mandatory
  */
 
 /**
@@ -11,7 +16,7 @@
  */
 function validateBookingByCategory(bookingData, files = {}) {
     const errors = [];
-    const { visitorCategory, bookingType, guests, employeeId, studentRollNumber } = bookingData;
+    const { visitorCategory, bookingType, guests, employeeId, studentRollNumber, indenterAcceptance } = bookingData;
 
     // Common validations
     if (!visitorCategory || !['A', 'B', 'C', 'D'].includes(visitorCategory)) {
@@ -36,13 +41,16 @@ function validateBookingByCategory(bookingData, files = {}) {
         });
 
         // Mobile number validation
+        // Rule: Booking for self → Booker's mobile is sufficient (user already has phone in profile)
+        // Rule: Booking for others (booker not staying) → At least one guest mobile number mandatory
         if (bookingType === 'others') {
-            // At least one guest must have a mobile number
+            // Booker not staying - at least one guest must have a mobile number
             const hasGuestMobile = guests.some(g => g.mobile && g.mobile.trim() !== '');
             if (!hasGuestMobile) {
                 errors.push('At least one guest mobile number is required when booking for others');
             }
         }
+        // If booking for self, booker's mobile (from user profile) is sufficient
     }
 
     // Indenter acceptance validation

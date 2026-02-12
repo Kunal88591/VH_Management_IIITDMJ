@@ -52,6 +52,12 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  // Sub-category for Category B and C to identify specific visitor type
+  visitorSubType: {
+    type: String,
+    enum: ['employee', 'student_parent', 'other', ''],
+    default: ''
+  },
 
   // Document Uploads
   directorApproval: {

@@ -125,39 +125,121 @@ const Attendance = () => {
 
   const downloadReport = async () => {
     try {
+      // Get the month range for the selected date
       const startDate = new Date(selectedDate);
       startDate.setDate(1);
       const endDate = new Date(selectedDate);
       endDate.setMonth(endDate.getMonth() + 1);
       endDate.setDate(0);
 
-      const res = await attendanceAPI.getReport({
+      // Fetch detailed attendance records (not aggregated report)
+      const res = await attendanceAPI.getAll({
         startDate: startDate.toISOString().split('T')[0],
         endDate: endDate.toISOString().split('T')[0],
-        ...(selectedStaff && { staffId: selectedStaff })
+        ...(selectedStaff && { staffId: selectedStaff }),
+        limit: 1000 // Get all records for the month
       });
 
-      // Create CSV
-      const headers = ['Date', 'Staff Name', 'Role', 'Status', 'Check In', 'Check Out', 'Working Hours'];
-      const rows = res.data.data.map(a => [
-        new Date(a.date).toLocaleDateString(),
-        a.staff?.name || 'N/A',
-        a.staff?.role || 'N/A',
-        a.status,
-        a.checkIn ? new Date(a.checkIn).toLocaleTimeString() : '-',
-        a.checkOut ? new Date(a.checkOut).toLocaleTimeString() : '-',
-        a.workingHours ? `${a.workingHours.toFixed(2)} hrs` : '-'
-      ]);
+      const records = res.data.data || [];
 
-      const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
+      if (records.length === 0) {
+        toast.error('No attendance records found for this period');
+        return;
+      }
+
+      // Create comprehensive CSV with all fields including Staff ID and timings
+      const headers = [
+        'Date',
+        'Staff ID',
+        'Staff Name',
+        'Role',
+        'Shift',
+        'Status',
+        'Check-In Time',
+        'Check-In Method',
+        'Check-Out Time',
+        'Check-Out Method',
+        'Working Hours',
+        'Overtime',
+        'Notes',
+        'Marked By'
+      ];
+
+      const rows = records.map(a => {
+        // Format check-in time
+        let checkInTime = '-';
+        let checkInMethod = '-';
+        if (a.checkIn?.time) {
+          checkInTime = new Date(a.checkIn.time).toLocaleTimeString('en-IN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+          });
+          checkInMethod = a.checkIn.method || 'Manual';
+        }
+
+        // Format check-out time
+        let checkOutTime = '-';
+        let checkOutMethod = '-';
+        if (a.checkOut?.time) {
+          checkOutTime = new Date(a.checkOut.time).toLocaleTimeString('en-IN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+          });
+          checkOutMethod = a.checkOut.method || 'Manual';
+        }
+
+        return [
+          new Date(a.date).toLocaleDateString('en-IN'),
+          a.staff?.employeeId || 'N/A',
+          a.staff?.name || 'N/A',
+          a.staff?.role || 'N/A',
+          a.staff?.shift || 'N/A',
+          a.status || '-',
+          checkInTime,
+          checkInMethod,
+          checkOutTime,
+          checkOutMethod,
+          a.workingHours ? `${a.workingHours.toFixed(2)}` : '0',
+          a.overtime ? `${a.overtime.toFixed(2)}` : '0',
+          a.notes || '-',
+          a.markedBy?.name || 'System'
+        ];
+      });
+
+      // Sort by date descending
+      rows.sort((a, b) => new Date(b[0].split('/').reverse().join('-')) - new Date(a[0].split('/').reverse().join('-')));
+
+      // Escape CSV fields properly
+      const escapeCSV = (field) => {
+        const str = String(field);
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      };
+
+      const csv = [headers, ...rows].map(row => row.map(escapeCSV).join(',')).join('\n');
+      
+      // Add BOM for Excel UTF-8 compatibility
+      const BOM = '\uFEFF';
+      const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `attendance-report-${selectedDate}.csv`;
+      
+      // Better filename with month-year
+      const monthYear = startDate.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+      link.download = `Attendance-Report-${monthYear.replace(' ', '-')}.csv`;
       link.click();
       window.URL.revokeObjectURL(url);
+
+      toast.success(`Downloaded ${records.length} attendance records`);
     } catch (error) {
+      console.error('Download error:', error);
       toast.error('Failed to download report');
     }
   };
@@ -264,7 +346,10 @@ const Attendance = () => {
                 className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
               >
                 <div>
-                  <p className="font-medium">{staff.name}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs bg-gray-200 px-1.5 py-0.5 rounded">{staff.employeeId}</span>
+                    <p className="font-medium">{staff.name}</p>
+                  </div>
                   <p className="text-sm text-gray-500">{staff.role} - {staff.shift}</p>
                   {hasCheckedIn && (
                     <div className="text-xs mt-1 space-y-1">
@@ -341,7 +426,8 @@ const Attendance = () => {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Staff</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Staff ID</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Staff Name</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Role</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Shift</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Status</th>
@@ -353,19 +439,24 @@ const Attendance = () => {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-8">
+                  <td colSpan="8" className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                   </td>
                 </tr>
               ) : attendanceList.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-8 text-gray-500">
+                  <td colSpan="8" className="text-center py-8 text-gray-500">
                     No attendance records for selected date
                   </td>
                 </tr>
               ) : (
                 attendanceList.map((record) => (
                   <tr key={record._id} className="hover:bg-gray-50">
+                    <td className="py-3 px-4">
+                      <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+                        {record.staff?.employeeId || 'N/A'}
+                      </span>
+                    </td>
                     <td className="py-3 px-4 font-medium">{record.staff?.name}</td>
                     <td className="py-3 px-4 text-sm">{record.staff?.role}</td>
                     <td className="py-3 px-4 text-sm">{record.staff?.shift}</td>
@@ -431,7 +522,7 @@ const Attendance = () => {
                   <option value="">Select staff member</option>
                   {staffList.map((staff) => (
                     <option key={staff._id} value={staff._id}>
-                      {staff.name} - {staff.role}
+                      [{staff.employeeId}] {staff.name} - {staff.role}
                     </option>
                   ))}
                 </select>

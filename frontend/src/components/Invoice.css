@@ -28,22 +28,22 @@
 }
 
 .invoice-content {
-  padding: 2rem;
-  font-size: 14px;
-  line-height: 1.5;
+  padding: 1.5rem;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 /* Invoice Header */
 .invoice-header {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 2px solid #000;
 }
 
 .header-with-logo {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .logo-section {
@@ -51,8 +51,8 @@
 }
 
 .institute-logo {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
 }
 
@@ -62,38 +62,38 @@
 }
 
 .invoice-header h1 {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: bold;
   color: #111827;
   margin: 0;
 }
 
 .invoice-header h2 {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 600;
   color: #374151;
-  margin: 0.25rem 0;
+  margin: 0.15rem 0;
 }
 
 .institute-details {
-  font-size: 12px;
+  font-size: 10px;
   color: #6b7280;
-  margin: 0.25rem 0;
+  margin: 0.15rem 0;
 }
 
 /* Invoice Title */
 .invoice-title-section {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .invoice-title {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
   color: #111827;
   text-transform: uppercase;
   display: inline-block;
-  padding-bottom: 0.25rem;
+  padding-bottom: 0.15rem;
   border-bottom: 1px solid #000;
 }
 
@@ -101,14 +101,15 @@
 .invoice-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 11px;
 }
 
 .label {
-  font-size: 12px;
+  font-size: 10px;
   color: #6b7280;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
 }
 
 .value {
@@ -118,14 +119,15 @@
 
 /* Sections */
 .invoice-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .section-title {
   font-weight: bold;
   color: #111827;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.25rem;
+  font-size: 12px;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.15rem;
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -133,7 +135,7 @@
 .invoice-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .invoice-table thead {
@@ -142,14 +144,15 @@
 
 .invoice-table th,
 .invoice-table td {
-  padding: 0.5rem 0.75rem;
+  padding: 0.35rem 0.5rem;
   border: 1px solid #d1d5db;
   text-align: left;
+  font-size: 11px;
 }
 
 .invoice-table th {
   font-weight: 600;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .invoice-table .text-right {
@@ -165,34 +168,35 @@
 .grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 /* Grand Total */
 .grand-total-section {
-  padding-top: 1rem;
-  margin-bottom: 1.5rem;
+  padding-top: 0.75rem;
+  margin-bottom: 1rem;
   border-top: 2px solid #000;
 }
 
 .total-container {
-  max-width: 16rem;
+  max-width: 14rem;
   margin-left: auto;
 }
 
 .total-row-item {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 0;
+  padding: 0.35rem 0;
   font-weight: 600;
+  font-size: 12px;
 }
 
 .grand-total-row {
   display: flex;
   justify-content: space-between;
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
   border-top: 2px solid #000;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 /* Payment Status */
@@ -271,202 +275,313 @@
     margin: 10mm;
   }
 
-  body {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
+  /* HIDE EVERYTHING */
+  * {
+    visibility: hidden !important;
   }
 
-  /* Hide everything except invoice */
-  body * {
-    visibility: hidden;
+  /* SHOW ONLY INVOICE */
+  .invoice-modal-overlay,
+  .invoice-modal-overlay *,
+  .invoice-modal-container,
+  .invoice-modal-container *,
+  .invoice-content,
+  .invoice-content *,
+  .invoice-page,
+  .invoice-page * {
+    visibility: visible !important;
   }
 
+  /* Hide the modal header (print/close buttons) */
+  .invoice-modal-header,
+  .invoice-modal-header *,
   .no-print,
   .no-print * {
     display: none !important;
+    visibility: hidden !important;
   }
 
+  /* Position invoice at top */
   .invoice-modal-overlay {
-    position: static;
-    background: white;
-    padding: 0;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
   }
 
   .invoice-modal-container {
-    max-width: none;
-    max-height: none;
-    overflow: visible;
-    box-shadow: none;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
   }
 
   .invoice-content,
-  .invoice-content * {
-    visibility: visible;
+  .invoice-page {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    padding: 5mm !important;
+    margin: 0 !important;
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+    background: white !important;
+    color: black !important;
   }
 
-  .invoice-content {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 0 !important;
-    font-size: 11px !important;
+  /* Page break handling */
+  .invoice-page {
+    page-break-after: always !important;
+    break-after: page !important;
   }
 
-  /* Compact header for print */
+  .invoice-page:last-child {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  .page-break-before {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  /* ========== PROFESSIONAL A4 PRINT LAYOUT ========== */
+
+  /* Header */
   .invoice-header {
-    margin-bottom: 0.75rem !important;
-    padding-bottom: 0.5rem !important;
+    margin-bottom: 12px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 2px solid #1e3a5f !important;
   }
 
   .header-with-logo {
-    gap: 0.75rem !important;
+    gap: 15px !important;
   }
 
   .institute-logo {
-    width: 50px !important;
-    height: 50px !important;
+    width: 55px !important;
+    height: 55px !important;
   }
 
   .invoice-header h1 {
-    font-size: 18px !important;
+    font-size: 20px !important;
     margin: 0 !important;
+    color: #1e3a5f !important;
   }
 
   .invoice-header h2 {
     font-size: 14px !important;
-    margin: 0.1rem 0 !important;
+    margin: 2px 0 !important;
+    color: #374151 !important;
   }
 
   .institute-details {
-    font-size: 9px !important;
-    margin: 0.1rem 0 !important;
+    font-size: 10px !important;
+    margin: 1px 0 !important;
+    color: #6b7280 !important;
   }
 
-  /* Compact title */
+  /* Invoice Title */
   .invoice-title-section {
-    margin-bottom: 0.75rem !important;
+    margin-bottom: 12px !important;
   }
 
   .invoice-title {
     font-size: 16px !important;
-    padding-bottom: 0.15rem !important;
+    padding-bottom: 3px !important;
+    color: #1e3a5f !important;
   }
 
-  /* Compact info grid */
+  /* Info Grid */
   .invoice-info-grid {
-    gap: 0.5rem !important;
-    margin-bottom: 0.75rem !important;
-    font-size: 10px !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+    font-size: 11px !important;
   }
 
   .label {
     font-size: 9px !important;
-    margin-bottom: 0.1rem !important;
+    margin-bottom: 1px !important;
+    color: #6b7280 !important;
   }
 
   .value {
-    font-size: 10px !important;
+    font-size: 11px !important;
+    color: #111827 !important;
   }
 
-  /* Compact sections */
+  /* Sections */
   .invoice-section {
-    margin-bottom: 0.75rem !important;
+    margin-bottom: 10px !important;
   }
 
   .section-title {
-    font-size: 11px !important;
-    margin-bottom: 0.35rem !important;
-    padding-bottom: 0.15rem !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 3px !important;
+    border-bottom: 1px solid #d1d5db !important;
+    color: #1e3a5f !important;
   }
 
-  /* Compact tables */
+  /* Tables */
   .invoice-table {
-    margin-bottom: 0.25rem !important;
-    font-size: 10px !important;
+    margin-bottom: 6px !important;
   }
 
   .invoice-table th,
   .invoice-table td {
-    padding: 0.25rem 0.4rem !important;
-    border: 1px solid #000 !important;
-    font-size: 9px !important;
+    padding: 6px 8px !important;
+    border: 1px solid #d1d5db !important;
+    font-size: 10px !important;
   }
 
   .invoice-table th {
     font-size: 9px !important;
+    background-color: #f3f4f6 !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
   }
 
-  /* Compact grid */
+  .invoice-table td {
+    color: #111827 !important;
+  }
+
+  /* Booking Period Grid */
   .grid-3 {
-    gap: 0.5rem !important;
-    font-size: 10px !important;
-  }
-
-  /* Compact total */
-  .grand-total-section {
-    padding-top: 0.5rem !important;
-    margin-bottom: 0.75rem !important;
-    border-top: 2px solid #000 !important;
-  }
-
-  .total-row-item {
-    padding: 0.25rem 0 !important;
+    gap: 12px !important;
     font-size: 11px !important;
   }
 
-  .grand-total-row {
-    padding: 0.4rem 0 !important;
-    border-top: 2px solid #000 !important;
+  /* Total & Payment Section */
+  .total-payment-section {
+    margin: 12px 0 !important;
+    padding: 10px !important;
+    background-color: #f9fafb !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px !important;
+  }
+
+  .total-line {
     font-size: 14px !important;
+    padding-bottom: 6px !important;
+    margin-bottom: 6px !important;
+    border-bottom: 1px solid #d1d5db !important;
   }
 
-  /* Compact payment status */
-  .payment-status {
-    padding: 0.4rem !important;
-    margin-bottom: 0.75rem !important;
+  .total-line .amount {
+    font-size: 16px !important;
+    color: #1e3a5f !important;
+  }
+
+  .payment-status-line {
+    font-size: 11px !important;
+  }
+
+  .status-badge {
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
     font-size: 10px !important;
+    font-weight: 600 !important;
   }
 
-  /* Compact footer */
-  .invoice-footer {
-    margin-top: 0.75rem !important;
-    padding-top: 0.5rem !important;
+  .status-badge.paid {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+  }
+
+  .status-badge.unpaid {
+    background-color: #fee2e2 !important;
+    color: #dc2626 !important;
+  }
+
+  /* Signature Section */
+  .signature-section-compact {
+    margin-top: 30px !important;
+    padding-top: 20px !important;
+    border-top: 1px dashed #d1d5db !important;
+  }
+
+  .signature-row {
+    gap: 40px !important;
+  }
+
+  .sig-box {
+    padding-top: 25px !important;
+  }
+
+  .sig-line {
+    width: 100% !important;
+    height: 1px !important;
+    background-color: #374151 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .sig-label {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+  }
+
+  .sig-title {
     font-size: 9px !important;
+    color: #6b7280 !important;
   }
 
-  .footer-text {
+  /* Bank Details */
+  .bank-details-inline {
+    margin-top: 12px !important;
+    padding: 8px 12px !important;
+    font-size: 10px !important;
+    background-color: #f0f9ff !important;
+    border: 1px solid #0ea5e9 !important;
+    border-radius: 4px !important;
+  }
+
+  .bank-details-inline p {
+    color: #1e3a5f !important;
+  }
+
+  /* Footer */
+  .invoice-footer-compact {
+    margin-top: 10px !important;
+    padding-top: 8px !important;
+    border-top: 1px solid #d1d5db !important;
+  }
+
+  .footer-note {
     font-size: 9px !important;
-    margin: 0.1rem 0 !important;
+    color: #6b7280 !important;
+    margin-top: 6px !important;
   }
 
-  /* Compact notes */
-  .important-notes {
-    margin-top: 0.75rem !important;
-    padding: 0.4rem !important;
-    font-size: 9px !important;
-  }
-
-  .important-notes p {
-    margin-bottom: 0.25rem !important;
-    font-size: 9px !important;
-  }
-
-  .important-notes ul {
-    padding-left: 1rem !important;
-  }
-
-  .important-notes li {
-    margin: 0.1rem 0 !important;
-  }
-
+  /* Meal Table */
   .tariff-note {
-    font-size: 8px !important;
-    margin-top: 0.25rem !important;
+    font-size: 9px !important;
+    margin-top: 6px !important;
+    color: #6b7280 !important;
   }
 
-  .mt-2 {
-    margin-top: 0.25rem !important;
+  /* Remove old compact styles */
+  .grand-total-section {
+    display: none !important;
+  }
+
+  .payment-status {
+    display: none !important;
   }
 
   /* Avoid page breaks inside tables */
@@ -487,10 +602,353 @@
     page-break-inside: avoid;
   }
 
-  /* Scale down if needed */
-  .invoice-content {
-    transform: scale(0.95);
-    transform-origin: top left;
+  /* CRITICAL: Keep total, signature, and footer together */
+  .total-payment-section,
+  .signature-section-compact,
+  .invoice-footer-compact,
+  .bank-details-inline {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-before: avoid !important;
+  }
+}
+
+/* ==================== VH SEAL & SIGNATURE STYLES ==================== */
+
+/* Signature Section */
+.signature-section {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed #d1d5db;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+
+.signature-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* VH Seal */
+.seal-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+}
+
+.seal-circle {
+  width: 80px;
+  height: 80px;
+  border: 3px double #1e3a5f;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.seal-text {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e3a5f;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.seal-subtext {
+  font-size: 8px;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* Signature Line */
+.signature-line {
+  width: 120px;
+  height: 1px;
+  background-color: #374151;
+  margin-top: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.signature-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.signature-designation {
+  font-size: 10px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ==================== PAGE BREAK STYLES ==================== */
+
+.invoice-page {
+  background: white;
+}
+
+.page-break-before {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 3px double #1e3a5f;
+}
+
+/* Visual separator between pages on screen */
+@media screen {
+  .page-break-before {
+    position: relative;
+  }
+
+  .page-break-before::before {
+    content: '— Page Break —';
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0 1rem;
+    font-size: 10px;
+    color: #9ca3af;
+    font-style: italic;
+  }
+}
+
+/* ==================== PAYMENT SUMMARY BOX STYLES ==================== */
+
+.payment-summary-section {
+  margin-top: 1.5rem;
+}
+
+.payment-summary-box {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.payment-summary-box.large {
+  padding: 1.5rem;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.payment-row:last-child {
+  border-bottom: none;
+}
+
+.payment-row.total-highlight {
+  background-color: #dbeafe;
+  margin: 0.5rem -1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border: none;
+}
+
+.payment-row.balance-due {
+  background-color: #fee2e2;
+  margin: 0.5rem -1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border: none;
+}
+
+.payment-row.status-row {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid #e2e8f0;
+  border-bottom: none;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.paid {
+  background-color: #d1fae5;
+  color: #047857;
+  border: 1px solid #10b981;
+}
+
+.status-badge.partial {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+.status-badge.unpaid {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #ef4444;
+}
+
+.status-badge.large {
+  padding: 0.5rem 1rem;
+  font-size: 13px;
+}
+
+/* ==================== MEAL TABLE STYLES ==================== */
+
+.meal-table th small,
+.meal-table td small {
+  display: block;
+  font-weight: normal;
+  color: #6b7280;
+  font-size: 9px;
+}
+
+.meal-table td.text-center small {
+  color: #059669;
+}
+
+/* ==================== SUMMARY TABLE STYLES ==================== */
+
+.summary-table {
+  margin-top: 1rem;
+}
+
+.summary-table td {
+  padding: 0.75rem 1rem;
+}
+
+.grand-total-row-table {
+  background-color: #1e3a5f !important;
+  color: white !important;
+}
+
+.grand-total-row-table td {
+  color: white !important;
+  font-size: 16px;
+}
+
+/* ==================== TEXT UTILITIES ==================== */
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-green-600 {
+  color: #059669;
+}
+
+.text-red-600 {
+  color: #dc2626;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.block {
+  display: block;
+}
+
+/* ==================== BANK DETAILS STYLES ==================== */
+
+.bank-details-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 2px solid #1e3a5f;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e8f4fd 100%);
+}
+
+.bank-details-section .section-title {
+  color: #1e3a5f;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #1e3a5f;
+  padding-bottom: 0.5rem;
+}
+
+.bank-details-box {
+  width: 100%;
+}
+
+.bank-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bank-table td {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #d1d5db;
+  font-size: 12px;
+}
+
+.bank-table .bank-label {
+  background-color: #f1f5f9;
+  color: #475569;
+  font-weight: 500;
+  width: 45%;
+}
+
+.bank-table .bank-value {
+  background-color: white;
+  color: #1e293b;
+}
+
+.bank-table .bank-value strong {
+  color: #1e3a5f;
+  font-size: 13px;
+}
+
+/* Print styles for bank details */
+@media print {
+  .bank-details-section {
+    margin-top: 0.75rem !important;
+    padding: 0.5rem !important;
+    border: 1px solid #1e3a5f !important;
+  }
+
+  .bank-details-section .section-title {
+    font-size: 10px !important;
+    margin-bottom: 0.4rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  .bank-table td {
+    padding: 0.2rem 0.5rem !important;
+    font-size: 9px !important;
+  }
+
+  .bank-table .bank-value strong {
+    font-size: 10px !important;
   }
 }
 
@@ -505,4 +963,105 @@
 
 .font-mono {
   font-family: ui-monospace, monospace;
+}
+
+/* ==================== COMPACT INVOICE STYLES ==================== */
+
+/* Total & Payment Section (Compact) */
+.total-payment-section {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+.total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: bold;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #d1d5db;
+  margin-bottom: 0.5rem;
+}
+
+.total-line .amount {
+  font-size: 15px;
+  color: #1e3a5f;
+}
+
+.payment-status-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+/* Compact Signature Section */
+.signature-section-compact {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+}
+
+.signature-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+.sig-box {
+  flex: 1;
+  text-align: center;
+  padding-top: 1.5rem;
+}
+
+.sig-line {
+  width: 100%;
+  height: 1px;
+  background-color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.sig-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.sig-title {
+  font-size: 10px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Compact Bank Details (inline) */
+.bank-details-inline {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #f0f9ff;
+  border: 1px solid #0ea5e9;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.bank-details-inline p {
+  margin: 0;
+  color: #1e3a5f;
+}
+
+/* Compact Footer */
+.invoice-footer-compact {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #d1d5db;
+}
+
+.footer-note {
+  font-size: 10px;
+  color: #6b7280;
+  text-align: center;
+  margin: 0.5rem 0 0 0;
 }
