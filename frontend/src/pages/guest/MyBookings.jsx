@@ -130,9 +130,15 @@ const MyBookings = () => {
                     </p>
                     {['Approved', 'Checked-In', 'Checked-Out'].includes(booking.status) && (
                       <button
-                        onClick={() => {
-                          setSelectedBooking(booking);
-                          setShowInvoice(true);
+                        onClick={async () => {
+                          try {
+                            // Fetch full booking details (list API only returns subset)
+                            const res = await bookingAPI.getById(booking._id);
+                            setSelectedBooking(res.data.data);
+                            setShowInvoice(true);
+                          } catch (err) {
+                            toast.error('Failed to load invoice');
+                          }
                         }}
                         className="btn-outline text-sm flex items-center"
                         title="View Invoice"

@@ -166,34 +166,41 @@ const Attendance = () => {
       ];
 
       const rows = records.map(a => {
+        // Format date explicitly - prefix with single quote to force Excel text mode
+        let dateStr = '-';
+        if (a.date) {
+          const d = new Date(a.date);
+          dateStr = `${d.getDate().toString().padStart(2, '0')}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}`;
+        }
+
         // Format check-in time
         let checkInTime = '-';
         let checkInMethod = '-';
-        if (a.checkIn?.time) {
-          checkInTime = new Date(a.checkIn.time).toLocaleTimeString('en-IN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-          });
+        if (a.checkIn && a.checkIn.time) {
+          const t = new Date(a.checkIn.time);
+          const hrs = t.getHours();
+          const mins = t.getMinutes().toString().padStart(2, '0');
+          const ampm = hrs >= 12 ? 'PM' : 'AM';
+          const h12 = hrs % 12 || 12;
+          checkInTime = `${h12}:${mins} ${ampm}`;
           checkInMethod = a.checkIn.method || 'Manual';
         }
 
         // Format check-out time
         let checkOutTime = '-';
         let checkOutMethod = '-';
-        if (a.checkOut?.time) {
-          checkOutTime = new Date(a.checkOut.time).toLocaleTimeString('en-IN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-          });
+        if (a.checkOut && a.checkOut.time) {
+          const t = new Date(a.checkOut.time);
+          const hrs = t.getHours();
+          const mins = t.getMinutes().toString().padStart(2, '0');
+          const ampm = hrs >= 12 ? 'PM' : 'AM';
+          const h12 = hrs % 12 || 12;
+          checkOutTime = `${h12}:${mins} ${ampm}`;
           checkOutMethod = a.checkOut.method || 'Manual';
         }
 
         return [
-          new Date(a.date).toLocaleDateString('en-IN'),
+          dateStr,
           a.staff?.employeeId || 'N/A',
           a.staff?.name || 'N/A',
           a.staff?.role || 'N/A',
@@ -211,18 +218,26 @@ const Attendance = () => {
       });
 
       // Sort by date descending
-      rows.sort((a, b) => new Date(b[0].split('/').reverse().join('-')) - new Date(a[0].split('/').reverse().join('-')));
+      rows.sort((a, b) => {
+        const dateA = a[0].split('-').reverse().join('-');
+        const dateB = b[0].split('-').reverse().join('-');
+        return new Date(dateB) - new Date(dateA);
+      });
 
-      // Escape CSV fields properly
-      const escapeCSV = (field) => {
+      // Escape CSV fields - force date/time as text for Excel using ="..." wrapper
+      const escapeCSV = (field, colIndex) => {
         const str = String(field);
+        // Columns 0 (Date), 6 (Check-In Time), 8 (Check-Out Time) - force as text
+        if ((colIndex === 0 || colIndex === 6 || colIndex === 8) && str !== '-') {
+          return `="${str}"`;
+        }
         if (str.includes(',') || str.includes('"') || str.includes('\n')) {
           return `"${str.replace(/"/g, '""')}"`;
         }
         return str;
       };
 
-      const csv = [headers, ...rows].map(row => row.map(escapeCSV).join(',')).join('\n');
+      const csv = [headers.map((h, i) => escapeCSV(h, -1)).join(','), ...rows.map(row => row.map((cell, i) => escapeCSV(cell, i)).join(','))].join('\n');
       
       // Add BOM for Excel UTF-8 compatibility
       const BOM = '\uFEFF';
@@ -426,6 +441,7 @@ const Attendance = () => {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
+                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Date</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Staff ID</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Staff Name</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Role</th>
@@ -439,19 +455,22 @@ const Attendance = () => {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan="8" className="text-center py-8">
+                  <td colSpan="9" className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                   </td>
                 </tr>
               ) : attendanceList.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="text-center py-8 text-gray-500">
+                  <td colSpan="9" className="text-center py-8 text-gray-500">
                     No attendance records for selected date
                   </td>
                 </tr>
               ) : (
                 attendanceList.map((record) => (
                   <tr key={record._id} className="hover:bg-gray-50">
+                    <td className="py-3 px-4 text-sm">
+                      {new Date(record.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </td>
                     <td className="py-3 px-4">
                       <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
                         {record.staff?.employeeId || 'N/A'}
@@ -466,17 +485,17 @@ const Attendance = () => {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-sm">
-                      {record.checkIn ? (
+                      {record.checkIn?.time ? (
                         <div>
-                          <div>{new Date(record.checkIn?.time || record.checkIn).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
+                          <div>{new Date(record.checkIn.time).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</div>
                           {record.checkIn?.method && <span className="badge bg-gray-100 text-gray-600 text-xs mt-1">{record.checkIn.method}</span>}
                         </div>
                       ) : '-'}
                     </td>
                     <td className="py-3 px-4 text-sm">
-                      {record.checkOut ? (
+                      {record.checkOut?.time ? (
                         <div>
-                          <div>{new Date(record.checkOut?.time || record.checkOut).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
+                          <div>{new Date(record.checkOut.time).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</div>
                           {record.checkOut?.method && <span className="badge bg-gray-100 text-gray-600 text-xs mt-1">{record.checkOut.method}</span>}
                         </div>
                       ) : '-'}

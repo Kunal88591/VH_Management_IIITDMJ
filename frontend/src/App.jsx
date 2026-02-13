@@ -34,11 +34,13 @@ import AdminManagement from './pages/admin/AdminManagement';
 
 // Protected Route Component
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <div className="min-h-screen flex flex-col">
           <Toaster position="top-right" />
           <Routes>

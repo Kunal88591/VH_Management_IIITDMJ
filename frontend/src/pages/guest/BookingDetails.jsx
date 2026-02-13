@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { bookingAPI, billingAPI } from '../../services/api';
-import { HiArrowLeft, HiDownload, HiCalendar, HiUser, HiHome, HiCurrencyRupee } from 'react-icons/hi';
+import { HiArrowLeft, HiDownload, HiCalendar, HiUser, HiHome, HiCurrencyRupee, HiDocumentText } from 'react-icons/hi';
 import toast from 'react-hot-toast';
+import Invoice from '../../components/Invoice';
 
 const BookingDetails = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState(null);
   const [bill, setBill] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showInvoice, setShowInvoice] = useState(false);
 
   useEffect(() => {
     fetchBookingDetails();
@@ -173,19 +175,24 @@ const BookingDetails = () => {
             <div>
               <h3 className="font-semibold text-slate-primary mb-3">Food Requirements</h3>
               <div className="bg-gray-50 rounded-lg p-4">
-                {booking.foodRequirement?.required ? (
+                {booking.mealRequirements?.required ? (
                   <div className="space-y-2">
-                    <p><span className="text-gray-500">Days:</span> {booking.foodRequirement.numberOfDays}</p>
-                    {booking.foodRequirement.meals?.map((meal, index) => (
+                    <p><span className="text-gray-500">Meals:</span> {booking.mealRequirements.meals?.length || 0} day(s)</p>
+                    {booking.mealRequirements.meals?.map((meal, index) => (
                       <p key={index} className="text-sm">
                         Day {index + 1}:{' '}
                         {[
-                          meal.breakfast && 'Breakfast',
-                          meal.lunch && 'Lunch',
-                          meal.dinner && 'Dinner'
+                          meal.breakfast > 0 && `Breakfast(${meal.breakfast})`,
+                          meal.lunch > 0 && `Lunch(${meal.lunch})`,
+                          meal.dinner > 0 && `Dinner(${meal.dinner})`,
+                          meal.tea > 0 && `Tea(${meal.tea})`,
+                          meal.milk > 0 && `Milk(${meal.milk})`
                         ].filter(Boolean).join(', ') || 'None'}
                       </p>
                     ))}
+                    {booking.mealCharges > 0 && (
+                      <p className="font-semibold mt-2">Meal Charges: ₹{booking.mealCharges}</p>
+                    )}
                   </div>
                 ) : (
                   <p className="text-gray-500">No food required</p>
@@ -213,8 +220,8 @@ const BookingDetails = () => {
           </div>
         </div>
 
-        {/* Bill Section */}
-        {bill && (
+        {/* Invoice Section */}
+        {['Approved', 'Checked-In', 'Checked-Out'].includes(booking.status) && (
           <div className="card">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold text-slate-primary flex items-center">
@@ -222,26 +229,32 @@ const BookingDetails = () => {
                 Invoice
               </h3>
               <button
-                onClick={downloadInvoice}
+                onClick={() => setShowInvoice(true)}
                 className="btn-secondary text-sm flex items-center"
               >
-                <HiDownload className="w-4 h-4 mr-1" />
-                Download PDF
+                <HiDocumentText className="w-4 h-4 mr-1" />
+                View Invoice
               </button>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex justify-between mb-2">
-                <span className="text-gray-500">Invoice Number</span>
-                <span className="font-mono">{bill.billNumber}</span>
+                <span className="text-gray-500">Total Amount</span>
+                <span className="font-bold text-secondary">₹{booking.totalAmount}</span>
               </div>
               <div className="flex justify-between mb-2">
-                <span className="text-gray-500">Grand Total</span>
-                <span className="font-bold text-secondary">₹{bill.grandTotal}</span>
+                <span className="text-gray-500">Room Charges</span>
+                <span>₹{booking.roomCharges || 0}</span>
               </div>
+              {booking.mealCharges > 0 && (
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Meal Charges</span>
+                  <span>₹{booking.mealCharges}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-gray-500">Payment Status</span>
-                <span className={`badge ${bill.paymentStatus === 'Paid' ? 'badge-success' : 'badge-warning'}`}>
-                  {bill.paymentStatus}
+                <span className={`badge ${booking.paymentStatus === 'Paid' ? 'badge-success' : booking.paymentStatus === 'Partially Paid' ? 'badge-warning' : 'badge-danger'}`}>
+                  {booking.paymentStatus || 'Unpaid'}
                 </span>
               </div>
             </div>
@@ -256,6 +269,14 @@ const BookingDetails = () => {
           </p>
         </div>
       </div>
+
+      {/* Invoice Modal */}
+      {showInvoice && booking && (
+        <Invoice
+          booking={booking}
+          onClose={() => setShowInvoice(false)}
+        />
+      )}
     </div>
   );
 };

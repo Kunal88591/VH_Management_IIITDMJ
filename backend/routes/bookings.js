@@ -35,7 +35,7 @@ router.get('/', protect, async (req, res) => {
     const total = await Booking.countDocuments(query);
 
     const bookings = await Booking.find(query)
-      .select('bookingId visitorCategory status checkInDate checkInTime checkOutDate checkOutTime numberOfGuests numberOfRooms totalAmount paymentStatus guests createdAt')
+      .select('bookingId visitorCategory status checkInDate checkInTime checkOutDate checkOutTime numberOfGuests numberOfRooms totalAmount roomCharges mealCharges mealRequirements paymentStatus amountPaid paymentMethod paymentDate guests guestDetails rooms createdAt')
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
