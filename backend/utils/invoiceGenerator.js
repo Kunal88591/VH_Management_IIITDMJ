@@ -17,7 +17,7 @@ async function generateInvoicePDF(booking, outputPath) {
             doc.pipe(stream);
 
             // Header
-            doc.fontSize(20).text('IIIT DM JABALPUR', { align: 'center' });
+            doc.fontSize(20).text('IIITDM JABALPUR', { align: 'center' });
             doc.fontSize(14).text("Visitor's Hostel", { align: 'center' });
             doc.moveDown(0.5);
             doc.fontSize(16).text('INVOICE', { align: 'center', underline: true });

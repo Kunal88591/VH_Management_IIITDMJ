@@ -69,7 +69,7 @@ const Invoice = ({ booking, onClose }) => {
                         />
                     </div>
                     <div className="header-text">
-                        <h1>IIIT DM JABALPUR</h1>
+                        <h1>IIITDM JABALPUR</h1>
                         <h2>Visitor's Hostel</h2>
                         <p className="institute-details">Indian Institute of Information Technology, Design and Manufacturing</p>
                         <p className="institute-details">Dumna Airport Road, Jabalpur - 482005</p>
@@ -160,7 +160,7 @@ const Invoice = ({ booking, onClose }) => {
                 <div className="sig-box">
                     <div className="sig-line"></div>
                     <p className="sig-label">Authorized Signatory</p>
-                    <p className="sig-title">VH In-Charge, IIITDM Jabalpur</p>
+                    <p className="sig-title">Caretaker/Warden</p>
                 </div>
                 <div className="sig-box">
                     <div className="sig-line"></div>

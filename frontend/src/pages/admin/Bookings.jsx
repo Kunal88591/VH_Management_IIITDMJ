@@ -17,6 +17,11 @@ import toast from 'react-hot-toast';
 import Invoice from '../../components/Invoice';
 import PaymentModal from '../../components/PaymentModal';
 
+// API base URL for document download/view (same logic as api.js)
+const API_BASE_URL = import.meta.env.PROD
+  ? (import.meta.env.VITE_API_URL || 'https://vh-management-backend.onrender.com/api')
+  : '/api';
+
 const Bookings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [bookings, setBookings] = useState([]);
@@ -132,7 +137,7 @@ const Bookings = () => {
 
   const handleDownloadDocument = async (bookingId, docType) => {
     try {
-      const response = await fetch(`/api/bookings/${bookingId}/download-document/${docType}`, {
+      const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}/download-document/${docType}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -155,7 +160,7 @@ const Bookings = () => {
 
   const handleViewDocument = async (bookingId, docType) => {
     try {
-      const url = `/api/bookings/${bookingId}/view-document/${docType}`;
+      const url = `${API_BASE_URL}/bookings/${bookingId}/view-document/${docType}`;
       const token = localStorage.getItem('token');
 
       // Open in new tab with auth header
@@ -669,7 +674,7 @@ const Bookings = () => {
                   Uploaded Documents
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {selectedBooking.directorApproval?.data && (
+                  {selectedBooking.directorApproval?.hasData && (
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-sm font-medium mb-2">Director Approval</p>
                       <div className="flex gap-2">
@@ -688,7 +693,7 @@ const Bookings = () => {
                       </div>
                     </div>
                   )}
-                  {selectedBooking.guestIdCard?.data && (
+                  {selectedBooking.guestIdCard?.hasData && (
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-sm font-medium mb-2">Guest ID Card</p>
                       <div className="flex gap-2">
@@ -707,7 +712,7 @@ const Bookings = () => {
                       </div>
                     </div>
                   )}
-                  {selectedBooking.studentIdCard?.data && (
+                  {selectedBooking.studentIdCard?.hasData && (
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-sm font-medium mb-2">Student ID Card</p>
                       <div className="flex gap-2">
@@ -727,7 +732,7 @@ const Bookings = () => {
                     </div>
                   )}
                 </div>
-                {!selectedBooking.directorApproval?.data && !selectedBooking.guestIdCard?.data && !selectedBooking.studentIdCard?.data && (
+                {!selectedBooking.directorApproval?.hasData && !selectedBooking.guestIdCard?.hasData && !selectedBooking.studentIdCard?.hasData && (
                   <p className="text-sm text-gray-500">No documents uploaded</p>
                 )}
               </div>

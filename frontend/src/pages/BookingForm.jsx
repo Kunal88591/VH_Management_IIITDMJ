@@ -53,7 +53,7 @@ const BookingForm = () => {
     bookingType: 'self',
 
     // Guests
-    guests: [{ fullName: user?.name || '', age: '', mobile: user?.phone || '' }],
+    guests: [{ fullName: user?.name || '', age: '', mobile: '' }],
     numberOfGuests: 1,
 
     // Validation Fields
@@ -577,7 +577,7 @@ const BookingForm = () => {
                               value={guest.mobile}
                               onChange={(e) => handleGuestChange(index, 'mobile', e.target.value)}
                               className="input-field"
-                              required={formData.bookingType === 'others' && index === 0}
+                              required
                             />
                           </div>
                         </div>

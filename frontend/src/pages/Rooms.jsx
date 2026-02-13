@@ -77,31 +77,11 @@ const Rooms = () => {
     return <span className="badge badge-danger">Unavailable</span>;
   };
 
-  const getRoomImage = (roomType, category) => {
-    const images = {
-      'Single-AC': 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80',
-      'Single-Non-AC': 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&q=80',
-      'Double-AC': 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80',
-      'Double-Non-AC': 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&q=80',
-      'Suite-AC': 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80',
-      'Deluxe-AC': 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80',
-    };
-    return images[`${roomType}-${category}`] || 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&q=80';
-  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6 sm:py-8 lg:py-12 animate-fadeIn">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8 text-center lg:text-left">
-          <h1 className="font-poppins text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-primary mb-3">
-            Our <span className="text-secondary">Rooms</span>
-          </h1>
-          <p className="text-gray-600 text-base sm:text-lg">
-            Browse through our selection of comfortable and well-equipped rooms
-          </p>
-        </div>
-
         {/* Filter Toggle */}
         <div className="mb-6 flex justify-between items-center flex-wrap gap-3">
           <button
@@ -229,39 +209,24 @@ const Rooms = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {rooms.map((room) => (
               <div key={room._id} className="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
-                {/* Room Image */}
-                <div className="relative h-52 sm:h-56 overflow-hidden">
-                  <img 
-                    src={getRoomImage(room.roomType, room.category)}
-                    alt={`${room.roomType} Room ${room.roomNumber}`}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-                  
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-lg ${
-                      room.category === 'AC' 
-                        ? 'bg-blue-500 text-white' 
-                        : 'bg-white/90 text-gray-700'
-                    }`}>
-                      {room.category}
-                    </span>
-                    {getAvailabilityBadge(room)}
-                  </div>
-
-                  {/* Room Number Badge */}
-                  <div className="absolute bottom-3 left-3">
-                    <div className="bg-white/95 backdrop-blur-sm px-3 py-1 rounded-lg shadow-lg">
-                      <span className="text-xs text-gray-500 font-medium">Room</span>
-                      <span className="text-lg font-bold text-primary ml-1">{room.roomNumber}</span>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Room Info */}
                 <div className="p-4 sm:p-5 flex-1 flex flex-col">
+                  {/* Top Badges */}
+                  <div className="flex justify-between items-center mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        room.category === 'AC' 
+                          ? 'bg-blue-100 text-blue-700' 
+                          : 'bg-gray-100 text-gray-700'
+                      }`}>
+                        {room.category}
+                      </span>
+                      <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
+                        Room {room.roomNumber}
+                      </span>
+                    </div>
+                    {getAvailabilityBadge(room)}
+                  </div>
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
                       <h3 className="font-poppins font-bold text-lg text-slate-primary group-hover:text-secondary transition-colors">

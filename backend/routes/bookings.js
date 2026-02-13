@@ -83,9 +83,36 @@ router.get('/:id', protect, async (req, res) => {
       });
     }
 
+    // Convert to object and exclude document binary data for performance
+    // Keep only metadata (fileName, contentType) to indicate document exists
+    const bookingObj = booking.toObject();
+    
+    // Replace document binary data with metadata only
+    if (bookingObj.directorApproval?.data) {
+      bookingObj.directorApproval = {
+        fileName: bookingObj.directorApproval.fileName,
+        contentType: bookingObj.directorApproval.contentType,
+        hasData: true
+      };
+    }
+    if (bookingObj.guestIdCard?.data) {
+      bookingObj.guestIdCard = {
+        fileName: bookingObj.guestIdCard.fileName,
+        contentType: bookingObj.guestIdCard.contentType,
+        hasData: true
+      };
+    }
+    if (bookingObj.studentIdCard?.data) {
+      bookingObj.studentIdCard = {
+        fileName: bookingObj.studentIdCard.fileName,
+        contentType: bookingObj.studentIdCard.contentType,
+        hasData: true
+      };
+    }
+
     res.json({
       success: true,
-      data: booking
+      data: bookingObj
     });
   } catch (error) {
     res.status(500).json({
