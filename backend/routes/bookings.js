@@ -5,7 +5,7 @@ const Room = require('../models/Room');
 const { protect, authorize } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 const { validateBookingByCategory, validateRoomAvailability, validateMealRequirements } = require('../utils/bookingValidator');
-const { calculateTotalBookingCharges, calculateCancellationCharge } = require('../utils/tariffCalculator');
+const { calculateTotalBookingCharges, calculateCancellationCharge, ROOM_TARIFF } = require('../utils/tariffCalculator');
 const { generateInvoicePDF, generateInvoiceData } = require('../utils/invoiceGenerator');
 
 const router = express.Router();
@@ -203,16 +203,28 @@ router.post('/', protect, upload.fields([
       });
     }
 
-    // Prepare room data with suite flag
+    // Prepare room data with suite flag and category-adjusted tariff rate
     const roomsData = rooms.map(room => {
       const isSuite = room.isSuite || room.roomType === 'Suite' || room.roomType === 'Deluxe';
-      console.log(`Room ${room.roomNumber}: type=${room.roomType}, isSuite=${isSuite}`);
+      
+      // Calculate category-specific tariff rate (NOT the room's base price)
+      let categoryRate = 0;
+      if (isSuite) {
+        categoryRate = ROOM_TARIFF.suite[visitorCategory] || 0;
+      } else {
+        const categoryTariff = ROOM_TARIFF.normal[visitorCategory];
+        if (categoryTariff) {
+          categoryRate = categoryTariff[room.roomType] || 0;
+        }
+      }
+      
+      console.log(`Room ${room.roomNumber}: type=${room.roomType}, isSuite=${isSuite}, basePrice=${room.pricePerNight}, categoryRate=${categoryRate}`);
       return {
         room: room._id,
         roomNumber: room.roomNumber,
         roomType: room.roomType,
         isSuite: isSuite,
-        pricePerNight: room.pricePerNight
+        pricePerNight: categoryRate  // Store tariff-adjusted rate, not base price
       };
     });
 

@@ -218,8 +218,8 @@ const Rules = () => {
                   </tr>
                   <tr>
                     <td className="border border-gray-300 px-4 py-2 font-semibold">Category D</td>
-                    <td className="border border-gray-300 px-4 py-2 text-center">₹1,500/-</td>
                     <td className="border border-gray-300 px-4 py-2 text-center">₹1,800/-</td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">₹2,000/-</td>
                   </tr>
                 </tbody>
               </table>
@@ -242,7 +242,7 @@ const Rules = () => {
                   </tr>
                   <tr>
                     <td className="border border-gray-300 px-4 py-2 font-semibold">Category B</td>
-                    <td className="border border-gray-300 px-4 py-2 text-center">₹2,000/-</td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">₹2,500/-</td>
                   </tr>
                   <tr>
                     <td className="border border-gray-300 px-4 py-2 font-semibold">Category C</td>

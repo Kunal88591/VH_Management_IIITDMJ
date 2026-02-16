@@ -18,21 +18,21 @@ const CATEGORIES = {
     name: 'Category B',
     title: 'Institute Employees & Related Guests',
     description: 'Institute employees and dependents, Project employees and dependents, Retired IIITDMJ faculty/staff/alumni, Relatives/guests of IIITDMJ faculty and staff, Other guests approved by Director',
-    tariffNote: 'Single: ₹800/night | Double: Free (Normal) | Suite: ₹2500',
+    tariffNote: 'Single: ₹800 | Double: ₹1000 (Normal) | Suite: ₹2500',
     requirements: 'Employee ID OR (Approval + Guest ID Card) required'
   },
   C: {
     name: 'Category C',
     title: 'Academic / Government / Student Visitors',
     description: 'Employees of IITs/IIITs/CFTIs/Universities/PSUs, Parents/Guardians/Spouse of IIITDMJ students, Government/public-sector visitors, Trainees attending institute programs, Other guests approved by Director',
-    tariffNote: 'Single: ₹1000 | Double: ₹1500 (Normal) | Suite: ₹2500',
+    tariffNote: 'Single: ₹1200 | Double: ₹1500 (Normal) | Suite: ₹2500',
     requirements: 'Student Roll+ID OR (Approval + Visitor ID) required'
   },
   D: {
     name: 'Category D',
     title: 'Contractors & Vendors',
     description: 'Contractors, vendors, and firm representatives visiting for official work such as meetings or presentations',
-    tariffNote: 'Single: ₹1800 | Double: ₹1800 (Normal) | Suite: ₹2500',
+    tariffNote: 'Single: ₹1800 | Double: ₹2000 (Normal) | Suite: ₹2500',
     requirements: 'Approval + Visitor ID Card both required'
   }
 };

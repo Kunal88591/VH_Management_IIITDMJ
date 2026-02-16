@@ -303,8 +303,12 @@ const Invoice = ({ booking, onClose }) => {
                     </thead>
                     <tbody>
                         {booking.mealRequirements?.meals?.map((meal, idx) => {
-                            const dayTotal = ((meal.breakfast || 0) * 100) + ((meal.lunch || 0) * 150) + 
-                                            ((meal.dinner || 0) * 150) + ((meal.tea || 0) * 15) + ((meal.milk || 0) * 30);
+                            // Apply Full Day bundle: B+L+D+T = ₹400 (instead of ₹415 individually)
+                            const b = meal.breakfast || 0, l = meal.lunch || 0, d = meal.dinner || 0, t = meal.tea || 0, m = meal.milk || 0;
+                            const fullDaySets = Math.min(b, l, d, t);
+                            const dayTotal = (fullDaySets * 400) +
+                                            ((b - fullDaySets) * 100) + ((l - fullDaySets) * 150) +
+                                            ((d - fullDaySets) * 150) + ((t - fullDaySets) * 15) + (m * 30);
                             return (
                                 <tr key={idx}>
                                     <td className="font-medium">Day {idx + 1}</td>

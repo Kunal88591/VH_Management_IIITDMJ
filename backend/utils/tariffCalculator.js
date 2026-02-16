@@ -5,12 +5,12 @@
 
 // Room Tariff Matrix (per night)
 const ROOM_TARIFF = {
-    // Normal Rooms (Non-Suite)
+    // Normal Rooms (Non-Suite) — as per official tariff w.e.f. 1 Sep 2023
     normal: {
-        A: { Single: 0, Double: 1200 },
-        B: { Single: 800, Double: 0 },
-        C: { Single: 1000, Double: 1500 },
-        D: { Single: 1800, Double: 1800 }
+        A: { Single: 0, Double: 0 },
+        B: { Single: 800, Double: 1000 },
+        C: { Single: 1200, Double: 1500 },
+        D: { Single: 1800, Double: 2000 }
     },
     // Suite Rooms (independent of occupancy)
     suite: {
