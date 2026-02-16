@@ -373,9 +373,6 @@ Built in **100% compliance** with PDPM IIITDM Jabalpur Visitor's Hostel Rules & 
     <td align="center">
       <a href="https://github.com/Kunal88591">
         <img src="https://github.com/Kunal88591.png" width="120" style="border-radius: 50%;" alt="Kunal88591" /><br />
-
-    
-  </tr>
 </table>
 
 
