@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { HiMenu, HiX, HiUser, HiLogout, HiCalendar, HiCog } from 'react-icons/hi';
+import { HiMenu, HiX, HiUser, HiLogout, HiCalendar, HiCog, HiClipboardList } from 'react-icons/hi';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,6 +56,9 @@ const Navbar = () => {
             <Link to="/book" className="btn-accent text-sm">
               Book Now
             </Link>
+            <Link to="/meal-order" className="text-white/90 hover:text-white transition-colors font-medium">
+              Order Meals
+            </Link>
             
             {isAuthenticated ? (
               <div className="relative">
@@ -89,6 +92,14 @@ const Navbar = () => {
                         >
                           <HiCalendar className="w-5 h-5 mr-2" />
                           My Bookings
+                        </Link>
+                        <Link
+                          to="/my-meal-orders"
+                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          onClick={() => setDropdownOpen(false)}
+                        >
+                          <HiClipboardList className="w-5 h-5 mr-2" />
+                          My Meal Orders
                         </Link>
                         <Link
                           to="/profile"
@@ -170,6 +181,13 @@ const Navbar = () => {
             >
               Book Now
             </Link>
+            <Link
+              to="/meal-order"
+              className="block text-white/90 hover:text-white py-2"
+              onClick={() => setIsOpen(false)}
+            >
+              Order Meals
+            </Link>
             
             {isAuthenticated ? (
               <>
@@ -189,6 +207,13 @@ const Navbar = () => {
                       onClick={() => setIsOpen(false)}
                     >
                       My Bookings
+                    </Link>
+                    <Link
+                      to="/my-meal-orders"
+                      className="block text-white/90 hover:text-white py-2"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      My Meal Orders
                     </Link>
                     <Link
                       to="/profile"

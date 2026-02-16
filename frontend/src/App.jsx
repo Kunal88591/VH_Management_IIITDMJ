@@ -19,11 +19,13 @@ import ResetPassword from './pages/ResetPassword';
 import Rules from './pages/Rules';
 import BookingForm from './pages/BookingForm';
 import BookingConfirmation from './pages/BookingConfirmation';
+import MealOrderForm from './pages/MealOrderForm';
 
 // Guest Pages
 import MyBookings from './pages/guest/MyBookings';
 import BookingDetails from './pages/guest/BookingDetails';
 import Profile from './pages/guest/Profile';
+import MyMealOrders from './pages/guest/MyMealOrders';
 
 // Admin Pages
 import AdminBookings from './pages/admin/Bookings';
@@ -31,6 +33,7 @@ import AdminRooms from './pages/admin/Rooms';
 import AdminStaff from './pages/admin/Staff';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminManagement from './pages/admin/AdminManagement';
+import AdminMealOrders from './pages/admin/MealOrders';
 
 // Protected Route Component
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -59,6 +62,12 @@ function App() {
             <Route path="/book" element={
               <ProtectedRoute><Navbar /><BookingForm /><Footer /></ProtectedRoute>
             } />
+            <Route path="/meal-order" element={
+              <ProtectedRoute><Navbar /><MealOrderForm /><Footer /></ProtectedRoute>
+            } />
+            <Route path="/my-meal-orders" element={
+              <ProtectedRoute><Navbar /><MyMealOrders /><Footer /></ProtectedRoute>
+            } />
             <Route path="/booking-confirmation/:id" element={
               <ProtectedRoute><Navbar /><BookingConfirmation /><Footer /></ProtectedRoute>
             } />
@@ -82,6 +91,7 @@ function App() {
               <Route path="staff" element={<AdminStaff />} />
               <Route path="attendance" element={<AdminAttendance />} />
               <Route path="admins" element={<AdminManagement />} />
+              <Route path="meal-orders" element={<AdminMealOrders />} />
             </Route>
           </Routes>
         </div>

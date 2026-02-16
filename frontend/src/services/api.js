@@ -117,3 +117,16 @@ export const dashboardAPI = {
   getBookingStatusChart: () => api.get('/dashboard/booking-status-chart'),
   getFoodBillingSummary: (params) => api.get('/dashboard/food-billing-summary', { params }),
 };
+
+// Meal Order APIs
+export const mealOrderAPI = {
+  getAll: (params) => api.get('/meal-orders', { params }),
+  getById: (id) => api.get(`/meal-orders/${id}`),
+  create: (data) => api.post('/meal-orders', data),
+  approve: (id) => api.put(`/meal-orders/${id}/approve`),
+  reject: (id) => api.put(`/meal-orders/${id}/reject`),
+  complete: (id) => api.put(`/meal-orders/${id}/complete`),
+  cancel: (id) => api.put(`/meal-orders/${id}/cancel`),
+  updatePayment: (id, data) => api.put(`/meal-orders/${id}/payment`, data),
+  getInvoice: (id) => api.get(`/meal-orders/${id}/invoice`, { responseType: 'blob' }),
+};

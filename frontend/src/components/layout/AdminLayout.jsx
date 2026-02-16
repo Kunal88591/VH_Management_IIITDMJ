@@ -13,7 +13,8 @@ import {
   HiLogout,
   HiExternalLink,
   HiShieldCheck,
-  HiUser
+  HiUser,
+  HiClipboardList
 } from 'react-icons/hi';
 
 const AdminLayout = () => {
@@ -26,6 +27,7 @@ const AdminLayout = () => {
   const menuItems = [
     { path: '/admin/bookings', icon: HiCalendar, label: 'Bookings' },
     { path: '/admin/rooms', icon: HiOfficeBuilding, label: 'Rooms' },
+    { path: '/admin/meal-orders', icon: HiClipboardList, label: 'Meal Orders' },
     { path: '/admin/staff', icon: HiUserGroup, label: 'Staff' },
     { path: '/admin/attendance', icon: HiClock, label: 'Attendance' },
     { path: '/admin/admins', icon: HiShieldCheck, label: 'Admins' },

@@ -130,6 +130,7 @@ const staffRoutes = require('./routes/staff');
 const attendanceRoutes = require('./routes/attendance');
 const dashboardRoutes = require('./routes/dashboard');
 const adminRoutes = require('./routes/admin');
+const mealOrderRoutes = require('./routes/mealOrders');
 
 // Use Routes
 app.use('/api/auth', authRoutes);
@@ -140,6 +141,7 @@ app.use('/api/staff', staffRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/meal-orders', mealOrderRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

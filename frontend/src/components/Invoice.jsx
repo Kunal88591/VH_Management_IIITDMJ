@@ -3,8 +3,6 @@ import { HiX, HiPrinter, HiDownload, HiHome, HiCake } from 'react-icons/hi';
 import './Invoice.css';
 
 const Invoice = ({ booking, onClose }) => {
-    const [activeTab, setActiveTab] = useState('room'); // 'room' or 'meal'
-    
     if (!booking) return null;
 
     const formatDate = (date) => {
@@ -52,6 +50,12 @@ const Invoice = ({ booking, onClose }) => {
     // Check if meals were opted
     const hasMeals = booking.mealRequirements && booking.mealRequirements.required && booking.mealCharges > 0;
 
+    // For room presence
+    const hasRooms = booking.rooms && booking.rooms.length > 0 && (booking.roomCharges || 0) > 0;
+
+    // Initialize active tab: prefer meal tab when there are no rooms
+    const [activeTab, setActiveTab] = useState(hasRooms ? 'room' : (hasMeals ? 'meal' : 'room'));
+
     // Payment calculations
     const totalAmount = booking.totalAmount || 0;
     const amountPaid = booking.amountPaid || 0;
@@ -60,7 +64,7 @@ const Invoice = ({ booking, onClose }) => {
     // For separate invoices
     const roomCharges = booking.roomCharges || 0;
     const mealCharges = booking.mealCharges || 0;
-    
+
     // Calculate proportional payment for room/meal
     const roomPaidRatio = totalAmount > 0 ? roomCharges / totalAmount : 0;
     const mealPaidRatio = totalAmount > 0 ? mealCharges / totalAmount : 0;
@@ -380,13 +384,15 @@ const Invoice = ({ booking, onClose }) => {
                 {/* Header with Tabs - Hide on print */}
                 <div className="invoice-modal-header no-print">
                     <div className="invoice-tabs">
-                        <button
-                            onClick={() => setActiveTab('room')}
-                            className={`invoice-tab ${activeTab === 'room' ? 'active' : ''}`}
-                        >
-                            <HiHome className="w-4 h-4" />
-                            Room Invoice
-                        </button>
+                        {hasRooms && (
+                            <button
+                                onClick={() => setActiveTab('room')}
+                                className={`invoice-tab ${activeTab === 'room' ? 'active' : ''}`}
+                            >
+                                <HiHome className="w-4 h-4" />
+                                Room Invoice
+                            </button>
+                        )}
                         {hasMeals && (
                             <button
                                 onClick={() => setActiveTab('meal')}
