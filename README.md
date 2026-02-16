@@ -374,22 +374,7 @@ Built in **100% compliance** with PDPM IIITDM Jabalpur Visitor's Hostel Rules & 
       <a href="https://github.com/Kunal88591">
         <img src="https://github.com/Kunal88591.png" width="120" style="border-radius: 50%;" alt="Kunal88591" /><br />
 
-    ## 🆕 Recent Updates
-
-    - **Meal-only orders:** Full meal-order flow added (frontend + backend). Guests can place meal-only orders without room bookings; orders include per-day meal breakdown, full-day bundle pricing, and total meal charge computation.
-    - **Invoice reuse for meal orders:** Meal-only orders now reuse the existing `Invoice` component so guests and admins get the same print/save invoice UI. The Room tab is hidden for meal-only orders and the Meal tab is shown by default.
-    - **Admin invoice view:** Admins can open the invoice for any meal order from the admin Meal Orders list via a new "View Invoice" action.
-    - **Admin payment amounts:** When admins mark an order as `Paid` or `Partially Paid`, they are prompted to enter the paid amount; the value is saved as `amountPaid` and reflected on the invoice and balance due.
-
-        <sub><b>Kunal88591</b></sub>
-      </a>
-      <br />
-      <sub>Full-Stack Developer</sub>
-      <br />
-      <a href="https://github.com/Kunal88591">
-        <img src="https://img.shields.io/badge/GitHub-Kunal88591-181717?style=flat-square&logo=github" />
-      </a>
-    </td>
+    
   </tr>
 </table>
 
