@@ -25,6 +25,27 @@ const Invoice = ({ booking, onClose }) => {
         return names[cat] || cat;
     };
 
+    const getSubCategoryLabel = (code) => {
+        const labels = {
+            'A-i': 'Institute Guests / Directors / Examiners / External Committee Members / Invited Speakers / CAG Audit Team / MoE Officials / Important guests of Chairman, BOG / Director / Senate / BWC / Statutory Bodies',
+            'A-ii': 'Other Institute guests not covered above (Approved by Director)',
+            'B-i': 'Institute employee & their dependents',
+            'B-ii': 'Project employee & their dependents',
+            'B-iii': 'Retired IIITDMJ Faculty / Staff / Alumni',
+            'B-iv': 'Relatives / Guests of IIITDMJ Faculty & Staff',
+            'B-v': 'Other than Institute employees staying for Institute work',
+            'B-vi': 'Any other Guest (Approved by the Director)',
+            'C-i': 'Employees of other IIITs / IITs / Centrally funded engineering colleges / Universities / PSUs',
+            'C-ii': 'Parents / Guardian / Spouse of IIITDMJ students',
+            'C-iii': 'Visitors of government / public sector organization',
+            'C-iv': 'Trainees coming to the Institute under programmes organized by the Institute',
+            'C-v': 'Others (Approved by the Director)',
+            'C-vi': 'Guest of State / Central or other Governments (not Institute guest)',
+            'D-i': 'Contractors, representatives of firms, vendors etc. coming for work viz. meeting, presentations etc.'
+        };
+        return labels[code] || code;
+    };
+
     // Calculate nights
     const nights = Math.ceil((new Date(booking.checkOutDate) - new Date(booking.checkInDate)) / (1000 * 60 * 60 * 24)) || 1;
 
@@ -96,6 +117,12 @@ const Invoice = ({ booking, onClose }) => {
                     <p className="label">Status:</p>
                     <p className="value">{booking.status}</p>
                 </div>
+                {booking.visitorSubCategory && (
+                    <div style={{ gridColumn: '1 / -1' }}>
+                        <p className="label">Sub-Category:</p>
+                        <p className="value">{getSubCategoryLabel(booking.visitorSubCategory)}</p>
+                    </div>
+                )}
             </div>
         </>
     );

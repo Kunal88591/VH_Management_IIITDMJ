@@ -52,10 +52,10 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  // Sub-category for Category B and C to identify specific visitor type
-  visitorSubType: {
+  // Visitor Sub-Category as per official tariff categories
+  visitorSubCategory: {
     type: String,
-    enum: ['employee', 'student_parent', 'other', ''],
+    trim: true,
     default: ''
   },
 

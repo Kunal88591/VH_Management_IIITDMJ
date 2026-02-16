@@ -35,7 +35,7 @@ router.get('/', protect, async (req, res) => {
     const total = await Booking.countDocuments(query);
 
     const bookings = await Booking.find(query)
-      .select('bookingId visitorCategory status checkInDate checkInTime checkOutDate checkOutTime numberOfGuests numberOfRooms totalAmount roomCharges mealCharges mealRequirements paymentStatus amountPaid paymentMethod paymentDate guests guestDetails rooms createdAt')
+      .select('bookingId visitorCategory visitorSubCategory status checkInDate checkInTime checkOutDate checkOutTime numberOfGuests numberOfRooms totalAmount roomCharges mealCharges mealRequirements paymentStatus amountPaid paymentMethod paymentDate guests guestDetails rooms createdAt')
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
@@ -134,6 +134,7 @@ router.post('/', protect, upload.fields([
   try {
     const {
       visitorCategory,
+      visitorSubCategory,
       bookingType,
       guests,
       employeeId,
@@ -283,6 +284,7 @@ router.post('/', protect, upload.fields([
     const booking = await Booking.create({
       bookedBy: req.user.id,
       visitorCategory,
+      visitorSubCategory: visitorSubCategory || '',
       bookingType,
       guests: parsedGuests,
       employeeId: employeeId || undefined,

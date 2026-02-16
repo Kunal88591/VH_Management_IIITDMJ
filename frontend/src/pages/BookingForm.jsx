@@ -37,6 +37,33 @@ const CATEGORIES = {
   }
 };
 
+// Subcategories as per official IIITDMJ VH policy Section III
+const SUBCATEGORIES = {
+  A: [
+    { value: 'A-i', label: 'Institute Guests / Directors / Examiners / External Committee Members / Invited Speakers / CAG Audit Team / MoE Officials / Important guests of Chairman, BOG / Director / Senate / BWC / Statutory Bodies' },
+    { value: 'A-ii', label: 'Other Institute guests not covered above (Approved by Director)' }
+  ],
+  B: [
+    { value: 'B-i', label: 'Institute employee & their dependents' },
+    { value: 'B-ii', label: 'Project employee & their dependents' },
+    { value: 'B-iii', label: 'Retired IIITDMJ Faculty / Staff / Alumni' },
+    { value: 'B-iv', label: 'Relatives / Guests of IIITDMJ Faculty & Staff' },
+    { value: 'B-v', label: 'Other than Institute employees staying for Institute work' },
+    { value: 'B-vi', label: 'Any other Guest (Approved by the Director)' }
+  ],
+  C: [
+    { value: 'C-i', label: 'Employees of other IIITs / IITs / Centrally funded engineering colleges / Universities / PSUs' },
+    { value: 'C-ii', label: 'Parents / Guardian / Spouse of IIITDMJ students' },
+    { value: 'C-iii', label: 'Visitors of government / public sector organization' },
+    { value: 'C-iv', label: 'Trainees coming to the Institute under programmes organized by the Institute' },
+    { value: 'C-v', label: 'Others (Approved by the Director)' },
+    { value: 'C-vi', label: 'Guest of State / Central or other Governments (not Institute guest)' }
+  ],
+  D: [
+    { value: 'D-i', label: 'Contractors, representatives of firms, vendors etc. coming for work viz. meeting, presentations etc.' }
+  ]
+};
+
 const BookingForm = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -50,6 +77,7 @@ const BookingForm = () => {
   const [formData, setFormData] = useState({
     // Category and Booking Type
     visitorCategory: '',
+    visitorSubCategory: '',
     bookingType: 'self',
 
     // Guests
@@ -193,6 +221,10 @@ const BookingForm = () => {
           toast.error('Please select a visitor category');
           return false;
         }
+        if (!formData.visitorSubCategory) {
+          toast.error('Please select a visitor sub-category');
+          return false;
+        }
         if (!formData.bookingType) {
           toast.error('Please select booking type');
           return false;
@@ -312,6 +344,7 @@ const BookingForm = () => {
 
       // Basic fields
       submitData.append('visitorCategory', formData.visitorCategory);
+      submitData.append('visitorSubCategory', formData.visitorSubCategory);
       submitData.append('bookingType', formData.bookingType);
       submitData.append('guests', JSON.stringify(formData.guests));
       submitData.append('numberOfGuests', formData.guests.length);
@@ -416,7 +449,7 @@ const BookingForm = () => {
                       {Object.entries(CATEGORIES).map(([key, cat]) => (
                         <div
                           key={key}
-                          onClick={() => setFormData(prev => ({ ...prev, visitorCategory: key }))}
+                          onClick={() => setFormData(prev => ({ ...prev, visitorCategory: key, visitorSubCategory: '' }))}
                           className={`p-4 border-2 rounded-lg cursor-pointer transition-all hover:shadow-md ${formData.visitorCategory === key
                             ? 'border-secondary bg-secondary/5 shadow-lg'
                             : 'border-gray-200 hover:border-secondary/50'
@@ -441,6 +474,25 @@ const BookingForm = () => {
                       ))}
                     </div>
                   </div>
+
+                  {/* Visitor Sub-Category */}
+                  {formData.visitorCategory && SUBCATEGORIES[formData.visitorCategory] && (
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Visitor Sub-Category *</label>
+                      <select
+                        name="visitorSubCategory"
+                        value={formData.visitorSubCategory}
+                        onChange={handleChange}
+                        className="input-field w-full"
+                        required
+                      >
+                        <option value="">-- Select Sub-Category --</option>
+                        {SUBCATEGORIES[formData.visitorCategory].map((sub) => (
+                          <option key={sub.value} value={sub.value}>{sub.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
 
                   {/* Booking Type */}
                   <div className="mb-6">
@@ -881,6 +933,9 @@ const BookingForm = () => {
                   <h3 className="font-semibold mb-3">Booking Summary</h3>
                   <div className="text-sm text-gray-600 space-y-1">
                     <p><strong>Category:</strong> {CATEGORIES[formData.visitorCategory]?.name}</p>
+                    {formData.visitorSubCategory && (
+                      <p><strong>Sub-Category:</strong> {SUBCATEGORIES[formData.visitorCategory]?.find(s => s.value === formData.visitorSubCategory)?.label}</p>
+                    )}
                     <p><strong>Booking Type:</strong> {formData.bookingType === 'self' ? 'Self' : 'For Others'}</p>
                     <p><strong>Guests:</strong> {formData.guests.length}</p>
                     <p><strong>Check-in:</strong> {formData.checkInDate} at {formData.checkInTime}</p>

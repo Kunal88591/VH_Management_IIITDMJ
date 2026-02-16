@@ -9,6 +9,24 @@ const BookingConfirmation = () => {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const SUB_CATEGORY_LABELS = {
+    'A-i': 'Institute Guests / Directors / Examiners / External Committee Members / Invited Speakers / CAG Audit Team / MoE Officials',
+    'A-ii': 'Other Institute guests (Approved by Director)',
+    'B-i': 'Institute employee & dependents',
+    'B-ii': 'Project employee & dependents',
+    'B-iii': 'Retired IIITDMJ Faculty / Staff / Alumni',
+    'B-iv': 'Relatives / Guests of IIITDMJ Faculty & Staff',
+    'B-v': 'Non-Institute employees staying for Institute work',
+    'B-vi': 'Other Guest (Approved by Director)',
+    'C-i': 'Employees of IIITs / IITs / CFTIs / Universities / PSUs',
+    'C-ii': 'Parents / Guardian / Spouse of IIITDMJ students',
+    'C-iii': 'Govt / public sector visitors',
+    'C-iv': 'Trainees under Institute programmes',
+    'C-v': 'Others (Approved by Director)',
+    'C-vi': 'State / Central Govt guests (not Institute guest)',
+    'D-i': 'Contractors / vendors / firm representatives'
+  };
+
   useEffect(() => {
     fetchBooking();
   }, [id]);
@@ -73,6 +91,13 @@ const BookingConfirmation = () => {
               <div className="flex items-center justify-between mb-4">
                 <span className="text-gray-600">Category</span>
                 <span className="font-semibold text-secondary">Category {booking.visitorCategory}</span>
+              </div>
+            )}
+
+            {booking.visitorSubCategory && (
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-gray-600">Sub-Category</span>
+                <span className="font-medium text-gray-800 text-sm text-right max-w-[60%]">{SUB_CATEGORY_LABELS[booking.visitorSubCategory] || booking.visitorSubCategory}</span>
               </div>
             )}
 
