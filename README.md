@@ -13,11 +13,11 @@
   <strong>Recent updates:</strong> Meal-only orders, admin invoice view, and admin payment amount entry added. See the "Recent Updates" section at the bottom of this README for details.
 </p>
 
-<p align="center">
+<!-- <p align="center">
   <a href="https://github.com/Kunal88591/VH_Management_IIITDMJ"><img src="https://img.shields.io/github/stars/Kunal88591/VH_Management_IIITDMJ?style=social" alt="Stars" /></a>
   <a href="https://github.com/Kunal88591/VH_Management_IIITDMJ/fork"><img src="https://img.shields.io/github/forks/Kunal88591/VH_Management_IIITDMJ?style=social" alt="Forks" /></a>
   <a href="https://github.com/Kunal88591"><img src="https://img.shields.io/github/followers/Kunal88591?style=social" alt="Followers" /></a>
-</p>
+</p> -->
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
