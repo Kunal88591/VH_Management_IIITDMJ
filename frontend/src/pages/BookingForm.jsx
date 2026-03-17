@@ -117,9 +117,24 @@ const BookingForm = () => {
     }
   }, [searchParams]);
 
+  // Refetch rooms whenever dates change
+  useEffect(() => {
+    if (formData.checkInDate && formData.checkOutDate) {
+      fetchRooms();
+    }
+  }, [formData.checkInDate, formData.checkOutDate]);
+
   const fetchRooms = async () => {
     try {
-      const response = await roomAPI.getAll({ available: 'true' });
+      const params = { available: 'true' };
+      
+      // Add date-based availability check if dates are selected
+      if (formData.checkInDate && formData.checkOutDate) {
+        params.checkIn = formData.checkInDate;
+        params.checkOut = formData.checkOutDate;
+      }
+      
+      const response = await roomAPI.getAll(params);
       setRooms(response.data.data);
     } catch (error) {
       toast.error('Failed to fetch rooms');
