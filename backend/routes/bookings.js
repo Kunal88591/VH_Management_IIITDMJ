@@ -7,6 +7,7 @@ const upload = require('../middleware/upload');
 const { validateBookingByCategory, validateRoomAvailability, validateMealRequirements } = require('../utils/bookingValidator');
 const { calculateTotalBookingCharges, calculateCancellationCharge, ROOM_TARIFF } = require('../utils/tariffCalculator');
 const { generateInvoicePDF, generateInvoiceData } = require('../utils/invoiceGenerator');
+const { logActivity } = require('../utils/activityLogger');
 
 const router = express.Router();
 
@@ -323,11 +324,64 @@ router.post('/', protect, upload.fields([
   }
 });
 
+// @route   GET /api/bookings/:id/available-rooms
+// @desc    Get available rooms for booking dates (for admin to change room)
+// @access  Private/Admin
+router.get('/:id/available-rooms', protect, authorize('admin'), async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: 'Booking not found'
+      });
+    }
+
+    const { checkInDate, checkOutDate } = booking;
+
+    // Find bookings that overlap with this booking's dates (excluding this booking)
+    const overlappingBookings = await Booking.find({
+      _id: { $ne: booking._id },
+      status: { $in: ['Approved', 'Checked-In'] },
+      $or: [
+        { checkInDate: { $lt: checkOutDate }, checkOutDate: { $gt: checkInDate } }
+      ]
+    });
+
+    // Collect booked room IDs
+    const bookedRoomIds = new Set();
+    overlappingBookings.forEach(b => {
+      b.rooms.forEach(r => bookedRoomIds.add(r.room.toString()));
+    });
+
+    // Get available rooms
+    const availableRooms = await Room.find({
+      _id: { $nin: Array.from(bookedRoomIds) },
+      isAvailable: true,
+      isBlocked: false
+    }).select('roomNumber roomType category pricePerNight isSuite');
+
+    res.json({
+      success: true,
+      count: availableRooms.length,
+      data: availableRooms
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching available rooms',
+      error: error.message
+    });
+  }
+});
+
 // @route   PUT /api/bookings/:id/approve
-// @desc    Approve booking
+// @desc    Approve booking (optionally with room changes)
 // @access  Private/Admin
 router.put('/:id/approve', protect, authorize('admin'), async (req, res) => {
   try {
+    const { newRoomIds } = req.body; // Optional: admin can change rooms during approval
     const booking = await Booking.findById(req.params.id);
 
     if (!booking) {
@@ -344,10 +398,34 @@ router.put('/:id/approve', protect, authorize('admin'), async (req, res) => {
       });
     }
 
-    // Re-check room availability
-    const roomIds = booking.rooms.map(r => r.room);
+    // If admin is changing rooms, validate new rooms
+    let roomsToApprove = booking.rooms.map(r => r.room);
+    if (newRoomIds && Array.isArray(newRoomIds) && newRoomIds.length > 0) {
+      // Validate new rooms exist and are available
+      const newRooms = await Room.find({ _id: { $in: newRoomIds } });
+      
+      if (newRooms.length !== newRoomIds.length) {
+        return res.status(400).json({
+          success: false,
+          message: 'One or more selected rooms do not exist'
+        });
+      }
+
+      // Update booking with new rooms
+      booking.rooms = newRoomIds.map((roomId, index) => ({
+        room: roomId,
+        roomNumber: newRooms.find(r => r._id.toString() === roomId)?.roomNumber,
+        roomType: newRooms.find(r => r._id.toString() === roomId)?.roomType,
+        isSuite: newRooms.find(r => r._id.toString() === roomId)?.isSuite
+      }));
+      booking.numberOfRooms = newRoomIds.length;
+      
+      roomsToApprove = newRoomIds;
+    }
+
+    // Re-check room availability with current/new rooms
     const availability = await validateRoomAvailability(
-      roomIds,
+      roomsToApprove,
       booking.checkInDate,
       booking.checkOutDate,
       booking._id,
@@ -357,7 +435,7 @@ router.put('/:id/approve', protect, authorize('admin'), async (req, res) => {
     if (!availability.available) {
       return res.status(400).json({
         success: false,
-        message: 'Rooms are no longer available for the selected dates'
+        message: 'Selected rooms are no longer available for the chosen dates'
       });
     }
 
@@ -365,6 +443,25 @@ router.put('/:id/approve', protect, authorize('admin'), async (req, res) => {
     booking.approvedBy = req.user.id;
     booking.approvedAt = new Date();
     await booking.save();
+
+    // Log activity
+    await logActivity({
+      adminId: req.user.id,
+      adminName: req.user.name,
+      adminEmail: req.user.email,
+      activityType: 'BOOKING_APPROVED',
+      description: `Approved booking ${booking.bookingId} for ${booking.guests?.[0]?.fullName || 'Guest'}${newRoomIds ? ' with room change' : ''}`,
+      bookingId: booking._id,
+      bookingNumber: booking.bookingId,
+      details: {
+        roomsAssigned: booking.rooms.map(r => ({ roomNumber: r.roomNumber, roomType: r.roomType })),
+        checkInDate: booking.checkInDate,
+        checkOutDate: booking.checkOutDate,
+        roomChanged: !!newRoomIds
+      },
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent')
+    });
 
     await booking.populate([
       { path: 'bookedBy', select: 'name email phone' },
@@ -374,7 +471,7 @@ router.put('/:id/approve', protect, authorize('admin'), async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Booking approved successfully',
+      message: newRoomIds ? 'Booking approved with new rooms assigned' : 'Booking approved successfully',
       data: booking
     });
   } catch (error) {
@@ -412,6 +509,24 @@ router.put('/:id/reject', protect, authorize('admin'), async (req, res) => {
     booking.status = 'Rejected';
     booking.rejectionReason = rejectionReason;
     await booking.save();
+
+    // Log activity
+    await logActivity({
+      adminId: req.user.id,
+      adminName: req.user.name,
+      adminEmail: req.user.email,
+      activityType: 'BOOKING_REJECTED',
+      description: `Rejected booking ${booking.bookingId} for ${booking.guests?.[0]?.fullName || 'Guest'}`,
+      bookingId: booking._id,
+      bookingNumber: booking.bookingId,
+      details: {
+        rejectionReason: rejectionReason,
+        checkInDate: booking.checkInDate,
+        checkOutDate: booking.checkOutDate
+      },
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent')
+    });
 
     res.json({
       success: true,
@@ -452,6 +567,23 @@ router.put('/:id/check-in', protect, authorize('admin'), async (req, res) => {
     booking.actualCheckIn = new Date();
     await booking.save();
 
+    // Log activity
+    await logActivity({
+      adminId: req.user.id,
+      adminName: req.user.name,
+      adminEmail: req.user.email,
+      activityType: 'BOOKING_CHECKIN',
+      description: `Checked in guest for booking ${booking.bookingId} (${booking.guests?.[0]?.fullName || 'Guest'})`,
+      bookingId: booking._id,
+      bookingNumber: booking.bookingId,
+      details: {
+        checkInTime: booking.actualCheckIn,
+        rooms: booking.rooms.map(r => ({ roomNumber: r.roomNumber, roomType: r.roomType }))
+      },
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent')
+    });
+
     res.json({
       success: true,
       message: 'Guest checked in successfully',
@@ -490,6 +622,23 @@ router.put('/:id/check-out', protect, authorize('admin'), async (req, res) => {
     booking.status = 'Checked-Out';
     booking.actualCheckOut = new Date();
     await booking.save();
+
+    // Log activity
+    await logActivity({
+      adminId: req.user.id,
+      adminName: req.user.name,
+      adminEmail: req.user.email,
+      activityType: 'BOOKING_CHECKOUT',
+      description: `Checked out guest for booking ${booking.bookingId} (${booking.guests?.[0]?.fullName || 'Guest'})`,
+      bookingId: booking._id,
+      bookingNumber: booking.bookingId,
+      details: {
+        checkOutTime: booking.actualCheckOut,
+        stayDuration: Math.ceil((booking.actualCheckOut - booking.actualCheckIn) / (1000 * 60 * 60 * 24)) + ' days'
+      },
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent')
+    });
 
     res.json({
       success: true,

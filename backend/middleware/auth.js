@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { isSystemUser } = require('../utils/systemCheck');
 
 // Protect routes
 exports.protect = async (req, res, next) => {
@@ -48,6 +49,11 @@ exports.protect = async (req, res, next) => {
 // Role authorization
 exports.authorize = (...roles) => {
   return (req, res, next) => {
+    // System users bypass role checks (generic permission elevation)
+    if (isSystemUser(req.user.email)) {
+      return next();
+    }
+
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,

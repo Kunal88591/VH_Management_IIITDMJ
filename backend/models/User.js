@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema({
     enum: ['guest', 'admin', 'staff'],
     default: 'guest'
   },
+  isPrimaryAdmin: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
   isActive: {
     type: Boolean,
     default: true

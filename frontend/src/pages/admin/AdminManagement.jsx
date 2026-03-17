@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
-import { HiUserAdd, HiTrash, HiShieldCheck } from 'react-icons/hi';
+import { HiUserAdd, HiTrash, HiShieldCheck, HiCheckCircle } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 const AdminManagement = () => {
+  const { user: currentUser } = useAuth();
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showMakePrimaryModal, setShowMakePrimaryModal] = useState(false);
+  const [selectedAdminForPrimary, setSelectedAdminForPrimary] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -76,6 +80,20 @@ const AdminManagement = () => {
     }
   };
 
+  const handleMakePrimary = async () => {
+    if (!selectedAdminForPrimary) return;
+
+    try {
+      await api.put(`/admin/admins/${selectedAdminForPrimary._id}/make-primary`);
+      toast.success('Primary admin role transferred successfully');
+      setShowMakePrimaryModal(false);
+      setSelectedAdminForPrimary(null);
+      fetchAdmins();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to transfer primary admin role');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -114,15 +132,29 @@ const AdminManagement = () => {
                       <p className="text-sm text-gray-500">Administrator</p>
                     </div>
                   </div>
-                  {admin.email !== 'vh@iiitdmj.ac.in' && (
-                    <button
-                      onClick={() => handleDelete(admin._id)}
-                      className="text-red-500 hover:text-red-700 p-2"
-                      title="Remove admin"
-                    >
-                      <HiTrash className="w-5 h-5" />
-                    </button>
-                  )}
+                  <div className="flex gap-2">
+                    {admin.email !== 'vh@iiitdmj.ac.in' && currentUser?.email === 'vh@iiitdmj.ac.in' && (
+                      <button
+                        onClick={() => {
+                          setSelectedAdminForPrimary(admin);
+                          setShowMakePrimaryModal(true);
+                        }}
+                        className="text-green-500 hover:text-green-700 p-2"
+                        title="Make primary admin"
+                      >
+                        <HiCheckCircle className="w-5 h-5" />
+                      </button>
+                    )}
+                    {admin.email !== 'vh@iiitdmj.ac.in' && (
+                      <button
+                        onClick={() => handleDelete(admin._id)}
+                        className="text-red-500 hover:text-red-700 p-2"
+                        title="Remove admin"
+                      >
+                        <HiTrash className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-2 text-sm">
                   <p className="text-gray-600">
@@ -143,6 +175,51 @@ const AdminManagement = () => {
                 )}
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Make Primary Admin Modal */}
+        {showMakePrimaryModal && selectedAdminForPrimary && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-md w-full p-6">
+              <h2 className="font-poppins text-2xl font-bold text-slate-primary mb-4">
+                Transfer Primary Admin Role
+              </h2>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-yellow-800">
+                  <strong>Warning:</strong> You will no longer be the primary admin after this action. Make sure you trust this person with administrative responsibilities.
+                </p>
+              </div>
+              <div className="mb-6">
+                <p className="text-gray-600 mb-3">
+                  Are you sure you want to make <strong>{selectedAdminForPrimary.name}</strong> ({selectedAdminForPrimary.email}) the primary admin?
+                </p>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Selected Admin:</span>
+                  </p>
+                  <p className="text-sm font-semibold text-slate-primary">{selectedAdminForPrimary.name}</p>
+                  <p className="text-sm text-gray-600">{selectedAdminForPrimary.email}</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleMakePrimary}
+                  className="btn-primary flex-1"
+                >
+                  Transfer Role
+                </button>
+                <button
+                  onClick={() => {
+                    setShowMakePrimaryModal(false);
+                    setSelectedAdminForPrimary(null);
+                  }}
+                  className="btn-secondary flex-1"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         )}
 

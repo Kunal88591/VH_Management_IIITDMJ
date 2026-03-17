@@ -1,35 +1,35 @@
 <p align="center">
-  <img src="https://media.9curry.com/uploads/organization/image/497/iiitdmj.png" alt="IIITDMJ Logo" width="100" />
+  <img src="https://media.9curry.com/uploads/organization/image/497/iiitdmj.png" alt="IIITDMJ Logo" width="120" style="margin-bottom: 20px" />
 </p>
 
 <h1 align="center">🏨 Visitor's Hostel Management System</h1>
-<h3 align="center">PDPM Indian Institute of Information Technology, Design & Manufacturing, Jabalpur</h3>
+
+<h3 align="center">
+  <a href="https://vh.iiitdmj.ac.in" target="_blank" style="color: #0066cc; text-decoration: none;">
+    vh.iiitdmj.ac.in
+  </a>
+</h3>
+
+<h4 align="center">PDPM Indian Institute of Information Technology, Design & Manufacturing, Jabalpur</h4>
 
 <p align="center">
-  <strong>Developed by <a href="https://github.com/Kunal88591">Kunal88591</a></strong>
+  <strong>A comprehensive full-stack web application for managing visitor bookings, billing, staff, and operations</strong>
 </p>
 
 <p align="center">
-  <strong>Recent updates:</strong> Meal-only orders, admin invoice view, and admin payment amount entry added. See the "Recent Updates" section at the bottom of this README for details.
+  <strong>Developer:</strong> <a href="https://github.com/Kunal88591">Kunal Meena</a>
 </p>
 
-<!-- <p align="center">
-  <a href="https://github.com/Kunal88591/VH_Management_IIITDMJ"><img src="https://img.shields.io/github/stars/Kunal88591/VH_Management_IIITDMJ?style=social" alt="Stars" /></a>
-  <a href="https://github.com/Kunal88591/VH_Management_IIITDMJ/fork"><img src="https://img.shields.io/github/forks/Kunal88591/VH_Management_IIITDMJ?style=social" alt="Forks" /></a>
-  <a href="https://github.com/Kunal88591"><img src="https://img.shields.io/github/followers/Kunal88591?style=social" alt="Followers" /></a>
-</p> -->
-
+<!-- Tech Stack Badges -->
 <p align="center">
-  <img src="https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
-  <img src="https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white" />
-  <img src="https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white" />
-  <img src="https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
-  <img src="https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
-  <img src="https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
-</p>
-
-<p align="center">
-  A production-grade full-stack MERN web application to digitize and automate the complete operations of the Visitor's Hostel at IIITDM Jabalpur — from online booking & category-based tariff calculation to invoice generation, payment tracking, staff management, and attendance — built in <strong>100% compliance</strong> with official institute hostel rules & tariff (w.e.f. 1 September 2023).
+  <img src="https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
+  <img src="https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT" />
+  <img src="https://img.shields.io/badge/Nginx-Reverse Proxy-009639?style=for-the-badge&logo=nginx&logoColor=white" alt="Nginx" />
+  <img src="https://img.shields.io/badge/PM2-Process Manager-2B037A?style=for-the-badge&logo=pm2&logoColor=white" alt="PM2" />
 </p>
 
 ---
@@ -38,9 +38,28 @@
 
 This system replaces the traditional paper-based VH booking process with a modern, secure, and fully digital workflow:
 
-> **Guest** registers → selects visitor category & subcategory → uploads required documents → picks rooms & dates → optionally selects meals → accepts indenter responsibility → submits booking → **Admin** reviews documents → approves/rejects → guest checks in → invoice auto-generated → payment tracked → guest checks out.
+```
+Guest Registration 
+  ↓
+Select visitor category & documents
+  ↓
+Pick rooms & stay dates
+  ↓
+Optional meal selection
+  ↓
+Admin reviews & approves
+  ↓
+Guest checks in
+  ↓
+Invoice auto-generated
+  ↓
+Payment tracked
+  ↓
+Guest checks out
+```
 
-Everything is validated, calculated, and invoiced automatically as per official IIITDM Jabalpur rules.
+**Live Deployment:** https://vh.iiitdmj.ac.in  
+**Repository:** https://github.com/Kunal88591/VH_Management_IIITDMJ
 
 ---
 
@@ -107,14 +126,54 @@ Everything is validated, calculated, and invoiced automatically as per official 
 - Authorized Signatory + Guest signature fields
 - One-click **Print** / **Save as PDF**
 
-### 🏠 Admin Panel
-- **Dashboard** — real-time stats: occupancy, revenue, pending approvals
-- **Booking Management** — approve, reject, check-in, check-out, cancel
-- **Room Management** — add/edit/delete/block rooms, set amenities
-- **Staff Management** — manage employees with roles & shifts
-- **Attendance Tracking** — daily staff attendance records
-- **Payment Processing** — partial payments, manual status override
-- **Document Viewer** — view/download uploaded approval & ID documents
+### 🏠 Admin Dashboard & Control Panel
+
+**Booking Management:**
+- View pending bookings with document previews
+- Approve/Reject with optional feedback
+- Allocate specific rooms during approval
+- Check-in/Check-out guests
+- Track booking status lifecycle
+- Modify room assignments post-approval
+- Cancel bookings with penalty calculation
+
+**Room Management:**
+- Create new rooms with pricing & amenities
+- Update room information in real-time
+- Delete unused rooms
+- Block/Unblock individual rooms
+- Manage room categories & types
+- View occupancy status
+- Set floor and capacity limits
+
+**Financial Management:**
+- View all invoices with one-click PDF download
+- Track payment status (Paid/Partial/Unpaid)
+- Manually enter partial payments
+- Generate billing reports
+- View revenue analytics
+
+**Staff Management:**
+- Add/Edit/Remove staff members
+- Assign roles and shifts
+- Track staff performance
+- Manage employee data
+
+**Activity Tracking & Audit Trail:**
+- Complete audit trail of all admin actions
+- View what each admin approved/rejected/modified
+- Track admin role transfers
+- Filter by admin, date, or activity type
+- Pagination & search functionality
+- Activity summary with statistics
+
+**Primary Admin Authority:**
+- Create and delete admin accounts
+- Transfer primary admin role to other admins
+- View all activity logs in the system
+- Full booking and financial control
+- Monitor other admin activities
+- Change system-wide settings
 
 ### ✅ Validation & Document Requirements
 
@@ -169,81 +228,108 @@ Everything is validated, calculated, and invoiced automatically as per official 
 VH_Management_IIITDMJ/
 │
 ├── 📦 backend/
-│   ├── server.js                   # Express server, DB connect, auto-seed
+│   ├── server.js                      # Express server, DB connect, auto-seed
 │   ├── middleware/
-│   │   ├── auth.js                 # JWT verify + role authorization
-│   │   └── upload.js               # Multer config (5MB, pdf/jpg/png)
+│   │   ├── auth.js                    # JWT verify + role authorization
+│   │   └── upload.js                  # Multer config (5MB, pdf/jpg/png)
 │   ├── models/
-│   │   ├── Booking.js              # Full booking schema (guests, meals, payments, docs)
-│   │   ├── Room.js                 # Room (type, suite, AC, floor, amenities)
-│   │   ├── User.js                 # User (admin/staff/guest + bcrypt)
-│   │   ├── Staff.js                # Staff (employee ID, role, shift, salary)
-│   │   ├── Attendance.js           # Daily attendance records
-│   │   └── Bill.js                 # Billing entries
+│   │   ├── Booking.js                 # Full booking schema (guests, meals, payments, docs)
+│   │   ├── Room.js                    # Room (type, suite, AC, floor, amenities)
+│   │   ├── User.js                    # User (admin/staff/guest + bcrypt)
+│   │   ├── Staff.js                   # Staff (employee ID, role, shift, salary)
+│   │   ├── Attendance.js              # Daily attendance records
+│   │   ├── Bill.js                    # Billing & invoice entries
+│   │   ├── MealOrder.js               # Meal order tracking
+│   │   └── Activity.js                # Admin action audit trail
 │   ├── routes/
-│   │   ├── auth.js                 # Register / Login / Forgot / Reset Password
-│   │   ├── bookings.js             # Full booking lifecycle + invoice + payments
-│   │   ├── rooms.js                # Room CRUD + availability check
-│   │   ├── billing.js              # Billing endpoints
-│   │   ├── staff.js                # Staff CRUD
-│   │   ├── attendance.js           # Attendance management
-│   │   ├── dashboard.js            # Admin analytics & stats
-│   │   └── admin.js                # Admin user management
+│   │   ├── auth.js                    # Register / Login / Forgot / Reset Password
+│   │   ├── bookings.js                # Full booking lifecycle + approval + invoice + payments
+│   │   ├── rooms.js                   # Room CRUD + availability check + block/unblock
+│   │   ├── billing.js                 # Invoice generation & payment tracking
+│   │   ├── staff.js                   # Staff CRUD + role management
+│   │   ├── attendance.js              # Attendance tracking & reporting
+│   │   ├── dashboard.js               # Admin analytics & statistics
+│   │   ├── admin.js                   # Admin user management + role transfer
+│   │   ├── activity.js                # Activity logs + audit trail + filtering
+│   │   ├── mealOrders.js              # Meal order management
+│   │   └── payment_endpoint.js        # Payment processing
 │   ├── utils/
-│   │   ├── tariffCalculator.js     # Room & meal charge computation engine
-│   │   ├── bookingValidator.js     # Category-specific validation rules
-│   │   ├── invoiceGenerator.js     # PDF invoice generation (PDFKit)
-│   │   └── emailService.js         # Transactional email (Nodemailer)
-│   └── seeds/
-│       └── seed.js                 # Database seeder script
+│   │   ├── tariffCalculator.js        # Room & meal charge computation engine
+│   │   ├── bookingValidator.js        # Category-specific validation rules
+│   │   ├── invoiceGenerator.js        # PDF invoice generation
+│   │   ├── emailService.js            # Transactional email (Nodemailer, Gmail SMTP)
+│   │   ├── activityLogger.js          # Activity logging utility
+│   │   └── systemCheck.js             # System utility functions
+│   ├── seeds/
+│   │   └── seed.js                    # Database seeder with sample data
+│   ├── uploads/                       # Temporary file storage
+│   ├── ecosystem.config.js            # PM2 process management configuration
+│   └── package.json
 │
 ├── 🎨 frontend/
 │   ├── src/
-│   │   ├── App.jsx                 # Route definitions (public/guest/admin)
-│   │   ├── main.jsx                # React entry point
-│   │   ├── index.css               # Global styles + Tailwind
+│   │   ├── App.jsx                    # Route definitions (public/guest/admin)
+│   │   ├── main.jsx                   # React entry point
+│   │   ├── index.css                  # Global styles + Tailwind
 │   │   ├── context/
-│   │   │   └── AuthContext.jsx     # Auth state + token management
+│   │   │   └── AuthContext.jsx        # Auth state + token management
 │   │   ├── services/
-│   │   │   └── api.js              # Axios instance + API wrappers
+│   │   │   └── api.js                 # Axios instance + API wrappers
 │   │   ├── components/
-│   │   │   ├── Invoice.jsx         # Tabbed Room/Meal invoice viewer
-│   │   │   ├── Invoice.css         # Print-optimized invoice styles
-│   │   │   ├── PaymentModal.jsx    # Payment processing modal
-│   │   │   ├── ScrollToTop.jsx     # Route-change scroll reset
+│   │   │   ├── Invoice.jsx            # Tabbed Room/Meal invoice
+│   │   │   ├── Invoice.css            # Print-optimized styles
+│   │   │   ├── PaymentModal.jsx       # Payment dialog
+│   │   │   ├── ApprovalModal.jsx      # Room selection during approval
+│   │   │   ├── ActivityPanel.jsx      # Admin activity tracking dashboard
+│   │   │   ├── ScrollToTop.jsx        # Route-change scroll reset
 │   │   │   ├── auth/
-│   │   │   │   └── ProtectedRoute.jsx
+│   │   │   │   └── ProtectedRoute.jsx # Route protection component
 │   │   │   └── layout/
-│   │   │       ├── Navbar.jsx
-│   │   │       ├── Footer.jsx
-│   │   │       └── AdminLayout.jsx
+│   │   │       ├── Navbar.jsx         # Navigation bar
+│   │   │       ├── Footer.jsx         # Site footer
+│   │   │       └── AdminLayout.jsx    # Admin dashboard layout
 │   │   └── pages/
-│   │       ├── Home.jsx            # Landing page
-│   │       ├── Rooms.jsx           # Room browsing + filters
-│   │       ├── RoomDetails.jsx     # Individual room view
-│   │       ├── BookingForm.jsx     # 3-step booking wizard
-│   │       ├── BookingConfirmation.jsx
-│   │       ├── Rules.jsx           # Official VH rules & tariff
-│   │       ├── Gallery.jsx         # Photo gallery
-│   │       ├── Login.jsx / Register.jsx / ForgotPassword.jsx / ResetPassword.jsx
+│   │       ├── Home.jsx               # Landing page
+│   │       ├── Rooms.jsx              # Room browsing + filters
+│   │       ├── RoomDetails.jsx        # Individual room details
+│   │       ├── BookingForm.jsx        # 3-step booking wizard
+│   │       ├── BookingConfirmation.jsx # Confirmation screen
+│   │       ├── Gallery.jsx            # Photo gallery
+│   │       ├── Rules.jsx              # Official VH rules & tariff
+│   │       ├── Login.jsx              # Authentication
+│   │       ├── Register.jsx           # User registration
+│   │       ├── ForgotPassword.jsx     # Request password reset
+│   │       ├── ResetPassword.jsx      # Set new password
 │   │       ├── admin/
-│   │       │   ├── Bookings.jsx    # Booking management dashboard
-│   │       │   ├── Rooms.jsx       # Room management
-│   │       │   ├── Staff.jsx       # Staff management
-│   │       │   ├── Attendance.jsx  # Attendance tracking
-│   │       │   └── AdminManagement.jsx
+│   │       │   ├── AdminManagement.jsx # Create/manage/transfer admin roles
+│   │       │   ├── Bookings.jsx       # Booking approval + room allocation
+│   │       │   ├── Rooms.jsx          # Room CRUD operations
+│   │       │   ├── Staff.jsx          # Staff management
+│   │       │   ├── Attendance.jsx     # Attendance tracking
+│   │       │   ├── MealOrders.jsx     # Meal order processing
+│   │       │   └── Activity.jsx       # Activity audit trail dashboard
 │   │       └── guest/
-│   │           ├── MyBookings.jsx  # Guest's bookings list
-│   │           ├── BookingDetails.jsx
-│   │           └── Profile.jsx     # Guest profile
+│   │           ├── MyBookings.jsx     # Guest's bookings history
+│   │           ├── BookingDetails.jsx # Single booking details
+│   │           ├── MyMealOrders.jsx   # Meal order history
+│   │           └── Profile.jsx        # Guest profile management
 │   ├── tailwind.config.js
 │   ├── postcss.config.js
-│   └── vite.config.js
+│   ├── vite.config.js
+│   └── package.json
 │
-├── build.sh                        # Vercel build script
-├── vercel.json                     # SPA routing for Vercel
-├── package.json                    # Root-level scripts
-└── README.md                       # You are here!
+├── docs/
+│   ├── PROJECT_STRUCTURE.md           # Detailed documentation
+│   ├── BIOMETRIC_INTEGRATION.md       # Biometric integration guide
+│   └── CLOUDINARY_QUICKSTART.md       # File upload configuration
+│
+├── DEPLOYMENT_GUIDE.md                # Complete deployment instructions
+├── QUICK_REFERENCE.md                 # Quick command reference
+├── PRE_DEPLOYMENT_CHECKLIST.md        # Pre-deployment checklist
+├── NGINX_CONFIG.conf                  # Nginx configuration
+├── DEPLOYMENT_README.md               # Deployment overview
+├── build.sh                           # Build & deployment script
+└── README.md                          # This file
 ```
 
 ---

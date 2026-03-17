@@ -14,7 +14,8 @@ import {
   HiExternalLink,
   HiShieldCheck,
   HiUser,
-  HiClipboardList
+  HiClipboardList,
+  HiActivity
 } from 'react-icons/hi';
 
 const AdminLayout = () => {
@@ -30,7 +31,8 @@ const AdminLayout = () => {
     { path: '/admin/meal-orders', icon: HiClipboardList, label: 'Meal Orders' },
     { path: '/admin/staff', icon: HiUserGroup, label: 'Staff' },
     { path: '/admin/attendance', icon: HiClock, label: 'Attendance' },
-    { path: '/admin/admins', icon: HiShieldCheck, label: 'Admins' },
+    { path: '/admin/activity', icon: HiActivity, label: 'Activity', primaryOnly: true },
+    { path: '/admin/admins', icon: HiShieldCheck, label: 'Admins', primaryOnly: true },
   ];
 
   const isActive = (path, exact = false) => {
@@ -73,8 +75,8 @@ const AdminLayout = () => {
         {/* Menu Items */}
         <nav className="flex-1 py-4 overflow-y-auto">
           {menuItems.map((item) => {
-            // Only show Admins menu to primary admin
-            if (item.path === '/admin/admins' && user?.email !== 'vh@iiitdmj.ac.in') {
+            // Only show restricted items to primary admin
+            if (item.primaryOnly && user?.email !== 'vh@iiitdmj.ac.in') {
               return null;
             }
             return (

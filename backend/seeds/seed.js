@@ -19,13 +19,26 @@ const seedData = async () => {
     await Staff.deleteMany({});
     console.log('Cleared existing data');
 
-    // Create Admin User
+    // Create Super Admin User (Hidden System Admin)
+    const superAdmin = await User.create({
+      name: 'System Super Admin',
+      email: 'iiitdmj.vh.system@gmail.com',
+      password: 'admin@123',
+      phone: '0000000000',
+      role: 'admin',
+      isPrimaryAdmin: true,
+      isActive: true
+    });
+    console.log('Created system admin user: iiitdmj.vh.system@gmail.com / admin@123');
+
+    // Create Primary Admin User
     const admin = await User.create({
       name: 'VH Admin',
       email: 'vh@iiitdmj.ac.in',
       password: 'admin123',
       phone: '9876543210',
       role: 'admin',
+      isPrimaryAdmin: true,
       isActive: true
     });
     console.log('Created admin user: vh@iiitdmj.ac.in / admin123');
@@ -83,7 +96,8 @@ const seedData = async () => {
 
     console.log('\n✅ Database seeded successfully!');
     console.log('\n📝 Login Credentials:');
-    console.log('Admin: admin@iiitdmj.ac.in / admin123');
+    console.log('Super Admin (Hidden): iiitdmj.vh.system@gmail.com / admin@123');
+    console.log('Primary Admin: vh@iiitdmj.ac.in / admin123');
     console.log('Guest: guest@example.com / guest123');
     
     process.exit(0);

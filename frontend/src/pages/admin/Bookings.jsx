@@ -16,6 +16,7 @@ import {
 import toast from 'react-hot-toast';
 import Invoice from '../../components/Invoice';
 import PaymentModal from '../../components/PaymentModal';
+import ApprovalModal from '../../components/ApprovalModal';
 
 // API base URL for document download/view (same logic as api.js)
 const API_BASE_URL = import.meta.env.PROD
@@ -30,6 +31,8 @@ const Bookings = () => {
   const [showModal, setShowModal] = useState(false);
   const [showInvoice, setShowInvoice] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [bookingToApprove, setBookingToApprove] = useState(null);
   const [filters, setFilters] = useState({
     status: '',
     category: '',
@@ -96,10 +99,11 @@ const Bookings = () => {
 
       switch (action) {
         case 'approve':
-          const approveRes = await bookingAPI.approve(id);
-          updatedBooking = approveRes.data.data;
-          toast.success('Booking approved');
-          break;
+          // Open approval modal to select rooms
+          const booking = bookings.find(b => b._id === id);
+          setBookingToApprove(booking);
+          setShowApprovalModal(true);
+          return; // Don't proceed further
         case 'reject':
           const reason = prompt('Enter rejection reason:');
           if (!reason) return;
@@ -132,6 +136,38 @@ const Bookings = () => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Action failed');
+    }
+  };
+
+  const handleApprovalModalConfirm = async (selectedRoomIds) => {
+    try {
+      if (!bookingToApprove) return;
+
+      const approveRes = await bookingAPI.approve(bookingToApprove._id, selectedRoomIds);
+      const updatedBooking = approveRes.data.data;
+
+      toast.success(
+        selectedRoomIds
+          ? 'Booking approved with new rooms assigned'
+          : 'Booking approved successfully'
+      );
+
+      // Update bookings list
+      setBookings(prevBookings =>
+        prevBookings.map(booking =>
+          booking._id === bookingToApprove._id ? updatedBooking : booking
+        )
+      );
+
+      // Update selected booking if it's open
+      if (selectedBooking?._id === bookingToApprove._id) {
+        setSelectedBooking(updatedBooking);
+      }
+
+      setShowApprovalModal(false);
+      setBookingToApprove(null);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to approve booking');
     }
   };
 
@@ -777,6 +813,18 @@ const Bookings = () => {
             fetchBookingDetails(selectedBooking._id);
             fetchBookings();
           }}
+        />
+      )}
+
+      {/* Approval Modal with Room Selection */}
+      {showApprovalModal && bookingToApprove && (
+        <ApprovalModal
+          booking={bookingToApprove}
+          onClose={() => {
+            setShowApprovalModal(false);
+            setBookingToApprove(null);
+          }}
+          onApprove={handleApprovalModalConfirm}
         />
       )}
     </div>

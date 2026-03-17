@@ -56,7 +56,7 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center space-x-2">
                 <HiPhone className="w-4 h-4 text-accent" />
-                <span>+91-761-2794XXX</span>
+                <span>0761-2794354</span>
               </li>
               <li className="flex items-center space-x-2">
                 <HiMail className="w-4 h-4 text-accent" />
@@ -78,7 +78,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="text-accent hover:text-white font-medium transition-colors"
             >
-              KUNAL
+              KUNAL MEENA
             </a>
           </p>
         </div>

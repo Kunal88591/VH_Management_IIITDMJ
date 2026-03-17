@@ -34,6 +34,7 @@ import AdminStaff from './pages/admin/Staff';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminManagement from './pages/admin/AdminManagement';
 import AdminMealOrders from './pages/admin/MealOrders';
+import AdminActivity from './pages/admin/Activity';
 
 // Protected Route Component
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -90,6 +91,7 @@ function App() {
               <Route path="rooms" element={<AdminRooms />} />
               <Route path="staff" element={<AdminStaff />} />
               <Route path="attendance" element={<AdminAttendance />} />
+              <Route path="activity" element={<AdminActivity />} />
               <Route path="admins" element={<AdminManagement />} />
               <Route path="meal-orders" element={<AdminMealOrders />} />
             </Route>
