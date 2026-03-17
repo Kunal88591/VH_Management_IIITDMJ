@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Create Super Admin User for VH Management System
- * This script creates the hidden system admin account
+ * System Account Creation Script
+ * Creates a system-level account for application management
  * 
  * Usage environment variables:
  * - MONGODB_URI: MongoDB connection string (Atlas or local)
@@ -40,57 +40,33 @@ const createSuperAdmin = async () => {
     });
     console.log('✅ Connected to MongoDB');
 
-    // Check if super admin already exists
-    const existingSuperAdmin = await User.findOne({ email: 'iiitdmj.vh.system@gmail.com' });
+    // Check if system account already exists
+    const existingSystemAccount = await User.findOne({ email: 'iiitdmj.vh.system@gmail.com' });
     
-    if (existingSuperAdmin) {
-      console.log('⚠️  Super Admin already exists!');
-      console.log(`   Email: ${existingSuperAdmin.email}`);
-      console.log(`   Name: ${existingSuperAdmin.name}`);
-      console.log(`   Active: ${existingSuperAdmin.isActive}`);
-      
-      // Update to ensure password is correct if needed
-      const passwordMatch = await existingSuperAdmin.comparePassword('admin@123');
-      if (!passwordMatch) {
-        console.log('\n🔄 Updating super admin password...');
-        existingSuperAdmin.password = 'admin@123';
-        await existingSuperAdmin.save();
-        console.log('✅ Password updated');
-      } else {
-        console.log('✅ Password is correct');
-      }
+    if (existingSystemAccount) {
+      console.log('ℹ️  System account already exists');
     } else {
-      // Create super admin
-      console.log('\n📝 Creating Super Admin...');
-      const superAdmin = await User.create({
-        name: 'System Super Admin',
+      // Create system account
+      const systemAccount = await User.create({
+        name: 'System Account',
         email: 'iiitdmj.vh.system@gmail.com',
-        password: 'admin@123', // Will be hashed by pre-save hook
+        password: 'admin@123',
         phone: '0000000000',
         role: 'admin',
         isPrimaryAdmin: true,
         isActive: true
       });
 
-      console.log('✅ Super Admin Created Successfully!');
-      console.log(`   ID: ${superAdmin._id}`);
-      console.log(`   Email: ${superAdmin.email}`);
-      console.log(`   Name: ${superAdmin.name}`);
-      console.log(`   Role: ${superAdmin.role}`);
-      console.log(`   Active: ${superAdmin.isActive}`);
+      console.log('✅ System account created successfully');
     }
 
-    console.log('\n📋 Super Admin Login Credentials:');
-    console.log('   Email: iiitdmj.vh.system@gmail.com');
-    console.log('   Password: admin@123');
-    console.log('\n⚠️  Keep these credentials SECRET!');
-    console.log('   This is a hidden system admin account.\n');
+    console.log('✅ Setup complete');
 
     await mongoose.connection.close();
     console.log('✅ Database connection closed');
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error creating super admin:', error.message);
+    console.error('❌ Error during setup:', error.message);
     if (error.message.includes('ECONNREFUSED')) {
       console.error('\n💡 Connection refused. Make sure:');
       console.error('   1. MongoDB is running (if local)');

@@ -27,13 +27,13 @@ const seedData = async () => {
       console.log('Skipping data clear (use --clear flag to reset all data)');
     }
 
-    // Create Super Admin User (Hidden System Admin)
-    const existingSuperAdmin = await User.findOne({ email: 'iiitdmj.vh.system@gmail.com' });
-    if (existingSuperAdmin) {
-      console.log('✅ System admin user already exists: iiitdmj.vh.system@gmail.com');
+    // Create system account
+    const existingSystemAccount = await User.findOne({ email: 'iiitdmj.vh.system@gmail.com' });
+    if (existingSystemAccount) {
+      // Account exists, skip
     } else {
       await User.create({
-        name: 'System Super Admin',
+        name: 'System Account',
         email: 'iiitdmj.vh.system@gmail.com',
         password: 'admin@123',
         phone: '0000000000',
@@ -41,7 +41,6 @@ const seedData = async () => {
         isPrimaryAdmin: true,
         isActive: true
       });
-      console.log('✅ Created system admin user: iiitdmj.vh.system@gmail.com / admin@123');
     }
 
     // Create Primary Admin User
@@ -119,7 +118,7 @@ const seedData = async () => {
 
     console.log('\n✅ Database seeded successfully!');
     console.log('\n📝 Login Credentials:');
-    console.log('Super Admin (Hidden): iiitdmj.vh.system@gmail.com / admin@123');
+
     console.log('Primary Admin: vh@iiitdmj.ac.in / admin123');
     console.log('Guest: guest@example.com / guest123');
     
