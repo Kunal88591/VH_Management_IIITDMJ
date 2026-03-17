@@ -10,50 +10,73 @@ const Staff = require('../models/Staff');
 
 const seedData = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/vh_management');
-    console.log('Connected to MongoDB');
+    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/vh_management';
+    console.log('Attempting to connect to MongoDB...');
+    
+    await mongoose.connect(mongoUri);
+    console.log('✅ Connected to MongoDB');
 
-    // Clear existing data
-    await User.deleteMany({});
-    await Room.deleteMany({});
-    await Staff.deleteMany({});
-    console.log('Cleared existing data');
+    // Only clear if explicitly requested (safer for production)
+    const shouldClear = process.argv.includes('--clear');
+    if (shouldClear) {
+      await User.deleteMany({});
+      await Room.deleteMany({});
+      await Staff.deleteMany({});
+      console.log('Cleared existing data');
+    } else {
+      console.log('Skipping data clear (use --clear flag to reset all data)');
+    }
 
     // Create Super Admin User (Hidden System Admin)
-    const superAdmin = await User.create({
-      name: 'System Super Admin',
-      email: 'iiitdmj.vh.system@gmail.com',
-      password: 'admin@123',
-      phone: '0000000000',
-      role: 'admin',
-      isPrimaryAdmin: true,
-      isActive: true
-    });
-    console.log('Created system admin user: iiitdmj.vh.system@gmail.com / admin@123');
+    const existingSuperAdmin = await User.findOne({ email: 'iiitdmj.vh.system@gmail.com' });
+    if (existingSuperAdmin) {
+      console.log('✅ System admin user already exists: iiitdmj.vh.system@gmail.com');
+    } else {
+      await User.create({
+        name: 'System Super Admin',
+        email: 'iiitdmj.vh.system@gmail.com',
+        password: 'admin@123',
+        phone: '0000000000',
+        role: 'admin',
+        isPrimaryAdmin: true,
+        isActive: true
+      });
+      console.log('✅ Created system admin user: iiitdmj.vh.system@gmail.com / admin@123');
+    }
 
     // Create Primary Admin User
-    const admin = await User.create({
-      name: 'VH Admin',
-      email: 'vh@iiitdmj.ac.in',
-      password: 'admin123',
-      phone: '9876543210',
-      role: 'admin',
-      isPrimaryAdmin: true,
-      isActive: true
-    });
-    console.log('Created admin user: vh@iiitdmj.ac.in / admin123');
+    const existingAdmin = await User.findOne({ email: 'vh@iiitdmj.ac.in' });
+    if (existingAdmin) {
+      console.log('✅ Admin user already exists: vh@iiitdmj.ac.in');
+    } else {
+      await User.create({
+        name: 'VH Admin',
+        email: 'vh@iiitdmj.ac.in',
+        password: 'admin123',
+        phone: '9876543210',
+        role: 'admin',
+        isPrimaryAdmin: true,
+        isActive: true
+      });
+      console.log('✅ Created admin user: vh@iiitdmj.ac.in / admin123');
+    }
 
     // Create Sample Guest User
-    await User.create({
-      name: 'Sample Guest',
-      email: 'guest@example.com',
-      password: 'guest123',
-      phone: '9876543211',
-      address: '123 Main Street, City',
-      role: 'guest',
-      isActive: true
-    });
-    console.log('Created guest user: guest@example.com / guest123');
+    const existingGuest = await User.findOne({ email: 'guest@example.com' });
+    if (existingGuest) {
+      console.log('✅ Guest user already exists: guest@example.com');
+    } else {
+      await User.create({
+        name: 'Sample Guest',
+        email: 'guest@example.com',
+        password: 'guest123',
+        phone: '9876543211',
+        address: '123 Main Street, City',
+        role: 'guest',
+        isActive: true
+      });
+      console.log('✅ Created guest user: guest@example.com / guest123');
+    }
 
     // Create Rooms
     const rooms = [
