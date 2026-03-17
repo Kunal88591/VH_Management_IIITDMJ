@@ -15,8 +15,8 @@ import {
   HiShieldCheck,
   HiUser,
   HiClipboardList,
-  HiActivity
 } from 'react-icons/hi';
+import { MdHistory } from 'react-icons/md';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -31,7 +31,7 @@ const AdminLayout = () => {
     { path: '/admin/meal-orders', icon: HiClipboardList, label: 'Meal Orders' },
     { path: '/admin/staff', icon: HiUserGroup, label: 'Staff' },
     { path: '/admin/attendance', icon: HiClock, label: 'Attendance' },
-    { path: '/admin/activity', icon: HiActivity, label: 'Activity', primaryOnly: true },
+    { path: '/admin/activity', icon: MdHistory, label: 'Activity', primaryOnly: true },
     { path: '/admin/admins', icon: HiShieldCheck, label: 'Admins', primaryOnly: true },
   ];
 
