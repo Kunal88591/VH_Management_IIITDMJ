@@ -5,7 +5,7 @@
 <h1 align="center">🏨 Visitor's Hostel Management System</h1>
 
 <h3 align="center">
-  <a href="https://vh.iiitdmj.ac.in" target="_blank" style="color: #0066cc; text-decoration: none;">
+  <a href="http://vh.iiitdmj.ac.in" target="_blank" style="color: #0066cc; text-decoration: none;">
     vh.iiitdmj.ac.in
   </a>
 </h3>
