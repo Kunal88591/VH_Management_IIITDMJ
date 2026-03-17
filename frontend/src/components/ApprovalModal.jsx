@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { HiX } from 'react-icons/hi';
 import toast from 'react-hot-toast';
-import { bookingAPI } from '../../services/api';
+import { bookingAPI } from '../services/api';
 
 const ApprovalModal = ({ booking, onClose, onApprove }) => {
   const [availableRooms, setAvailableRooms] = useState([]);
