@@ -20,7 +20,7 @@ router.get('/admins', protect, authorize('admin'), async (req, res) => {
       });
     }
 
-    // Fetch admins excluding system accounts (keeps them hidden)
+    // Fetch admins
     const admins = await User.find({ 
       role: 'admin'
     })
@@ -119,7 +119,7 @@ router.delete('/admins/:id', protect, authorize('admin'), async (req, res) => {
       });
     }
 
-    // Prevent deleting system accounts
+    // Prevent deleting certain accounts
     if (isSystemUser(admin.email)) {
       return res.status(403).json({
         success: false,
@@ -189,7 +189,7 @@ router.put('/admins/:id/make-primary', protect, authorize('admin'), async (req, 
       });
     }
 
-    // Prevent transferring to system accounts
+    // Prevent transferring to certain accounts
     if (isSystemUser(targetAdmin.email)) {
       return res.status(403).json({
         success: false,

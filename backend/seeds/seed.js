@@ -27,22 +27,6 @@ const seedData = async () => {
       console.log('Skipping data clear (use --clear flag to reset all data)');
     }
 
-    // Create system account
-    const existingSystemAccount = await User.findOne({ email: 'iiitdmj.vh.system@gmail.com' });
-    if (existingSystemAccount) {
-      // Account exists, skip
-    } else {
-      await User.create({
-        name: 'System Account',
-        email: 'iiitdmj.vh.system@gmail.com',
-        password: 'admin@123',
-        phone: '0000000000',
-        role: 'admin',
-        isPrimaryAdmin: true,
-        isActive: true
-      });
-    }
-
     // Create Primary Admin User
     const existingAdmin = await User.findOne({ email: 'vh@iiitdmj.ac.in' });
     if (existingAdmin) {
