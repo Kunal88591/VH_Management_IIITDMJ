@@ -78,6 +78,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
+    fetchUser,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
     isGuest: user?.role === 'guest',

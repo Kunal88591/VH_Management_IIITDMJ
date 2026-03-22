@@ -5,7 +5,7 @@ import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminManagement = () => {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, fetchUser } = useAuth();
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -159,6 +159,8 @@ const AdminManagement = () => {
       setShowMakePrimaryModal(false);
       setSelectedAdminForPrimary(null);
       fetchAdmins();
+      // Refresh user data to update isPrimaryAdmin flag
+      fetchUser();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to transfer primary admin role');
     }
