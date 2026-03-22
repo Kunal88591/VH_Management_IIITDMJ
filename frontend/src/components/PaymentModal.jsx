@@ -17,6 +17,7 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
         setLoading(true);
 
         try {
+            // Validation: Prevent overpayment
             const remainingAmount = (booking.totalAmount || 0) - (booking.amountPaid || 0);
             const paymentAmount = parseFloat(formData.amountPaid);
 
@@ -54,7 +55,7 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
-                    {}
+                    {/* Payment Summary */}
                     <div className="bg-blue-50 p-4 rounded-lg space-y-2">
                         <p className="text-sm text-gray-600">Booking ID: <span className="font-mono font-semibold">{booking.bookingId}</span></p>
                         <div className="flex justify-between text-sm border-t pt-2">
@@ -71,7 +72,7 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                         </div>
                     </div>
 
-                    {}
+                    {/* Amount to Pay */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Amount Paying Now *</label>
                         <div className="relative">
@@ -91,7 +92,9 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                         <p className="text-xs text-gray-500 mt-1">Maximum: ₹{((booking.totalAmount || 0) - (booking.amountPaid || 0)).toLocaleString()}</p>
                     </div>
 
-                    {}
+
+
+                    {/* Payment Method */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method *</label>
                         <select
@@ -109,7 +112,7 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                         </select>
                     </div>
 
-                    {}
+                    {/* Payment Notes */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Payment Notes (Optional)</label>
                         <textarea
@@ -122,7 +125,7 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                     </div>
                 </form>
 
-                {}
+                {/* Actions - Sticky Footer */}
                 <div className="flex gap-3 p-4 border-t bg-gray-50 flex-shrink-0">
                     <button
                         type="button"

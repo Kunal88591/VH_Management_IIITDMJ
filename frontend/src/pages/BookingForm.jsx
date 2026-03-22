@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { roomAPI, bookingAPI } from '../services/api';
 import { HiCalendar, HiUsers, HiDocumentText, HiPlus, HiX, HiInformationCircle } from 'react-icons/hi';
 import toast from 'react-hot-toast';
+
+// Category descriptions as per IIITDM Jabalpur Visitor Hostel Policy
 const CATEGORIES = {
   A: {
     name: 'Category A',
@@ -34,6 +36,8 @@ const CATEGORIES = {
     requirements: 'Approval + Visitor ID Card both required'
   }
 };
+
+// Subcategories as per official IIITDMJ VH policy Section III
 const SUBCATEGORIES = {
   A: [
     { value: 'A-i', label: 'Institute Guests / Directors / Examiners / External Committee Members / Invited Speakers / CAG Audit Team / MoE Officials / Important guests of Chairman, BOG / Director / Senate / BWC / Statutory Bodies' },
@@ -71,19 +75,30 @@ const BookingForm = () => {
   const [selectedRooms, setSelectedRooms] = useState([]);
 
   const [formData, setFormData] = useState({
+    // Category and Booking Type
     visitorCategory: '',
     visitorSubCategory: '',
     bookingType: 'self',
+
+    // Guests
     guests: [{ fullName: user?.name || '', age: '', mobile: '' }],
     numberOfGuests: 1,
+
+    // Validation Fields
     employeeId: '',
     studentRollNumber: '',
+
+    // Dates
     checkInDate: '',
     checkInTime: '12:00',
     checkOutDate: '',
     checkOutTime: '12:00',
+
+    // Meals
     mealRequired: false,
     meals: [],
+
+    // Additional
     additionalRequirements: '',
     indenterAcceptance: false
   });
@@ -101,6 +116,8 @@ const BookingForm = () => {
       setSelectedRooms([roomId]);
     }
   }, [searchParams]);
+
+  // Refetch rooms whenever dates change
   useEffect(() => {
     if (formData.checkInDate && formData.checkOutDate) {
       fetchRooms();
@@ -110,6 +127,8 @@ const BookingForm = () => {
   const fetchRooms = async () => {
     try {
       const params = { available: 'true' };
+      
+      // Add date-based availability check if dates are selected
       if (formData.checkInDate && formData.checkOutDate) {
         params.checkIn = formData.checkInDate;
         params.checkOut = formData.checkOutDate;
@@ -197,6 +216,8 @@ const BookingForm = () => {
     }
     return 0;
   };
+
+  // Initialize meals array when dates change
   useEffect(() => {
     const nights = calculateNights();
     if (nights > 0 && formData.mealRequired) {
@@ -210,6 +231,7 @@ const BookingForm = () => {
   const validateStep = (currentStep) => {
     switch (currentStep) {
       case 1:
+        // Category selection
         if (!formData.visitorCategory) {
           toast.error('Please select a visitor category');
           return false;
@@ -222,6 +244,8 @@ const BookingForm = () => {
           toast.error('Please select booking type');
           return false;
         }
+
+        // Validate guests
         if (formData.guests.length === 0) {
           toast.error('At least one guest is required');
           return false;
@@ -238,6 +262,8 @@ const BookingForm = () => {
             return false;
           }
         }
+
+        // Mobile number validation
         if (formData.bookingType === 'others') {
           const hasGuestMobile = formData.guests.some(g => g.mobile && g.mobile.trim() !== '');
           if (!hasGuestMobile) {
@@ -245,6 +271,8 @@ const BookingForm = () => {
             return false;
           }
         }
+
+        // Category-specific validation
         const { visitorCategory, employeeId, studentRollNumber } = formData;
 
         if (visitorCategory === 'A') {
@@ -328,19 +356,27 @@ const BookingForm = () => {
 
     try {
       const submitData = new FormData();
+
+      // Basic fields
       submitData.append('visitorCategory', formData.visitorCategory);
       submitData.append('visitorSubCategory', formData.visitorSubCategory);
       submitData.append('bookingType', formData.bookingType);
       submitData.append('guests', JSON.stringify(formData.guests));
       submitData.append('numberOfGuests', formData.guests.length);
       submitData.append('indenterAcceptance', formData.indenterAcceptance);
+
+      // Validation fields
       if (formData.employeeId) submitData.append('employeeId', formData.employeeId);
       if (formData.studentRollNumber) submitData.append('studentRollNumber', formData.studentRollNumber);
+
+      // Dates
       submitData.append('roomIds', JSON.stringify(selectedRooms));
       submitData.append('checkInDate', formData.checkInDate);
       submitData.append('checkInTime', formData.checkInTime);
       submitData.append('checkOutDate', formData.checkOutDate);
       submitData.append('checkOutTime', formData.checkOutTime);
+
+      // Meals
       const mealRequirements = {
         required: formData.mealRequired,
         meals: formData.mealRequired ? formData.meals.map((meal, index) => ({
@@ -349,7 +385,11 @@ const BookingForm = () => {
         })) : []
       };
       submitData.append('mealRequirements', JSON.stringify(mealRequirements));
+
+      // Additional
       submitData.append('additionalRequirements', formData.additionalRequirements);
+
+      // Documents
       if (documents.directorApproval) {
         submitData.append('directorApproval', documents.directorApproval);
       }
@@ -390,7 +430,7 @@ const BookingForm = () => {
           </p>
         </div>
 
-        {}
+        {/* Progress Steps */}
         <div className="flex items-center justify-center mb-4">
           {[1, 2, 3].map((s) => (
             <div key={s} className="flex items-center">
@@ -408,7 +448,7 @@ const BookingForm = () => {
 
         <div className="card p-4">
           <form onSubmit={handleSubmit}>
-            {}
+            {/* Step 1: Category, Guest Details & Documents */}
             {step === 1 && (
               <div className="animate-fadeIn space-y-4">
                 <div>
@@ -417,7 +457,7 @@ const BookingForm = () => {
                     Visitor Category & Type
                   </h2>
 
-                  {}
+                  {/* Category Selection */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Visitor Category *</label>
                     <div className="grid md:grid-cols-2 gap-2">
@@ -450,7 +490,7 @@ const BookingForm = () => {
                     </div>
                   </div>
 
-                  {}
+                  {/* Visitor Sub-Category */}
                   {formData.visitorCategory && SUBCATEGORIES[formData.visitorCategory] && (
                     <div className="mb-4">
                       <label className="block text-sm font-medium text-gray-700 mb-2">Visitor Sub-Category *</label>
@@ -469,7 +509,7 @@ const BookingForm = () => {
                     </div>
                   )}
 
-                  {}
+                  {/* Booking Type */}
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Booking Type *</label>
                     <div className="flex gap-4">
@@ -498,7 +538,7 @@ const BookingForm = () => {
                     </div>
                   </div>
 
-                  {}
+                  {/* Category-Specific Fields */}
                   {formData.visitorCategory === 'B' && (
                     <div className="mb-6 bg-blue-50 p-4 rounded-lg">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -538,7 +578,7 @@ const BookingForm = () => {
                   )}
                 </div>
 
-                {}
+                {/* Guest Information */}
                 <div>
                   <h2 className="font-poppins text-xl font-semibold text-slate-primary mb-4 flex items-center justify-between">
                     <span className="flex items-center">
@@ -613,7 +653,7 @@ const BookingForm = () => {
                   </div>
                 </div>
 
-                {}
+                {/* Document Uploads */}
                 <div>
                   <h2 className="font-poppins text-xl font-semibold text-slate-primary mb-4 flex items-center">
                     <HiDocumentText className="w-6 h-6 mr-2 text-secondary" />
@@ -621,7 +661,7 @@ const BookingForm = () => {
                   </h2>
 
                   <div className="space-y-4">
-                    {}
+                    {/* Director Approval */}
                     {(formData.visitorCategory === 'A' ||
                       (formData.visitorCategory === 'B' && !formData.employeeId) ||
                       (formData.visitorCategory === 'C' && !formData.studentRollNumber) ||
@@ -642,7 +682,7 @@ const BookingForm = () => {
                         </div>
                       )}
 
-                    {}
+                    {/* Guest/Visitor ID Card */}
                     {((formData.visitorCategory === 'B' && !formData.employeeId) ||
                       (formData.visitorCategory === 'C' && !formData.studentRollNumber) ||
                       formData.visitorCategory === 'D') && (
@@ -662,7 +702,7 @@ const BookingForm = () => {
                         </div>
                       )}
 
-                    {}
+                    {/* Student ID Card */}
                     {formData.visitorCategory === 'C' && formData.studentRollNumber && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -684,7 +724,7 @@ const BookingForm = () => {
               </div>
             )}
 
-            {}
+            {/* Step 2: Stay Details & Rooms */}
             {step === 2 && (
               <div className="animate-fadeIn">
                 <h2 className="font-poppins text-xl font-semibold text-slate-primary mb-6 flex items-center">
@@ -770,7 +810,7 @@ const BookingForm = () => {
               </div>
             )}
 
-            {}
+            {/* Step 3: Meals & Confirmation */}
             {step === 3 && (
               <div className="animate-fadeIn">
                 <h2 className="font-poppins text-xl font-semibold text-slate-primary mb-6 flex items-center">
@@ -778,7 +818,7 @@ const BookingForm = () => {
                   Meal Requirements & Confirmation
                 </h2>
 
-                {}
+                {/* Meal Selection */}
                 <div className="mb-6">
                   <label className="flex items-center mb-4">
                     <input
@@ -860,7 +900,7 @@ const BookingForm = () => {
                   )}
                 </div>
 
-                {}
+                {/* Additional Requirements */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Additional Requirements / Comments
@@ -875,7 +915,7 @@ const BookingForm = () => {
                   />
                 </div>
 
-                {}
+                {/* Indenter Acceptance */}
                 <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <label className="flex items-start">
                     <input
@@ -893,7 +933,7 @@ const BookingForm = () => {
                   </label>
                 </div>
 
-                {}
+                {/* Cancellation Policy Info */}
                 <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <h4 className="font-semibold text-sm mb-2 text-blue-800">📋 Cancellation Policy:</h4>
                   <ul className="text-xs text-gray-700 space-y-1 ml-4">
@@ -903,7 +943,7 @@ const BookingForm = () => {
                   </ul>
                 </div>
 
-                {}
+                {/* Summary */}
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="font-semibold mb-3">Booking Summary</h3>
                   <div className="text-sm text-gray-600 space-y-1">
@@ -926,7 +966,7 @@ const BookingForm = () => {
               </div>
             )}
 
-            {}
+            {/* Navigation Buttons */}
             <div className="flex justify-between mt-8">
               {step > 1 && (
                 <button type="button" onClick={prevStep} className="btn-secondary">

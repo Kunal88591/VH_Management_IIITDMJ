@@ -60,6 +60,8 @@ const BookingConfirmation = () => {
       </div>
     );
   }
+
+  // Get guest names - handle both old and new schema
   const guestNames = booking.guests
     ? booking.guests.map(g => g.fullName).join(', ')
     : (booking.guestDetails?.fullName || 'N/A');
@@ -141,7 +143,7 @@ const BookingConfirmation = () => {
 
             <hr className="my-4" />
 
-            {}
+            {/* Charges Breakdown */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Room Charges</span>
@@ -161,7 +163,7 @@ const BookingConfirmation = () => {
             </div>
           </div>
 
-          {}
+          {/* Important Notice */}
           <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-6 text-left">
             <p className="text-slate-primary text-sm">
               <span className="font-semibold text-accent">📌 Important:</span> Check-out is 24 hours from the check-in time.

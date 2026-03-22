@@ -11,7 +11,7 @@ const Rules = () => {
             <p className="text-secondary font-medium mt-2">Contact: vh@iiitdmj.ac.in</p>
           </div>
 
-          {}
+          {/* General Instructions */}
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-slate-primary mb-4 border-b-2 border-secondary pb-2">
               I. General Instructions for Booking
@@ -74,7 +74,7 @@ const Rules = () => {
             </ol>
           </section>
 
-          {}
+          {/* Guest Specific Information */}
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-slate-primary mb-4 border-b-2 border-secondary pb-2">
               II. Guest Specific Information
@@ -132,7 +132,7 @@ const Rules = () => {
             </ol>
           </section>
 
-          {}
+          {/* Visitors Category */}
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-slate-primary mb-4 border-b-2 border-secondary pb-2">
               III. Visitors' Category for the Purpose of Tariff Collection
@@ -181,7 +181,7 @@ const Rules = () => {
             </div>
           </section>
 
-          {}
+          {/* Tariff - Lodging Charges */}
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-slate-primary mb-4 border-b-2 border-secondary pb-2">
               IV. Tariff: Lodging & Boarding Charges (w.e.f. 1st September 2023)
@@ -189,7 +189,7 @@ const Rules = () => {
             
             <h3 className="font-semibold text-gray-800 mb-3">(i) Lodging (Stay) Charges</h3>
             
-            {}
+            {/* Standard Rooms Table */}
             <div className="overflow-x-auto mb-6">
               <p className="text-sm font-medium text-gray-700 mb-2">All rooms except suite rooms:</p>
               <table className="min-w-full border-collapse border border-gray-300">
@@ -225,7 +225,7 @@ const Rules = () => {
               </table>
             </div>
 
-            {}
+            {/* Suite Rooms Table */}
             <div className="overflow-x-auto mb-6">
               <p className="text-sm font-medium text-gray-700 mb-2">Suite rooms:</p>
               <table className="min-w-full border-collapse border border-gray-300">
@@ -256,7 +256,7 @@ const Rules = () => {
               </table>
             </div>
 
-            {}
+            {/* Food Charges */}
             <h3 className="font-semibold text-gray-800 mb-3 mt-6">(ii) Food Charges</h3>
             
             <div className="space-y-4">
@@ -310,7 +310,7 @@ const Rules = () => {
             </div>
           </section>
 
-          {}
+          {/* Cancellation Charges */}
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-slate-primary mb-4 border-b-2 border-secondary pb-2">
               VI. Cancellation Charges
@@ -349,7 +349,7 @@ const Rules = () => {
             </div>
           </section>
 
-          {}
+          {/* Responsibilities */}
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-slate-primary mb-4 border-b-2 border-secondary pb-2">
               VII. Responsibilities of Indenter/Forwarding Official
@@ -366,14 +366,14 @@ const Rules = () => {
             </div>
           </section>
 
-          {}
+          {/* Important Notice */}
           <div className="bg-red-50 border-l-4 border-red-500 p-4 mt-8">
             <p className="text-red-800 font-semibold text-sm">
               Important: Check-out is 24 hours from the check-in time. Charges are applicable beyond 24 hours.
             </p>
           </div>
 
-          {}
+          {/* Contact Information */}
           <div className="bg-secondary/10 rounded-lg p-6 mt-8 text-center">
             <h3 className="font-semibold text-slate-primary mb-2">Contact Us</h3>
             <p className="text-gray-700">For bookings and inquiries:</p>

@@ -43,15 +43,29 @@ const Invoice = ({ booking, onClose }) => {
         };
         return labels[code] || code;
     };
+
+    // Calculate nights
     const nights = Math.ceil((new Date(booking.checkOutDate) - new Date(booking.checkInDate)) / (1000 * 60 * 60 * 24)) || 1;
+
+    // Check if meals were opted
     const hasMeals = booking.mealRequirements && booking.mealRequirements.required && booking.mealCharges > 0;
+
+    // For room presence
     const hasRooms = booking.rooms && booking.rooms.length > 0 && (booking.roomCharges || 0) > 0;
+
+    // Initialize active tab: prefer meal tab when there are no rooms
     const [activeTab, setActiveTab] = useState(hasRooms ? 'room' : (hasMeals ? 'meal' : 'room'));
+
+    // Payment calculations
     const totalAmount = booking.totalAmount || 0;
     const amountPaid = booking.amountPaid || 0;
     const remainingAmount = totalAmount - amountPaid;
+    
+    // For separate invoices
     const roomCharges = booking.roomCharges || 0;
     const mealCharges = booking.mealCharges || 0;
+
+    // Calculate proportional payment for room/meal
     const roomPaidRatio = totalAmount > 0 ? roomCharges / totalAmount : 0;
     const mealPaidRatio = totalAmount > 0 ? mealCharges / totalAmount : 0;
     const roomAmountPaid = Math.round(amountPaid * roomPaidRatio);
@@ -60,10 +74,13 @@ const Invoice = ({ booking, onClose }) => {
     const mealRemaining = mealCharges - mealAmountPaid;
 
     const handlePrint = (type) => {
+        // Set which invoice to print
         document.body.classList.add(`print-${type}-invoice`);
         window.print();
         document.body.classList.remove(`print-${type}-invoice`);
     };
+
+    // Common Header Component
     const InvoiceHeader = ({ invoiceType }) => (
         <>
             <div className="invoice-header">
@@ -113,6 +130,8 @@ const Invoice = ({ booking, onClose }) => {
             </div>
         </>
     );
+
+    // Guest Details Component
     const GuestDetails = () => (
         <div className="invoice-section">
             <h4 className="section-title">Guest Details</h4>
@@ -143,6 +162,8 @@ const Invoice = ({ booking, onClose }) => {
             <p className="mt-2"><strong>Number of Guests:</strong> {booking.numberOfGuests || booking.guests?.length || 1}</p>
         </div>
     );
+
+    // Booking Period Component
     const BookingPeriod = () => (
         <div className="invoice-section">
             <h4 className="section-title">Booking Period</h4>
@@ -162,6 +183,8 @@ const Invoice = ({ booking, onClose }) => {
             </div>
         </div>
     );
+
+    // Signature Section (Authorized Signatory + Guest)
     const SignatureSection = () => (
         <div className="signature-section-compact">
             <div className="signature-row">
@@ -177,17 +200,23 @@ const Invoice = ({ booking, onClose }) => {
             </div>
         </div>
     );
+
+    // VH Bank Account Details Component (Compact inline format)
     const BankDetails = () => (
         <div className="bank-details-inline">
             <p><strong>Bank Details:</strong> VH PDPM IIITDMJ | A/C: 7109697292 | IFSC: IDIB000M694 | INDIAN BANK, Mehgawan</p>
         </div>
     );
+
+    // Footer Component (Compact)
     const InvoiceFooter = () => (
         <div className="invoice-footer-compact">
             <BankDetails />
             <p className="footer-note">Computer-generated invoice. Contact: vh@iiitdmj.ac.in | +91 761-2794254</p>
         </div>
     );
+
+    // Payment Details Component
     const PaymentDetails = ({ charges, paid, remaining, type }) => (
         <div className="payment-details-section">
             <h4 className="section-title">Payment Details</h4>
@@ -227,13 +256,15 @@ const Invoice = ({ booking, onClose }) => {
             </div>
         </div>
     );
+
+    // Room Invoice Content
     const RoomInvoiceContent = () => (
         <div className="invoice-content invoice-page" id="room-invoice">
             <InvoiceHeader invoiceType="ROOM ACCOMMODATION INVOICE" />
             <GuestDetails />
             <BookingPeriod />
 
-            {}
+            {/* Room Details */}
             <div className="invoice-section">
                 <h4 className="section-title">Room Details & Charges</h4>
                 <table className="invoice-table">
@@ -266,7 +297,7 @@ const Invoice = ({ booking, onClose }) => {
                 </table>
             </div>
 
-            {}
+            {/* Payment Details */}
             <PaymentDetails 
                 charges={roomCharges} 
                 paid={roomAmountPaid} 
@@ -278,13 +309,15 @@ const Invoice = ({ booking, onClose }) => {
             <InvoiceFooter />
         </div>
     );
+
+    // Meal Invoice Content
     const MealInvoiceContent = () => (
         <div className="invoice-content invoice-page" id="meal-invoice">
             <InvoiceHeader invoiceType="MEAL / FOOD CHARGES INVOICE" />
             <GuestDetails />
             <BookingPeriod />
 
-            {}
+            {/* Meal Details */}
             <div className="invoice-section">
                 <h4 className="section-title">Meal Details & Charges</h4>
                 <table className="invoice-table meal-table">
@@ -301,6 +334,7 @@ const Invoice = ({ booking, onClose }) => {
                     </thead>
                     <tbody>
                         {booking.mealRequirements?.meals?.map((meal, idx) => {
+                            // Apply Full Day bundle: B+L+D+T = ₹400 (instead of ₹415 individually)
                             const b = meal.breakfast || 0, l = meal.lunch || 0, d = meal.dinner || 0, t = meal.tea || 0, m = meal.milk || 0;
                             const fullDaySets = Math.min(b, l, d, t);
                             const dayTotal = (fullDaySets * 400) +
@@ -331,7 +365,7 @@ const Invoice = ({ booking, onClose }) => {
                 </p>
             </div>
 
-            {}
+            {/* Payment Details */}
             <PaymentDetails 
                 charges={mealCharges} 
                 paid={mealAmountPaid} 
@@ -347,7 +381,7 @@ const Invoice = ({ booking, onClose }) => {
     return (
         <div className="invoice-modal-overlay">
             <div className="invoice-modal-container">
-                {}
+                {/* Header with Tabs - Hide on print */}
                 <div className="invoice-modal-header no-print">
                     <div className="invoice-tabs">
                         {hasRooms && (
@@ -393,7 +427,7 @@ const Invoice = ({ booking, onClose }) => {
                     </div>
                 </div>
 
-                {}
+                {/* Invoice Content - Show based on active tab */}
                 <div className="invoice-tab-content">
                     {activeTab === 'room' && <RoomInvoiceContent />}
                     {activeTab === 'meal' && hasMeals && <MealInvoiceContent />}

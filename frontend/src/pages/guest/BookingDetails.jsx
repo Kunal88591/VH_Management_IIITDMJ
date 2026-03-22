@@ -20,10 +20,13 @@ const BookingDetails = () => {
     try {
       const bookingRes = await bookingAPI.getById(id);
       setBooking(bookingRes.data.data);
+      
+      // Try to fetch bill if exists
       try {
         const billRes = await billingAPI.getByBooking(id);
         setBill(billRes.data.data);
       } catch {
+        // Bill may not exist yet
       }
     } catch (error) {
       toast.error('Failed to fetch booking details');
@@ -107,7 +110,7 @@ const BookingDetails = () => {
           )}
 
           <div className="grid md:grid-cols-2 gap-6">
-            {}
+            {/* Guest Details */}
             <div>
               <h3 className="font-semibold text-slate-primary mb-3 flex items-center">
                 <HiUser className="w-5 h-5 mr-2 text-secondary" />
@@ -122,7 +125,7 @@ const BookingDetails = () => {
               </div>
             </div>
 
-            {}
+            {/* Stay Details */}
             <div>
               <h3 className="font-semibold text-slate-primary mb-3 flex items-center">
                 <HiCalendar className="w-5 h-5 mr-2 text-secondary" />
@@ -152,7 +155,7 @@ const BookingDetails = () => {
               </div>
             </div>
 
-            {}
+            {/* Room Details */}
             <div>
               <h3 className="font-semibold text-slate-primary mb-3 flex items-center">
                 <HiHome className="w-5 h-5 mr-2 text-secondary" />
@@ -168,7 +171,7 @@ const BookingDetails = () => {
               </div>
             </div>
 
-            {}
+            {/* Food Details */}
             <div>
               <h3 className="font-semibold text-slate-primary mb-3">Food Requirements</h3>
               <div className="bg-gray-50 rounded-lg p-4">
@@ -198,7 +201,7 @@ const BookingDetails = () => {
             </div>
           </div>
 
-          {}
+          {/* Additional Requirements */}
           {booking.additionalRequirements && (
             <div className="mt-6">
               <h3 className="font-semibold text-slate-primary mb-3">Additional Requirements</h3>
@@ -208,7 +211,7 @@ const BookingDetails = () => {
             </div>
           )}
 
-          {}
+          {/* Total */}
           <div className="mt-6 pt-6 border-t">
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Estimated Total</span>
@@ -217,7 +220,7 @@ const BookingDetails = () => {
           </div>
         </div>
 
-        {}
+        {/* Invoice Section */}
         {['Approved', 'Checked-In', 'Checked-Out'].includes(booking.status) && (
           <div className="card">
             <div className="flex justify-between items-center mb-4">
@@ -258,7 +261,7 @@ const BookingDetails = () => {
           </div>
         )}
 
-        {}
+        {/* Important Notice */}
         <div className="mt-6 bg-accent/10 border border-accent/20 rounded-lg p-4">
           <p className="text-slate-primary text-sm">
             <span className="font-semibold text-accent">📌 Important:</span> Check-out is 24 hours from the check-in time. 
@@ -267,7 +270,7 @@ const BookingDetails = () => {
         </div>
       </div>
 
-      {}
+      {/* Invoice Modal */}
       {showInvoice && booking && (
         <Invoice
           booking={booking}

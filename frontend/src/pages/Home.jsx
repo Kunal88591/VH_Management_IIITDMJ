@@ -20,7 +20,7 @@ const Home = () => {
 
   return (
     <div className="animate-fadeIn">
-      {}
+      {/* Hero Section */}
       <section className="relative h-[70vh] min-h-[500px] bg-gradient-hero flex items-center">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-30"
@@ -46,7 +46,27 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      {/* Stats Section *}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { icon: HiUsers, value: '10+', label: 'Rooms Available' },
+              { icon: HiStar, value: '4.5', label: 'Guest Rating' },
+              { icon: HiCurrencyRupee, value: '1000', label: 'Starting Price' },
+              { icon: HiCheckCircle, value: '100%', label: 'Satisfaction' },
+            ].map((stat, index) => (
+              <div key={index} className="text-center">
+                <stat.icon className="w-8 h-8 mx-auto text-secondary mb-2" />
+                <p className="font-poppins text-2xl md:text-3xl font-bold text-primary">{stat.value}</p>
+                <p className="text-gray-600 text-sm">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -91,7 +111,7 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      {/* Facilities Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -114,7 +134,7 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      {/* Room Types Preview */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -156,7 +176,7 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      {/* Gallery Preview Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -195,7 +215,7 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      {/* Contact & Information Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -208,7 +228,7 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {}
+            {/* Faculty In-Charge */}
             <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 text-center border border-blue-100">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <HiUsers className="w-8 h-8 text-white" />
@@ -223,7 +243,7 @@ const Home = () => {
               <p className="text-sm text-gray-600">📞 0761-2794354</p>
             </div>
 
-            {}
+            {/* Officer In-Charge */}
             <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 text-center border border-orange-100">
               <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <HiUsers className="w-8 h-8 text-white" />
@@ -237,7 +257,7 @@ const Home = () => {
               </p>
             </div>
 
-            {}
+            {/* Caretaker */}
             <div className="bg-gradient-to-br from-green-50 to-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 text-center border border-green-100">
               <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <HiUsers className="w-8 h-8 text-white" />
@@ -252,7 +272,7 @@ const Home = () => {
             </div>
           </div>
 
-          {}
+          {/* Forms Section */}
           <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-8">
             <h3 className="font-poppins text-2xl font-bold text-slate-primary mb-6 text-center">
               Requisition Forms
@@ -262,7 +282,7 @@ const Home = () => {
                 <h4 className="font-semibold text-lg text-slate-primary mb-2">📄 VH Requisition Form</h4>
                 <p className="text-sm text-gray-600 mb-3">Download and fill this form for booking accommodation</p>
                 <a 
-                  href="https:
+                  href="https://www.iiitdmj.ac.in/downloads/forms/VH-Requisition-Form-New.pdf" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-secondary font-medium hover:underline inline-flex items-center"
@@ -274,7 +294,7 @@ const Home = () => {
                 <h4 className="font-semibold text-lg text-slate-primary mb-2">🍽️ VH Food Requisition Form</h4>
                 <p className="text-sm text-gray-600 mb-3">Download and fill this form for food requirements</p>
                 <a 
-                  href="https:
+                  href="https://www.iiitdmj.ac.in/downloads/forms/VH-Requisition-Form-New.pdf" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-secondary font-medium hover:underline inline-flex items-center"
@@ -284,7 +304,7 @@ const Home = () => {
               </div>
             </div>
 
-            {}
+            {/* Important Note */}
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
               <div className="flex">
                 <div className="flex-shrink-0">
@@ -303,7 +323,7 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      {/* CTA Section */}
       <section className="py-16 bg-gradient-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-poppins text-3xl md:text-4xl font-bold text-white mb-4">

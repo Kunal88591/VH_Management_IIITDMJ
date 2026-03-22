@@ -70,7 +70,7 @@ const MyBookings = () => {
           </Link>
         </div>
 
-        {}
+        {/* Filter Tabs */}
         <div className="flex flex-wrap gap-2 mb-6">
           {['all', 'Pending', 'Approved', 'Checked-In', 'Checked-Out', 'Cancelled'].map((status) => (
             <button
@@ -132,6 +132,7 @@ const MyBookings = () => {
                       <button
                         onClick={async () => {
                           try {
+                            // Fetch full booking details (list API only returns subset)
                             const res = await bookingAPI.getById(booking._id);
                             setSelectedBooking(res.data.data);
                             setShowInvoice(true);
@@ -170,7 +171,7 @@ const MyBookings = () => {
         )}
       </div>
 
-      {}
+      {/* Invoice Modal */}
       {showInvoice && selectedBooking && (
         <Invoice
           booking={selectedBooking}

@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="bg-slate-primary text-white/80 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {}
+          {/* About */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
@@ -29,7 +29,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {}
+          {/* Quick Links */}
           <div>
             <h4 className="font-poppins font-semibold text-white mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
@@ -43,14 +43,14 @@ const Footer = () => {
                 <Link to="/book" className="hover:text-white transition-colors">Book Now</Link>
               </li>
               <li>
-                <a href="https:
+                <a href="https://www.iiitdmj.ac.in" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
                   IIITDMJ Website
                 </a>
               </li>
             </ul>
           </div>
 
-          {}
+          {/* Contact */}
           <div>
             <h4 className="font-poppins font-semibold text-white mb-4">Contact Us</h4>
             <ul className="space-y-3 text-sm">
@@ -73,7 +73,7 @@ const Footer = () => {
           <p className="mt-2 md:mt-0 text-white/60 text-xs">
             Developed with ❤️ by{' '}
             <a 
-              href="https:
+              href="https://www.linkedin.com/in/kunal8859/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-accent hover:text-white font-medium transition-colors"

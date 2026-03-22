@@ -35,6 +35,8 @@ const MealOrderForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Adjust meals array when numberOfDays changes
     if (name === 'numberOfDays') {
       const days = Math.max(1, parseInt(value) || 1);
       setMeals(prev => {
@@ -62,6 +64,8 @@ const MealOrderForm = () => {
     setMeals(prev => prev.map(() => ({ ...first })));
     toast.success('Copied Day 1 meals to all days');
   };
+
+  // Calculate total charges with bundle logic
   const calculateTotal = () => {
     let total = 0;
     meals.forEach(day => {
@@ -113,6 +117,7 @@ const MealOrderForm = () => {
 
     setLoading(true);
     try {
+      // Build meals with dates
       const startDate = new Date(formData.startDate);
       const mealsWithDates = meals.map((meal, i) => {
         const date = new Date(startDate);
@@ -143,7 +148,7 @@ const MealOrderForm = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        {}
+        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="font-poppins text-3xl font-bold text-slate-primary">
             Meal Order Form
@@ -154,7 +159,7 @@ const MealOrderForm = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {}
+          {/* Personal Details */}
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <h2 className="font-poppins text-lg font-semibold text-slate-primary mb-4 flex items-center">
               <HiUser className="w-5 h-5 mr-2 text-secondary" />
@@ -205,7 +210,7 @@ const MealOrderForm = () => {
             </div>
           </div>
 
-          {}
+          {/* Date & Duration */}
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <h2 className="font-poppins text-lg font-semibold text-slate-primary mb-4 flex items-center">
               <HiCalendar className="w-5 h-5 mr-2 text-secondary" />
@@ -240,7 +245,7 @@ const MealOrderForm = () => {
             </div>
           </div>
 
-          {}
+          {/* Meal Selection Table */}
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <h2 className="font-poppins text-lg font-semibold text-slate-primary mb-4 flex items-center">
               <HiClipboardList className="w-5 h-5 mr-2 text-secondary" />
@@ -325,7 +330,7 @@ const MealOrderForm = () => {
             </div>
           </div>
 
-          {}
+          {/* Additional Notes */}
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Additional Notes / Special Requirements
@@ -340,7 +345,7 @@ const MealOrderForm = () => {
             />
           </div>
 
-          {}
+          {/* Summary & Submit */}
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <h2 className="font-poppins text-lg font-semibold text-slate-primary mb-4">
               Order Summary

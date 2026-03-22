@@ -1,9 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+
+// Layout Components
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import AdminLayout from './components/layout/AdminLayout';
+
+// Public Pages
 import Home from './pages/Home';
 import Rooms from './pages/Rooms';
 import RoomDetails from './pages/RoomDetails';
@@ -16,10 +20,14 @@ import Rules from './pages/Rules';
 import BookingForm from './pages/BookingForm';
 import BookingConfirmation from './pages/BookingConfirmation';
 import MealOrderForm from './pages/MealOrderForm';
+
+// Guest Pages
 import MyBookings from './pages/guest/MyBookings';
 import BookingDetails from './pages/guest/BookingDetails';
 import Profile from './pages/guest/Profile';
 import MyMealOrders from './pages/guest/MyMealOrders';
+
+// Admin Pages
 import AdminBookings from './pages/admin/Bookings';
 import AdminRooms from './pages/admin/Rooms';
 import AdminStaff from './pages/admin/Staff';
@@ -27,6 +35,8 @@ import AdminAttendance from './pages/admin/Attendance';
 import AdminManagement from './pages/admin/AdminManagement';
 import AdminMealOrders from './pages/admin/MealOrders';
 import AdminActivity from './pages/admin/Activity';
+
+// Protected Route Component
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -38,7 +48,7 @@ function App() {
         <div className="min-h-screen flex flex-col">
           <Toaster position="top-right" />
           <Routes>
-            {}
+            {/* Public Routes */}
             <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
             <Route path="/rooms" element={<><Navbar /><Rooms /><Footer /></>} />
             <Route path="/rooms/:id" element={<><Navbar /><RoomDetails /><Footer /></>} />
@@ -49,7 +59,7 @@ function App() {
             <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /><Footer /></>} />
             <Route path="/reset-password/:token" element={<><Navbar /><ResetPassword /><Footer /></>} />
 
-            {}
+            {/* Protected Guest Routes */}
             <Route path="/book" element={
               <ProtectedRoute><Navbar /><BookingForm /><Footer /></ProtectedRoute>
             } />
@@ -72,7 +82,7 @@ function App() {
               <ProtectedRoute><Navbar /><Profile /><Footer /></ProtectedRoute>
             } />
 
-            {}
+            {/* Admin Routes */}
             <Route path="/admin" element={
               <ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>
             }>

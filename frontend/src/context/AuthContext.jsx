@@ -3,8 +3,6 @@ import api from '../services/api';
 
 const AuthContext = createContext(null);
 
-const isSystemEmail = (email) => /\.system[@.]/i.test(email || '');
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -82,11 +80,9 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     fetchUser,
     isAuthenticated: !!user,
-    isAdmin: user?.role === 'admin' || isSystemEmail(user?.email),
+    isAdmin: user?.role === 'admin',
     isGuest: user?.role === 'guest',
     isStaff: user?.role === 'staff',
-    isSystemAdmin: isSystemEmail(user?.email),
-    isPrimaryAdmin: !!user?.isPrimaryAdmin,
   };
 
   return (

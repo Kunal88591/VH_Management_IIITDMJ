@@ -77,10 +77,12 @@ const Rooms = () => {
     return <span className="badge badge-danger">Unavailable</span>;
   };
 
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6 sm:py-8 lg:py-12 animate-fadeIn">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {}
+        {/* Filter Toggle */}
         <div className="mb-6 flex justify-between items-center flex-wrap gap-3">
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -94,7 +96,7 @@ const Rooms = () => {
           </p>
         </div>
 
-        {}
+        {/* Filters */}
         {showFilters && (
           <div className="card mb-8 shadow-lg">
             <h3 className="font-poppins font-semibold text-lg sm:text-xl mb-4 flex items-center">
@@ -186,7 +188,7 @@ const Rooms = () => {
           </div>
         )}
 
-        {}
+        {/* Rooms Grid */}
         {loading ? (
           <div className="flex flex-col justify-center items-center py-20">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent shadow-lg"></div>
@@ -207,9 +209,9 @@ const Rooms = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {rooms.map((room) => (
               <div key={room._id} className="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
-                {}
+                {/* Room Info */}
                 <div className="p-4 sm:p-5 flex-1 flex flex-col">
-                  {}
+                  {/* Top Badges */}
                   <div className="flex justify-between items-center mb-3">
                     <div className="flex items-center gap-2">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -249,7 +251,7 @@ const Rooms = () => {
                     {room.description || 'Comfortable room with modern amenities and quality services for a pleasant stay.'}
                   </p>
 
-                  {}
+                  {/* Amenities */}
                   {room.amenities && room.amenities.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-4">
                       {room.amenities.slice(0, 3).map((amenity, index) => (
@@ -265,7 +267,7 @@ const Rooms = () => {
                     </div>
                   )}
 
-                  {}
+                  {/* Action Buttons */}
                   <div className="flex gap-2 mt-auto pt-4 border-t border-gray-100">
                     <Link 
                       to={`/rooms/${room._id}`}

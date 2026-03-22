@@ -22,9 +22,6 @@ const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
-
-  const isSystemAdmin = () => user?.email && /\.system[@.]/i.test(user.email);
-  const isPrimaryLike = () => user?.email === 'vh@iiitdmj.ac.in' || user?.isPrimaryAdmin;
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -50,12 +47,12 @@ const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {}
+      {/* Sidebar - Desktop */}
       <aside
         className={`hidden md:flex flex-col bg-gradient-primary transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'
           }`}
       >
-        {}
+        {/* Logo */}
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           {sidebarOpen && (
             <div className="flex items-center space-x-2">
@@ -75,10 +72,11 @@ const AdminLayout = () => {
           </button>
         </div>
 
-        {}
+        {/* Menu Items */}
         <nav className="flex-1 py-4 overflow-y-auto">
           {menuItems.map((item) => {
-            if (item.primaryOnly && !isPrimaryLike() && !isSystemAdmin()) {
+            // Only show restricted items to primary admin
+            if (item.primaryOnly && user?.email !== 'vh@iiitdmj.ac.in') {
               return null;
             }
             return (
@@ -97,7 +95,7 @@ const AdminLayout = () => {
           })}
         </nav>
 
-        {}
+        {/* Visit Website Link */}
         <div className="p-4 border-t border-white/10">
           <Link
             to="/"
@@ -115,7 +113,7 @@ const AdminLayout = () => {
           </Link>
         </div>
 
-        {}
+        {/* User Info */}
         <div className="p-4 border-t border-white/10">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
@@ -142,7 +140,7 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {}
+      {/* Mobile Sidebar */}
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div className="fixed inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
@@ -164,7 +162,8 @@ const AdminLayout = () => {
 
             <nav className="flex-1 py-4">
               {menuItems.map((item) => {
-                if (item.primaryOnly && !isPrimaryLike() && !isSystemAdmin()) {
+                // Only show Admins menu to primary admin
+                if (item.path === '/admin/admins' && user?.email !== 'vh@iiitdmj.ac.in') {
                   return null;
                 }
                 return (
@@ -213,9 +212,9 @@ const AdminLayout = () => {
         </div>
       )}
 
-      {}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {}
+        {/* Top Bar */}
         <header className="bg-white shadow-sm z-10">
           <div className="flex items-center justify-between px-4 py-3">
             <button
@@ -233,7 +232,7 @@ const AdminLayout = () => {
           </div>
         </header>
 
-        {}
+        {/* Content Area */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <Outlet />
         </main>

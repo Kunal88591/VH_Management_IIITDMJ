@@ -142,6 +142,8 @@ const Staff = () => {
     };
     return colors[role] || 'text-gray-600';
   };
+
+  // Stats
   const activeStaff = staffList.filter(s => s.isActive).length;
   const staffByShift = {
     Morning: staffList.filter(s => s.shift === 'Morning').length,
@@ -151,7 +153,7 @@ const Staff = () => {
 
   return (
     <div className="animate-fadeIn">
-      {}
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="font-poppins text-2xl font-semibold text-slate-primary">
           Staff Management
@@ -168,7 +170,7 @@ const Staff = () => {
         </button>
       </div>
 
-      {}
+      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <div className="card">
           <p className="text-gray-500 text-sm">Total Staff</p>
@@ -192,7 +194,7 @@ const Staff = () => {
         </div>
       </div>
 
-      {}
+      {/* Staff Grid */}
       {loading ? (
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -286,7 +288,7 @@ const Staff = () => {
         </div>
       )}
 
-      {}
+      {/* Add/Edit Staff Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">

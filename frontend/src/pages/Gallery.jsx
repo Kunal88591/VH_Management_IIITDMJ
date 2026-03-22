@@ -4,6 +4,8 @@ import { HiX, HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Gallery images - you can add more images here
   const galleryImages = [
     {
       id: 1,
@@ -117,6 +119,8 @@ const Gallery = () => {
     setCurrentIndex(newIndex);
     setSelectedImage(galleryImages[newIndex]);
   };
+
+  // Keyboard navigation
   const handleKeyDown = (e) => {
     if (!selectedImage) return;
     
@@ -127,7 +131,7 @@ const Gallery = () => {
 
   return (
     <div className="animate-fadeIn" onKeyDown={handleKeyDown} tabIndex={0}>
-      {}
+      {/* Hero Section */}
       <section className="relative h-[40vh] min-h-[300px] bg-gradient-hero flex items-center">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-30"
@@ -143,11 +147,11 @@ const Gallery = () => {
         </div>
       </section>
 
-      {}
+      {/* Gallery Content */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {}
+          {/* Gallery Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {galleryImages.map((image, index) => (
               <div
@@ -161,6 +165,7 @@ const Gallery = () => {
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   onError={(e) => {
+                    // Fallback to placeholder if image doesn't exist
                     e.target.src = '/images/room.jpg';
                   }}
                 />
@@ -168,7 +173,7 @@ const Gallery = () => {
             ))}
           </div>
 
-          {}
+          {/* No images message */}
           {galleryImages.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">No images available</p>
@@ -177,13 +182,13 @@ const Gallery = () => {
         </div>
       </section>
 
-      {}
+      {/* Lightbox Modal */}
       {selectedImage && (
         <div 
           className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
           onClick={closeLightbox}
         >
-          {}
+          {/* Close Button */}
           <button
             onClick={closeLightbox}
             className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-50"
@@ -192,7 +197,7 @@ const Gallery = () => {
             <HiX className="w-8 h-8" />
           </button>
 
-          {}
+          {/* Previous Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -204,7 +209,7 @@ const Gallery = () => {
             <HiChevronLeft className="w-10 h-10" />
           </button>
 
-          {}
+          {/* Image */}
           <div 
             className="relative max-w-6xl max-h-[90vh] flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
@@ -227,7 +232,7 @@ const Gallery = () => {
             </div>
           </div>
 
-          {}
+          {/* Next Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();

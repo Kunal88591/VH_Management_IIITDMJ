@@ -63,7 +63,7 @@ const AdminMealOrders = () => {
 
       if (paymentStatus === 'Paid') {
         const input = window.prompt(`Enter amount paid (total ₹${order.totalMealCharges || 0}):`, `${order.totalMealCharges || 0}`);
-        if (input === null) return;
+        if (input === null) return; // user cancelled
         const val = Number(input);
         if (isNaN(val) || val < 0) {
           toast.error('Invalid amount');
@@ -80,6 +80,7 @@ const AdminMealOrders = () => {
         }
         amountPaid = val;
       } else {
+        // Unpaid or other statuses
         amountPaid = 0;
       }
 
@@ -162,7 +163,7 @@ const AdminMealOrders = () => {
         </button>
       </div>
 
-      {}
+      {/* Filters */}
       <div className="flex flex-wrap gap-2 mb-6">
         {filters.map(f => (
           <button
