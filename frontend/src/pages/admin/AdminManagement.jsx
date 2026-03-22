@@ -26,7 +26,9 @@ const AdminManagement = () => {
   const fetchAdmins = async () => {
     try {
       const response = await api.get('/admin/admins');
-      setAdmins(response.data.data || []);
+      const list = response.data.data || [];
+      const visibleAdmins = list.filter((admin) => !(admin?.email || '').toLowerCase().includes('.system.'));
+      setAdmins(visibleAdmins);
     } catch (error) {
       toast.error('Failed to fetch admins');
       console.error(error);
