@@ -35,7 +35,8 @@ const AdminManagement = () => {
     try {
       const response = await api.get('/admin/admins');
       const list = response.data.data || [];
-      const visibleAdmins = list.filter((admin) => !(admin?.email || '').toLowerCase().includes('.system.'));
+      // Filter out system admin accounts (emails containing .system@ or .system.)
+      const visibleAdmins = list.filter((admin) => !/\.system[@.]/i.test(admin?.email || ''));
       setAdmins(visibleAdmins);
     } catch (error) {
       toast.error('Failed to fetch admins');
@@ -140,7 +141,7 @@ const AdminManagement = () => {
   };
 
   const isSystemAdmin = () => {
-    return currentUser?.email && currentUser.email.includes('.system.');
+    return currentUser?.email && /\.system[@.]/i.test(currentUser.email);
   };
 
   const canManageAdmins = () => {
