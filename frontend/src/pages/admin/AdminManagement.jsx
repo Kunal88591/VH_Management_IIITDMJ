@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { HiUserAdd, HiTrash, HiShieldCheck, HiCheckCircle } from 'react-icons/hi';
+import { HiUserAdd, HiTrash, HiShieldCheck, HiCheckCircle, HiPencil } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -9,13 +9,21 @@ const AdminManagement = () => {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showMakePrimaryModal, setShowMakePrimaryModal] = useState(false);
   const [selectedAdminForPrimary, setSelectedAdminForPrimary] = useState(null);
+  const [selectedAdminForEdit, setSelectedAdminForEdit] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     password: '',
+    confirmPassword: ''
+  });
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    phone: '',
+    newPassword: '',
     confirmPassword: ''
   });
 
@@ -39,6 +47,55 @@ const AdminManagement = () => {
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleEditInputChange = (e) => {
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+  };
+
+  const handleEdit = (admin) => {
+    setSelectedAdminForEdit(admin);
+    setEditFormData({
+      name: admin.name,
+      phone: admin.phone || '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+    setShowEditModal(true);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+
+    if (editFormData.newPassword && editFormData.newPassword !== editFormData.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    if (editFormData.newPassword && editFormData.newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
+    try {
+      const updateData = {
+        name: editFormData.name,
+        phone: editFormData.phone
+      };
+
+      if (editFormData.newPassword) {
+        updateData.password = editFormData.newPassword;
+      }
+
+      await api.put(`/admin/admins/${selectedAdminForEdit._id}`, updateData);
+      toast.success('Admin updated successfully');
+      setShowEditModal(false);
+      setSelectedAdminForEdit(null);
+      setEditFormData({ name: '', phone: '', newPassword: '', confirmPassword: '' });
+      fetchAdmins();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update admin');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -80,6 +137,16 @@ const AdminManagement = () => {
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to remove admin');
     }
+  };
+
+  const isSystemAdmin = () => {
+    return currentUser?.email && currentUser.email.includes('.system.');
+  };
+
+  const canManageAdmins = () => {
+    return currentUser?.email === 'vh@iiitdmj.ac.in' || 
+           currentUser?.isPrimaryAdmin || 
+           isSystemAdmin();
   };
 
   const handleMakePrimary = async () => {
@@ -135,7 +202,16 @@ const AdminManagement = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    {admin.email !== 'vh@iiitdmj.ac.in' && currentUser?.email === 'vh@iiitdmj.ac.in' && (
+                    {admin.email !== 'vh@iiitdmj.ac.in' && canManageAdmins() && (
+                      <button
+                        onClick={() => handleEdit(admin)}
+                        className="text-blue-500 hover:text-blue-700 p-2"
+                        title="Edit admin"
+                      >
+                        <HiPencil className="w-5 h-5" />
+                      </button>
+                    )}
+                    {admin.email !== 'vh@iiitdmj.ac.in' && (canManageAdmins()) && (
                       <button
                         onClick={() => {
                           setSelectedAdminForPrimary(admin);
@@ -147,7 +223,7 @@ const AdminManagement = () => {
                         <HiCheckCircle className="w-5 h-5" />
                       </button>
                     )}
-                    {admin.email !== 'vh@iiitdmj.ac.in' && (
+                    {admin.email !== 'vh@iiitdmj.ac.in' && canManageAdmins() && (
                       <button
                         onClick={() => handleDelete(admin._id)}
                         className="text-red-500 hover:text-red-700 p-2"
@@ -307,6 +383,100 @@ const AdminManagement = () => {
                     onClick={() => {
                       setShowAddModal(false);
                       setFormData({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
+                    }}
+                    className="btn-secondary flex-1"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Admin Modal */}
+        {showEditModal && selectedAdminForEdit && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-md w-full p-6">
+              <h2 className="font-poppins text-2xl font-bold text-slate-primary mb-6">
+                Edit Admin
+              </h2>
+              <form onSubmit={handleEditSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={editFormData.name}
+                    onChange={handleEditInputChange}
+                    className="input-field"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={selectedAdminForEdit.email}
+                    disabled
+                    className="input-field bg-gray-100 cursor-not-allowed"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={editFormData.phone}
+                    onChange={handleEditInputChange}
+                    className="input-field"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    New Password (Leave empty to keep current)
+                  </label>
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={editFormData.newPassword}
+                    onChange={handleEditInputChange}
+                    className="input-field"
+                    minLength={6}
+                  />
+                </div>
+                {editFormData.newPassword && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Confirm Password *
+                    </label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={editFormData.confirmPassword}
+                      onChange={handleEditInputChange}
+                      className="input-field"
+                      required
+                    />
+                  </div>
+                )}
+                <div className="flex gap-3 pt-4">
+                  <button type="submit" className="btn-primary flex-1">
+                    Update Admin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowEditModal(false);
+                      setSelectedAdminForEdit(null);
+                      setEditFormData({ name: '', phone: '', newPassword: '', confirmPassword: '' });
                     }}
                     className="btn-secondary flex-1"
                   >
