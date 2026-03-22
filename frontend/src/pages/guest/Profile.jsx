@@ -78,7 +78,7 @@ const Profile = () => {
           My Profile
         </h1>
 
-        {/* Profile Info Card */}
+        {}
         <div className="card mb-6">
           <div className="flex items-center mb-6">
             <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center">
@@ -155,7 +155,7 @@ const Profile = () => {
           </form>
         </div>
 
-        {/* Change Password Card */}
+        {}
         <div className="card">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-semibold text-slate-primary flex items-center">

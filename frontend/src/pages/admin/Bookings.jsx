@@ -18,11 +18,6 @@ import Invoice from '../../components/Invoice';
 import PaymentModal from '../../components/PaymentModal';
 import ApprovalModal from '../../components/ApprovalModal';
 
-// API base URL for document download/view (same logic as api.js)
-const API_BASE_URL = import.meta.env.PROD
-  ? (import.meta.env.VITE_API_URL || 'https://vh-management-backend.onrender.com/api')
-  : '/api';
-
 const Bookings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [bookings, setBookings] = useState([]);
@@ -41,7 +36,7 @@ const Bookings = () => {
   });
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 10, // Reduced back to 10
+    limit: 10,
     total: 0,
     pages: 1
   });
@@ -99,11 +94,10 @@ const Bookings = () => {
 
       switch (action) {
         case 'approve':
-          // Open approval modal to select rooms
           const booking = bookings.find(b => b._id === id);
           setBookingToApprove(booking);
           setShowApprovalModal(true);
-          return; // Don't proceed further
+          return;
         case 'reject':
           const reason = prompt('Enter rejection reason:');
           if (!reason) return;
@@ -122,15 +116,11 @@ const Bookings = () => {
           toast.success('Guest checked out');
           break;
       }
-
-      // Update bookings list without refetching
       setBookings(prevBookings =>
         prevBookings.map(booking =>
           booking._id === id ? updatedBooking : booking
         )
       );
-
-      // Update selected booking if it's open
       if (selectedBooking?._id === id) {
         setSelectedBooking(updatedBooking);
       }
@@ -151,15 +141,11 @@ const Bookings = () => {
           ? 'Booking approved with new rooms assigned'
           : 'Booking approved successfully'
       );
-
-      // Update bookings list
       setBookings(prevBookings =>
         prevBookings.map(booking =>
           booking._id === bookingToApprove._id ? updatedBooking : booking
         )
       );
-
-      // Update selected booking if it's open
       if (selectedBooking?._id === bookingToApprove._id) {
         setSelectedBooking(updatedBooking);
       }
@@ -198,8 +184,6 @@ const Bookings = () => {
     try {
       const url = `${API_BASE_URL}/bookings/${bookingId}/view-document/${docType}`;
       const token = localStorage.getItem('token');
-
-      // Open in new tab with auth header
       const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -211,8 +195,6 @@ const Bookings = () => {
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
       window.open(blobUrl, '_blank');
-
-      // Clean up after a delay
       setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100);
 
       toast.success('Document opened in new tab');
@@ -306,8 +288,6 @@ const Bookings = () => {
 
     return actions;
   };
-
-  // Get guest names from new or old schema
   const getGuestNames = (booking) => {
     if (booking.guests && booking.guests.length > 0) {
       return booking.guests.map(g => g.fullName).join(', ');
@@ -317,13 +297,13 @@ const Bookings = () => {
 
   return (
     <div className="animate-fadeIn">
-      {/* Header */}
+      {}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="font-poppins text-2xl font-semibold text-slate-primary">
           Manage Bookings
         </h1>
 
-        {/* Filters */}
+        {}
         <div className="flex flex-wrap gap-4">
           <select
             className="input-field py-2"
@@ -379,7 +359,7 @@ const Bookings = () => {
         </div>
       </div>
 
-      {/* Bookings Table */}
+      {}
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -449,7 +429,7 @@ const Bookings = () => {
           </table>
         </div>
 
-        {/* Pagination */}
+        {}
         {pagination.pages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t">
             <p className="text-sm text-gray-500">
@@ -477,7 +457,7 @@ const Bookings = () => {
         )}
       </div>
 
-      {/* Booking Details Modal */}
+      {}
       {showModal && selectedBooking && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -498,7 +478,7 @@ const Bookings = () => {
             </div>
 
             <div className="p-6 space-y-6">
-              {/* Status and Category */}
+              {}
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-3">
                   <span className={`badge ${getStatusBadge(selectedBooking.status)}`}>
@@ -563,7 +543,7 @@ const Bookings = () => {
                 </div>
               </div>
 
-              {/* Validation Info */}
+              {}
               {(selectedBooking.employeeId || selectedBooking.studentRollNumber) && (
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <h3 className="font-semibold text-slate-primary mb-2">Validation Information</h3>
@@ -576,7 +556,7 @@ const Bookings = () => {
                 </div>
               )}
 
-              {/* Guest Details */}
+              {}
               <div>
                 <h3 className="font-semibold text-slate-primary mb-3 flex items-center gap-2">
                   <HiUserGroup className="w-5 h-5" />
@@ -610,7 +590,7 @@ const Bookings = () => {
                 </div>
               </div>
 
-              {/* Booking Details */}
+              {}
               <div>
                 <h3 className="font-semibold text-slate-primary mb-3">Booking & Payment Details</h3>
                 <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
@@ -668,7 +648,7 @@ const Bookings = () => {
                 </div>
               </div>
 
-              {/* Rooms */}
+              {}
               <div>
                 <h3 className="font-semibold text-slate-primary mb-3">Booked Rooms</h3>
                 <div className="space-y-2">
@@ -684,7 +664,7 @@ const Bookings = () => {
                 </div>
               </div>
 
-              {/* Meal Requirements */}
+              {}
               {selectedBooking.mealRequirements?.required && (
                 <div>
                   <h3 className="font-semibold text-slate-primary mb-3">Meal Requirements</h3>
@@ -703,7 +683,7 @@ const Bookings = () => {
                 </div>
               )}
 
-              {/* Documents */}
+              {}
               <div>
                 <h3 className="font-semibold text-slate-primary mb-3 flex items-center gap-2">
                   <HiDocumentText className="w-5 h-5" />
@@ -773,7 +753,7 @@ const Bookings = () => {
                 )}
               </div>
 
-              {/* Additional Requirements */}
+              {}
               {selectedBooking.additionalRequirements && (
                 <div>
                   <h3 className="font-semibold text-slate-primary mb-3">Additional Requirements</h3>
@@ -781,7 +761,7 @@ const Bookings = () => {
                 </div>
               )}
 
-              {/* Rejection Reason */}
+              {}
               {selectedBooking.status === 'Rejected' && selectedBooking.rejectionReason && (
                 <div>
                   <h3 className="font-semibold text-red-600 mb-3">Rejection Reason</h3>
@@ -793,7 +773,7 @@ const Bookings = () => {
         </div>
       )}
 
-      {/* Invoice Modal */}
+      {}
       {showInvoice && selectedBooking && (
         <Invoice
           booking={selectedBooking}
@@ -804,7 +784,7 @@ const Bookings = () => {
         />
       )}
 
-      {/* Payment Modal */}
+      {}
       {showPaymentModal && selectedBooking && (
         <PaymentModal
           booking={selectedBooking}
@@ -816,7 +796,7 @@ const Bookings = () => {
         />
       )}
 
-      {/* Approval Modal with Room Selection */}
+      {}
       {showApprovalModal && bookingToApprove && (
         <ApprovalModal
           booking={bookingToApprove}

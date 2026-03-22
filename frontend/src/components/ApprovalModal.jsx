@@ -18,8 +18,6 @@ const ApprovalModal = ({ booking, onClose, onApprove }) => {
       setLoading(true);
       const res = await bookingAPI.getAvailableRooms(booking._id);
       setAvailableRooms(res.data.data || []);
-      
-      // Pre-select originally booked rooms if available
       const originalRoomIds = booking.rooms.map(r => r.room._id || r.room);
       setSelectedRooms(originalRoomIds);
     } catch (error) {
@@ -43,8 +41,6 @@ const ApprovalModal = ({ booking, onClose, onApprove }) => {
       toast.error('Please select at least one room');
       return;
     }
-
-    // Check if rooms changed from original
     const originalRoomIds = booking.rooms.map(r => r.room._id || r.room).sort();
     const newRoomIds = selectedRooms.sort();
     const roomsChanged = JSON.stringify(originalRoomIds) !== JSON.stringify(newRoomIds);
@@ -55,7 +51,7 @@ const ApprovalModal = ({ booking, onClose, onApprove }) => {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-        {/* Header */}
+        {}
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-slate-primary">
             Approve Booking - Select Rooms
@@ -68,9 +64,9 @@ const ApprovalModal = ({ booking, onClose, onApprove }) => {
           </button>
         </div>
 
-        {/* Content */}
+        {}
         <div className="p-6">
-          {/* Booking Info */}
+          {}
           <div className="mb-6 p-4 bg-gray-50 rounded-lg">
             <h3 className="font-semibold mb-2">Booking Details</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -95,7 +91,7 @@ const ApprovalModal = ({ booking, onClose, onApprove }) => {
             </div>
           </div>
 
-          {/* Room Selection Toggle */}
+          {}
           <div className="mb-6">
             <label className="flex items-center gap-3 cursor-pointer">
               <input
@@ -117,7 +113,7 @@ const ApprovalModal = ({ booking, onClose, onApprove }) => {
             </p>
           </div>
 
-          {/* Available Rooms */}
+          {}
           {!useOriginalRooms && (
             <div>
               <h3 className="font-semibold mb-4">Select Available Rooms</h3>
@@ -169,7 +165,7 @@ const ApprovalModal = ({ booking, onClose, onApprove }) => {
           )}
         </div>
 
-        {/* Footer */}
+        {}
         <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-6 flex justify-end gap-3">
           <button
             onClick={onClose}

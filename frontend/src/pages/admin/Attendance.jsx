@@ -27,7 +27,7 @@ const Attendance = () => {
     checkIn: '',
     checkOut: ''
   });
-  const [selectedMethod, setSelectedMethod] = useState('Manual'); // For quick check-in/out
+  const [selectedMethod, setSelectedMethod] = useState('Manual');
 
   useEffect(() => {
     fetchData();
@@ -36,17 +36,11 @@ const Attendance = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-
-      // Prepare query params
       const params = {};
-
-      // Add date filtering
       if (selectedDate) {
         params.startDate = selectedDate;
         params.endDate = selectedDate;
       }
-
-      // Add staff filter
       if (selectedStaff) {
         params.staffId = selectedStaff;
       }
@@ -92,14 +86,11 @@ const Attendance = () => {
 
   const handleManualMark = async () => {
     try {
-      // Transform the data to match backend expectations
       const payload = {
         staffId: markData.staffId,
         date: markData.date,
         status: markData.status,
       };
-
-      // Add check-in/out times if present
       if (markData.checkIn) {
         payload.checkInTime = `${markData.date}T${markData.checkIn}:00`;
       }
@@ -125,19 +116,16 @@ const Attendance = () => {
 
   const downloadReport = async () => {
     try {
-      // Get the month range for the selected date
       const startDate = new Date(selectedDate);
       startDate.setDate(1);
       const endDate = new Date(selectedDate);
       endDate.setMonth(endDate.getMonth() + 1);
       endDate.setDate(0);
-
-      // Fetch detailed attendance records (not aggregated report)
       const res = await attendanceAPI.getAll({
         startDate: startDate.toISOString().split('T')[0],
         endDate: endDate.toISOString().split('T')[0],
         ...(selectedStaff && { staffId: selectedStaff }),
-        limit: 1000 // Get all records for the month
+        limit: 1000
       });
 
       const records = res.data.data || [];
@@ -146,8 +134,6 @@ const Attendance = () => {
         toast.error('No attendance records found for this period');
         return;
       }
-
-      // Create comprehensive CSV with all fields including Staff ID and timings
       const headers = [
         'Date',
         'Staff ID',
@@ -166,14 +152,11 @@ const Attendance = () => {
       ];
 
       const rows = records.map(a => {
-        // Format date explicitly - prefix with single quote to force Excel text mode
         let dateStr = '-';
         if (a.date) {
           const d = new Date(a.date);
           dateStr = `${d.getDate().toString().padStart(2, '0')}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}`;
         }
-
-        // Format check-in time
         let checkInTime = '-';
         let checkInMethod = '-';
         if (a.checkIn && a.checkIn.time) {
@@ -185,8 +168,6 @@ const Attendance = () => {
           checkInTime = `${h12}:${mins} ${ampm}`;
           checkInMethod = a.checkIn.method || 'Manual';
         }
-
-        // Format check-out time
         let checkOutTime = '-';
         let checkOutMethod = '-';
         if (a.checkOut && a.checkOut.time) {
@@ -216,18 +197,13 @@ const Attendance = () => {
           a.markedBy?.name || 'System'
         ];
       });
-
-      // Sort by date descending
       rows.sort((a, b) => {
         const dateA = a[0].split('-').reverse().join('-');
         const dateB = b[0].split('-').reverse().join('-');
         return new Date(dateB) - new Date(dateA);
       });
-
-      // Escape CSV fields - force date/time as text for Excel using ="..." wrapper
       const escapeCSV = (field, colIndex) => {
         const str = String(field);
-        // Columns 0 (Date), 6 (Check-In Time), 8 (Check-Out Time) - force as text
         if ((colIndex === 0 || colIndex === 6 || colIndex === 8) && str !== '-') {
           return `="${str}"`;
         }
@@ -238,15 +214,11 @@ const Attendance = () => {
       };
 
       const csv = [headers.map((h, i) => escapeCSV(h, -1)).join(','), ...rows.map(row => row.map((cell, i) => escapeCSV(cell, i)).join(','))].join('\n');
-      
-      // Add BOM for Excel UTF-8 compatibility
       const BOM = '\uFEFF';
       const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      
-      // Better filename with month-year
       const monthYear = startDate.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
       link.download = `Attendance-Report-${monthYear.replace(' ', '-')}.csv`;
       link.click();
@@ -273,15 +245,13 @@ const Attendance = () => {
   const getStaffAttendanceStatus = (staffId) => {
     return todayAttendance.find(a => a.staff?._id === staffId);
   };
-
-  // Stats
   const presentToday = todayAttendance.filter(a => a.status === 'Present').length;
   const absentToday = staffList.length - todayAttendance.length;
   const lateToday = todayAttendance.filter(a => a.status === 'Late').length;
 
   return (
     <div className="animate-fadeIn">
-      {/* Header */}
+      {}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="font-poppins text-2xl font-semibold text-slate-primary">
           Attendance Management
@@ -304,7 +274,7 @@ const Attendance = () => {
         </div>
       </div>
 
-      {/* Today's Stats */}
+      {}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="card">
           <p className="text-gray-500 text-sm">Total Staff</p>
@@ -324,7 +294,7 @@ const Attendance = () => {
         </div>
       </div>
 
-      {/* Quick Check-In/Out */}
+      {}
       <div className="card mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-slate-primary flex items-center gap-2">
@@ -410,7 +380,7 @@ const Attendance = () => {
         </div>
       </div>
 
-      {/* Attendance Records */}
+      {}
       <div className="card">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
           <h2 className="font-semibold text-slate-primary flex items-center gap-2">
@@ -511,7 +481,7 @@ const Attendance = () => {
         </div>
       </div>
 
-      {/* Mark Attendance Modal */}
+      {}
       {showMarkModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full">

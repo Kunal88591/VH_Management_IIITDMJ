@@ -44,14 +44,14 @@ const RoomDetails = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 animate-fadeIn">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back Button */}
+        {}
         <Link to="/rooms" className="inline-flex items-center text-secondary hover:text-primary mb-6">
           <HiArrowLeft className="w-5 h-5 mr-1" />
           Back to Rooms
         </Link>
 
         <div className="card">
-          {/* Room Image */}
+          {}
           <div className="relative h-64 md:h-80 bg-gradient-to-br from-secondary/20 to-primary/20 -mx-5 -mt-5 mb-6 rounded-t-[14px] overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-8xl">🏨</span>
@@ -68,7 +68,7 @@ const RoomDetails = () => {
             </div>
           </div>
 
-          {/* Room Info */}
+          {}
           <div className="grid md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
               <h1 className="font-poppins text-2xl md:text-3xl font-bold text-slate-primary mb-2">
@@ -108,7 +108,7 @@ const RoomDetails = () => {
               )}
             </div>
 
-            {/* Pricing Card */}
+            {}
             <div className="md:col-span-1">
               <div className="bg-gray-50 rounded-xl p-6">
                 <p className="text-3xl font-bold text-secondary mb-1">

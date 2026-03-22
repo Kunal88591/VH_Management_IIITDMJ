@@ -18,7 +18,7 @@ const Navbar = () => {
     <nav className="bg-gradient-primary sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {}
           <Link to="/" className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden">
               <img 
@@ -26,7 +26,6 @@ const Navbar = () => {
                 alt="IIITDMJ Logo" 
                 className="w-full h-full object-contain p-1"
                 onError={(e) => {
-                  // Fallback to VH text if logo not found
                   e.target.style.display = 'none';
                   e.target.parentElement.innerHTML = '<span class="text-primary font-bold text-lg">VH</span>';
                 }}
@@ -39,7 +38,7 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Desktop Menu */}
+          {}
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/" className="text-white/90 hover:text-white transition-colors font-medium">
               Home
@@ -132,7 +131,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-white p-2"
@@ -142,7 +141,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {}
       {isOpen && (
         <div className="md:hidden bg-primary-light animate-fadeIn">
           <div className="px-4 py-4 space-y-3">

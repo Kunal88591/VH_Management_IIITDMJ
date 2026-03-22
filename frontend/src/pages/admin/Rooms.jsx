@@ -148,7 +148,7 @@ const Rooms = () => {
 
   return (
     <div className="animate-fadeIn">
-      {/* Header */}
+      {}
       <div className="flex justify-between items-center mb-6">
         <h1 className="font-poppins text-2xl font-semibold text-slate-primary">
           Room Management
@@ -165,7 +165,7 @@ const Rooms = () => {
         </button>
       </div>
 
-      {/* Room Stats */}
+      {}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white rounded-lg p-4 border">
           <p className="text-gray-500 text-sm">Total Rooms</p>
@@ -191,7 +191,7 @@ const Rooms = () => {
         </div>
       </div>
 
-      {/* Rooms Grid */}
+      {}
       {loading ? (
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -297,7 +297,7 @@ const Rooms = () => {
         </div>
       )}
 
-      {/* Add/Edit Room Modal */}
+      {}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">

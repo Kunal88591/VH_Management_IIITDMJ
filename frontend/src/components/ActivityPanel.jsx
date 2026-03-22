@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
-import { HiFilter, HiRefresh, HiCalendar, HiUser } from 'react-icons/hi';
+import { useEffect, useMemo, useState } from 'react';
+import { HiFilter, HiUser } from 'react-icons/hi';
 import toast from 'react-hot-toast';
+import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
-const API_BASE_URL = import.meta.env.PROD
-  ? (import.meta.env.VITE_API_URL || 'https://vh-management-backend.onrender.com/api')
-  : '/api';
+const SYSTEM_EMAIL_REGEX = /\.system[@.]/i;
 
 const ActivityPanel = () => {
+  const { user, isSystemAdmin, isPrimaryAdmin } = useAuth();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -24,38 +25,61 @@ const ActivityPanel = () => {
   const [admins, setAdmins] = useState([]);
   const [summary, setSummary] = useState(null);
 
+  const hasElevatedAccess = useMemo(() => {
+    if (!user) return false;
+    return isSystemAdmin || isPrimaryAdmin || user.email === 'vh@iiitdmj.ac.in';
+  }, [user, isSystemAdmin, isPrimaryAdmin]);
+
+  const sanitizeActivities = (items) => {
+    if (isSystemAdmin) return items;
+    return items.filter((activity) => !SYSTEM_EMAIL_REGEX.test(activity.adminEmail || activity.admin?.email || ''));
+  };
+
   useEffect(() => {
+    if (!user) return;
+    if (!hasElevatedAccess && user.id && filters.adminId !== user.id) {
+      setFilters((prev) => ({ ...prev, adminId: user.id }));
+    }
+  }, [user, hasElevatedAccess, filters.adminId]);
+
+  useEffect(() => {
+    if (!user) return;
     fetchActivities();
     fetchSummary();
-    fetchAdmins();
-  }, [filters, pagination.page]);
+    if (hasElevatedAccess) {
+      fetchAdmins();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, pagination.page, hasElevatedAccess, user]);
 
   const fetchActivities = async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams({
+      const params = {
         page: pagination.page,
         limit: pagination.limit,
         ...(filters.activityType && { activityType: filters.activityType }),
-        ...(filters.adminId && { adminId: filters.adminId }),
         ...(filters.startDate && { startDate: filters.startDate }),
         ...(filters.endDate && { endDate: filters.endDate })
-      });
+      };
 
-      const response = await fetch(`${API_BASE_URL}/activities?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
+      const adminFilter = hasElevatedAccess ? filters.adminId : user?.id;
+      if (adminFilter) {
+        params.adminId = adminFilter;
+      }
 
-      if (!response.ok) throw new Error('Failed to fetch activities');
+      const { data } = await api.get('/activities', { params });
+      const rawActivities = data.data || [];
+      const visibleActivities = sanitizeActivities(rawActivities);
 
-      const data = await response.json();
-      setActivities(data.data || []);
-      setPagination(prev => ({
+      const totalFromApi = data.total ?? visibleActivities.length;
+      const pagesFromApi = data.pages || Math.max(1, Math.ceil(totalFromApi / pagination.limit));
+
+      setActivities(visibleActivities);
+      setPagination((prev) => ({
         ...prev,
-        total: data.total || 0,
-        pages: data.pages || 1
+        total: totalFromApi,
+        pages: pagesFromApi
       }));
     } catch (error) {
       console.error('Error fetching activities:', error);
@@ -67,15 +91,7 @@ const ActivityPanel = () => {
 
   const fetchSummary = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/activities/summary`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch summary');
-
-      const data = await response.json();
+      const { data } = await api.get('/activities/summary');
       setSummary(data.data || {});
     } catch (error) {
       console.error('Error fetching summary:', error);
@@ -84,16 +100,9 @@ const ActivityPanel = () => {
 
   const fetchAdmins = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch admins');
-
-      const data = await response.json();
-      setAdmins(data.data || []);
+      const { data } = await api.get('/admin/admins');
+      const list = data.data || [];
+      setAdmins(list.filter((admin) => !SYSTEM_EMAIL_REGEX.test(admin.email || '')));
     } catch (error) {
       console.error('Error fetching admins:', error);
     }
@@ -137,13 +146,13 @@ const ActivityPanel = () => {
 
   return (
     <div className="animate-fadeIn">
-      {/* Header */}
+      {}
       <div className="mb-6">
         <h1 className="font-poppins text-2xl font-semibold text-slate-primary mb-4">
           Activity Panel
         </h1>
 
-        {/* Summary Cards */}
+        {}
         {summary && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -166,7 +175,7 @@ const ActivityPanel = () => {
         )}
       </div>
 
-      {/* Filters */}
+      {}
       <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
         <div className="flex items-center gap-2 mb-4">
           <HiFilter className="w-5 h-5 text-secondary" />
@@ -191,21 +200,28 @@ const ActivityPanel = () => {
             <option value="ROOM_BLOCKED">Rooms Blocked</option>
           </select>
 
-          <select
-            className="input-field py-2"
-            value={filters.adminId}
-            onChange={(e) => {
-              setFilters({ ...filters, adminId: e.target.value });
-              setPagination(prev => ({ ...prev, page: 1 }));
-            }}
-          >
-            <option value="">All Admins</option>
-            {admins.map(admin => (
-              <option key={admin._id} value={admin._id}>
-                {admin.name} ({admin.email})
-              </option>
-            ))}
-          </select>
+          {hasElevatedAccess ? (
+            <select
+              className="input-field py-2"
+              value={filters.adminId}
+              onChange={(e) => {
+                setFilters({ ...filters, adminId: e.target.value });
+                setPagination(prev => ({ ...prev, page: 1 }));
+              }}
+            >
+              <option value="">All Admins</option>
+              {admins.map(admin => (
+                <option key={admin._id} value={admin._id}>
+                  {admin.name} ({admin.email})
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div className="input-field py-2 flex items-center gap-2 text-gray-600">
+              <HiUser className="w-4 h-4 text-secondary" />
+              <span className="text-sm">Showing your activity</span>
+            </div>
+          )}
 
           <input
             type="date"
@@ -234,7 +250,7 @@ const ActivityPanel = () => {
           onClick={() => {
             setFilters({
               activityType: '',
-              adminId: '',
+              adminId: hasElevatedAccess ? '' : user?.id || '',
               startDate: '',
               endDate: ''
             });
@@ -246,7 +262,7 @@ const ActivityPanel = () => {
         </button>
       </div>
 
-      {/* Activities List */}
+      {}
       <div className="bg-white rounded-lg shadow-sm">
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading activities...</div>
@@ -315,7 +331,7 @@ const ActivityPanel = () => {
               </table>
             </div>
 
-            {/* Pagination */}
+            {}
             {pagination.pages > 1 && (
               <div className="px-4 py-3 border-t border-gray-200 flex justify-center gap-2">
                 {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((page) => (

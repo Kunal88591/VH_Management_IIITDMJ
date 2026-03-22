@@ -56,8 +56,6 @@ const MyMealOrders = () => {
     try {
       const res = await mealOrderAPI.getById(id);
       const order = res.data.data;
-
-      // Map meal order to booking-shaped object expected by Invoice component
       const bookingLike = {
         bookingId: order.orderId || order._id,
         visitorCategory: 'Meal Order',

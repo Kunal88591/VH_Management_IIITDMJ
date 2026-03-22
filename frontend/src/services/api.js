@@ -1,10 +1,6 @@
 import axios from 'axios';
 
-// Use relative URL to leverage Vite proxy in development
-// In production, use the environment variable
-const API_URL = import.meta.env.PROD
-  ? (import.meta.env.VITE_API_URL || 'https://vh-management-backend.onrender.com/api')
-  : '/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 console.log('API URL:', API_URL);
 
@@ -63,8 +59,7 @@ export const bookingAPI = {
   create: (data) => api.post('/bookings', data, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
-  getAvailableRooms: (id) => api.get(`/bookings/${id}/available-rooms`),
-  approve: (id, roomIds = null) => api.put(`/bookings/${id}/approve`, roomIds ? { newRoomIds: roomIds } : {}),
+  approve: (id) => api.put(`/bookings/${id}/approve`),
   reject: (id, reason) => api.put(`/bookings/${id}/reject`, { rejectionReason: reason }),
   checkIn: (id) => api.put(`/bookings/${id}/check-in`),
   checkOut: (id) => api.put(`/bookings/${id}/check-out`),
