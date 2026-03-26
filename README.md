@@ -452,7 +452,7 @@ Built in **100% compliance** with PDPM IIITDM Jabalpur Visitor's Hostel Rules & 
 
 ---
 
-## 👨‍💻 Developer
+## 👨‍💻 Developer & Manager
 
 <table>
   <tr>
